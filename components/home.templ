@@ -1,0 +1,110 @@
+package components
+
+import "github.com/sotirismorf/go-htmx/schema"
+import "strconv"
+
+templ Index(authors []schema.Author) {
+<!DOCTYPE html>
+<html lang="en">
+@head()
+
+<body>
+  @navigationBar()
+  <h1>Home</h1>
+  <ul>
+    for _, author := range authors {
+    <li>
+      <p>{ author.Name }</p>
+      <p>
+        if author.Bio != nil {
+        { *author.Bio }
+        }
+      </p>
+    </li>
+    }
+  </ul>
+</body>
+
+</html>
+}
+
+templ Admin(items []schema.Item, authors []schema.Author) {
+<!DOCTYPE html>
+<html lang="en">
+@head()
+
+<body>
+  @navigationBar()
+  <h1>Admin Panel</h1>
+  <p>This is the admin panel</p>
+  <form action="/admin/items" method="post">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" />
+    <br />
+    <label for="description">Description</label>
+    <input type="text" id="description" name="description" />
+    <br />
+    <input type="submit" value="Submit" />
+    <select name="author" id="cars">
+      <option disabled selected value>Author</option>
+      for _, author := range authors {
+      <option value={ strconv.Itoa(int(author.ID)) }>{ author.Name }</option>
+      }
+    </select>
+  </form>
+  <ul></ul>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+    for _, item := range items {
+    <tr>
+      <td>{ item.Name } </td>
+      <td>
+        if item.Description != nil {
+        { *item.Description }
+        }
+      </td>
+    </tr>
+    }
+  </table>
+</body>
+
+</html>
+}
+
+templ Login() {
+<!DOCTYPE html>
+<html lang="en">
+@head()
+
+<body>
+  @navigationBar()
+  <h1>Login</h1>
+  <form submit="/login" method="post">
+    <input type="text" name="username" />
+    <input type="password" name="password" />
+    <button type="submit">Log in</button>
+  </form>
+</body>
+
+</html>
+}
+
+templ head() {
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title></title>
+</head>
+}
+
+templ navigationBar() {
+<div>
+  <a href="/">Home</a>
+  <a href="/admin">Admin</a>
+  <a href="/login">Login</a>
+</div>
+}
