@@ -59,6 +59,36 @@ func AdminHandler(c echo.Context) error {
 	return Render(c, http.StatusOK, components.Admin(itemsGenerated, authors))
 }
 
+func AdminSingleItemHandler(c echo.Context) error {
+	ctx := context.Background()
+
+	paramItemId := c.Param("id")
+	id, err := strconv.Atoi(paramItemId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	item, err := db.Queries.ListSingleItemWithAuthors(ctx,int64(id))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	i := models.ItemData{}
+
+	i.Id = item.ID
+	i.Name = item.Name
+	if item.Description != nil {
+		i.Description = item.Description
+	}
+	if item.Authors != nil {
+		authors := []models.Author{}
+		json.Unmarshal([]byte(item.Authors), &authors)
+		i.Authors = authors
+	}
+
+	return Render(c, http.StatusOK, components.AdminSingleItem(i))
+}
+
 func AdminCreateItemHandler(c echo.Context) error {
 	ctx := context.Background()
 
@@ -93,5 +123,5 @@ func AdminCreateItemHandler(c echo.Context) error {
 		}
 	}
 
-	return c.Redirect(http.StatusFound, "/admin")
+	return c.Redirect(http.StatusFound, "/admin/items")
 }

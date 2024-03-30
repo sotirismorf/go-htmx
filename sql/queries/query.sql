@@ -66,3 +66,17 @@ FROM items
 left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id
 group by items.id;
+
+-- name: ListSingleItemWithAuthors :one
+SELECT items.id, items.name, items.description,
+CAST(
+  CASE
+    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
+    THEN jsonb_agg((authors.id, authors.name))::jsonb
+  END
+AS jsonb) as authors
+FROM items
+left join item_has_author on items.id = item_has_author.item_id
+left join authors on item_has_author.author_id = authors.id
+where items.id = $1
+group by items.id;

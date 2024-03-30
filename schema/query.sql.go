@@ -214,6 +214,40 @@ func (q *Queries) ListItemsWithAuthors(ctx context.Context) ([]ListItemsWithAuth
 	return items, nil
 }
 
+const listSingleItemWithAuthors = `-- name: ListSingleItemWithAuthors :one
+SELECT items.id, items.name, items.description,
+CAST(
+  CASE
+    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
+    THEN jsonb_agg((authors.id, authors.name))::jsonb
+  END
+AS jsonb) as authors
+FROM items
+left join item_has_author on items.id = item_has_author.item_id
+left join authors on item_has_author.author_id = authors.id
+where items.id = $1
+group by items.id
+`
+
+type ListSingleItemWithAuthorsRow struct {
+	ID          int64
+	Name        string
+	Description *string
+	Authors     []byte
+}
+
+func (q *Queries) ListSingleItemWithAuthors(ctx context.Context, id int64) (ListSingleItemWithAuthorsRow, error) {
+	row := q.db.QueryRow(ctx, listSingleItemWithAuthors, id)
+	var i ListSingleItemWithAuthorsRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Authors,
+	)
+	return i, err
+}
+
 const updateAuthor = `-- name: UpdateAuthor :exec
 UPDATE authors
 set name = $2,

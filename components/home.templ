@@ -71,7 +71,11 @@ templ Admin(items []models.ItemData, authors []schema.Author) {
     </tr>
     for _, item := range items {
     <tr>
-      <td>{ item.Name } </td>
+      <td>
+        <a href={ templ.URL("/admin/items/" + strconv.Itoa(int(item.Id))) }>
+          { item.Name }
+        </a>
+      </td>
       <td class="tb-col-desc">
         if item.Description != nil {
         { *item.Description }
@@ -93,6 +97,19 @@ templ Admin(items []models.ItemData, authors []schema.Author) {
     </tr>
     }
   </table>
+</body>
+
+</html>
+}
+
+templ AdminSingleItem(item models.ItemData) {
+<!DOCTYPE html>
+<html lang="en">
+@head()
+
+<body>
+  @navigationBar()
+  <h1>{ item.Name }</h1>
 </body>
 
 </html>
@@ -128,7 +145,7 @@ templ head() {
 templ navigationBar() {
 <div>
   <a href="/">Home</a>
-  <a href="/admin">Admin</a>
+  <a href="/admin/items">Admin</a>
   <a href="/admin/login">Login</a>
 </div>
 }

@@ -18,8 +18,9 @@ func main() {
 	}))
 
 	app.GET("/", handlers.HomeHandler)
-	app.GET("/admin", handlers.AdminHandler)
+	app.GET("/admin/items", handlers.AdminHandler)
 	app.POST("/admin/items", handlers.AdminCreateItemHandler)
+  app.GET("/admin/items/:id", handlers.AdminSingleItemHandler)
 	app.GET("/admin/login", handlers.LoginHandler)
 
 	app.Logger.Fatal(app.Start(":8080"))
