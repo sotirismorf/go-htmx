@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+
 	// "fmt"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sotirismorf/go-htmx/components"
+	"github.com/sotirismorf/go-htmx/handlers"
 	"github.com/sotirismorf/go-htmx/schema"
 )
 
@@ -39,7 +41,7 @@ func main() {
 	app.GET("/", HomeHandler)
 	app.GET("/admin", AdminHandler)
 	app.POST("/admin/items", AdminCreateItemHandler)
-	app.GET("/login", LoginHandler)
+	app.GET("/admin/login", handlers.LoginHandler)
 
 	app.Logger.Fatal(app.Start(":8080"))
 }
@@ -74,10 +76,6 @@ func HomeHandler(c echo.Context) error {
 	json.Unmarshal([]byte(items[0].AuthorIds), &authors)
 
 	return Render(c, http.StatusOK, components.Index(data))
-}
-
-func LoginHandler(c echo.Context) error {
-	return Render(c, http.StatusOK, components.Login())
 }
 
 func AdminHandler(c echo.Context) error {
