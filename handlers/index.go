@@ -30,7 +30,7 @@ func HomeHandler(c echo.Context) error {
 	}
 
 	authors := []author{}
-	json.Unmarshal([]byte(items[0].AuthorIds), &authors)
+	json.Unmarshal([]byte(items[0].Authors), &authors)
 
 	return Render(c, http.StatusOK, components.Index(data))
 }

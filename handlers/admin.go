@@ -2,13 +2,15 @@ package handlers
 
 import (
 	"context"
-	"log"
+	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
+	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/schema"
 )
 
@@ -26,7 +28,7 @@ func LoginHandler(c echo.Context) error {
 func AdminHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	items, err := db.Queries.ListItems(ctx)
+	items, err := db.Queries.ListItemsWithAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -36,22 +38,38 @@ func AdminHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	return Render(c, http.StatusOK, components.Admin(items, authors))
+	itemsGenerated := []models.ItemData{}
+
+	for _, i := range items {
+		item := models.ItemData{}
+
+		item.Id = i.ID
+		item.Name = i.Name
+		if i.Description != nil {
+			item.Description = i.Description
+		}
+		if i.Authors != nil {
+			authors := []models.Author{}
+			json.Unmarshal([]byte(i.Authors), &authors)
+			item.Authors = authors
+		}
+		itemsGenerated = append(itemsGenerated, item)
+	}
+
+	return Render(c, http.StatusOK, components.Admin(itemsGenerated, authors))
 }
 
 func AdminCreateItemHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	name := c.FormValue("name")
-	description := c.FormValue("description")
-	author := c.FormValue("author")
+	formValueName := c.FormValue("name")
+	formValueDescription := c.FormValue("description")
+	formValueAuthorId := c.FormValue("author")
 
-	log.Println("-" + name + "- and -" + description + "-" + author + "-")
+	itemParams := schema.CreateItemParams{Name: formValueName}
 
-	itemParams := schema.CreateItemParams{Name: name}
-
-	if description != "" {
-		itemParams.Description = &description
+	if formValueDescription != "" {
+		itemParams.Description = &formValueDescription
 	}
 
 	createdItem, err := db.Queries.CreateItem(ctx, itemParams)
@@ -59,14 +77,17 @@ func AdminCreateItemHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	if author != "" {
-		println("Author is ", author)
+	if formValueAuthorId != "" {
+		authorId, err := strconv.Atoi(formValueAuthorId)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, err)
+		}
 
 		itemHasAuthorParams := schema.CreateItemHasAuthorRelationshipParams{
 			ItemID:   createdItem.ID,
-			AuthorID: 1,
+			AuthorID: int64(authorId),
 		}
-		_, err := db.Queries.CreateItemHasAuthorRelationship(ctx, itemHasAuthorParams)
+		_, err = db.Queries.CreateItemHasAuthorRelationship(ctx, itemHasAuthorParams)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, err)
 		}
