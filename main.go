@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	// "fmt"
 	"log"
 	"net/http"
 
 	"github.com/a-h/templ"
+	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/jackc/pgx/v5"
 	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/schema"
 )
@@ -54,10 +56,22 @@ func HomeHandler(c echo.Context) error {
 	ctx := context.Background()
 
 	data, err := queries.ListAuthors(ctx)
-  log.Println("==================================")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
+
+	items, err := queries.ListItemsWithAuthors(ctx)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	type author struct {
+		Id   int    `json:"f1"`
+		Name string `json:"f2"`
+	}
+
+	authors := []author{}
+	json.Unmarshal([]byte(items[0].AuthorIds), &authors)
 
 	return Render(c, http.StatusOK, components.Index(data))
 }

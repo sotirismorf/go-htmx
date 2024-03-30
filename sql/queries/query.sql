@@ -51,3 +51,12 @@ INSERT INTO item_has_author (
   $1, $2
 )
 RETURNING *;
+
+-- https://github.com/sqlc-dev/sqlc/issues/3238
+
+-- name: ListItemsWithAuthors :many
+SELECT items.id, items.name, jsonb_agg(row(authors.id, authors.name)) as author_ids
+FROM items
+left join item_has_author on items.id = item_has_author.item_id
+left join authors on item_has_author.author_id = authors.id
+group by items.id, items.name;
