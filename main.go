@@ -9,27 +9,16 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
-	"github.com/jackc/pgx/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sotirismorf/go-htmx/components"
+	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/handlers"
 	"github.com/sotirismorf/go-htmx/schema"
 )
 
-var queries *schema.Queries
-
 func main() {
-	ctx := context.Background()
-
-	conn, err := pgx.Connect(context.Background(), "postgresql://username:password@127.0.0.1:5432/postgres")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer conn.Close(ctx)
-
-	queries = schema.New(conn)
+	db.ConnectDB()
 
 	app := echo.New()
 
@@ -57,12 +46,12 @@ func HomeHandler(c echo.Context) error {
 
 	ctx := context.Background()
 
-	data, err := queries.ListAuthors(ctx)
+	data, err := db.Queries.ListAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	items, err := queries.ListItemsWithAuthors(ctx)
+	items, err := db.Queries.ListItemsWithAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -81,12 +70,12 @@ func HomeHandler(c echo.Context) error {
 func AdminHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	items, err := queries.ListItems(ctx)
+	items, err := db.Queries.ListItems(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	authors, err := queries.ListAuthors(ctx)
+	authors, err := db.Queries.ListAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -109,7 +98,7 @@ func AdminCreateItemHandler(c echo.Context) error {
 		itemParams.Description = &description
 	}
 
-	createdItem, err := queries.CreateItem(ctx, itemParams)
+	createdItem, err := db.Queries.CreateItem(ctx, itemParams)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -121,7 +110,7 @@ func AdminCreateItemHandler(c echo.Context) error {
 			ItemID:   createdItem.ID,
 			AuthorID: 1,
 		}
-		_, err := queries.CreateItemHasAuthorRelationship(ctx, itemHasAuthorParams)
+		_, err := db.Queries.CreateItemHasAuthorRelationship(ctx, itemHasAuthorParams)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, err)
 		}
