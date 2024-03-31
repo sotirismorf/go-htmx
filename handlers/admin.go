@@ -8,10 +8,10 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
-	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/schema"
+	"github.com/sotirismorf/go-htmx/views"
 )
 
 // This custom Render replaces Echo's echo.Context.Render() with templ's templ.Component.Render().
@@ -22,10 +22,18 @@ func Render(ctx echo.Context, statusCode int, t templ.Component) error {
 }
 
 func LoginHandler(c echo.Context) error {
-	return Render(c, http.StatusOK, components.Login())
+  view := views.AdminLogin()
+
+	return Render(c, http.StatusOK, views.BaseLayout("Home", view))
 }
 
 func AdminHandler(c echo.Context) error {
+  view := views.Admin()
+
+	return Render(c, http.StatusOK, views.BaseLayout("Admin Panel", view))
+}
+
+func AdminItemsHandler(c echo.Context) error {
 	ctx := context.Background()
 
 	items, err := db.Queries.ListItemsWithAuthors(ctx)
@@ -56,7 +64,9 @@ func AdminHandler(c echo.Context) error {
 		itemsGenerated = append(itemsGenerated, item)
 	}
 
-	return Render(c, http.StatusOK, components.Admin(itemsGenerated, authors))
+  view := views.AdminItems(itemsGenerated, authors)
+
+	return Render(c, http.StatusOK, views.BaseLayout("Admin Panel - Items", view))
 }
 
 func AdminSingleItemHandler(c echo.Context) error {
@@ -86,7 +96,9 @@ func AdminSingleItemHandler(c echo.Context) error {
 		i.Authors = authors
 	}
 
-	return Render(c, http.StatusOK, components.AdminSingleItem(i))
+  view := views.AdminSingleItem(i)
+
+	return Render(c, http.StatusOK, views.BaseLayout(i.Name, view))
 }
 
 func AdminCreateItemHandler(c echo.Context) error {

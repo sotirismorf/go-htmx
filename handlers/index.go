@@ -6,8 +6,9 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sotirismorf/go-htmx/components"
+	// "github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
+	"github.com/sotirismorf/go-htmx/views"
 )
 
 func HomeHandler(c echo.Context) error {
@@ -32,5 +33,7 @@ func HomeHandler(c echo.Context) error {
 	authors := []author{}
 	json.Unmarshal([]byte(items[0].Authors), &authors)
 
-	return Render(c, http.StatusOK, components.Index(data))
+  view := views.Index(data)
+
+	return Render(c, http.StatusOK, views.BaseLayout("Home", view))
 }

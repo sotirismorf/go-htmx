@@ -1,0 +1,28 @@
+package views
+
+import (
+"github.com/sotirismorf/go-htmx/models"
+"github.com/sotirismorf/go-htmx/components"
+)
+
+templ AdminSingleItem(item models.ItemData) {
+@components.NavigationBar()
+@components.AdminSidebar()
+<p><a href="/admin/items">&lt Items</a></p>
+<h1>{ item.Name }</h1>
+<p><b>Name: </b>{ item.Name }</p>
+<p><b>Description: </b>
+  if item.Description != nil {
+  { *item.Description }
+  } else {
+  -
+  }
+</p>
+<p><b>Authors: </b>
+  if item.Authors == nil {
+  -
+  } else {
+  for i, author := range item.Authors {
+  {author.Name}if i < len(item.Authors) - 1 {
+    ,&nbsp } } } </p>
+}

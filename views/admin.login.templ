@@ -1,0 +1,15 @@
+package views
+
+import (
+"github.com/sotirismorf/go-htmx/components"
+)
+
+templ AdminLogin() {
+@components.NavigationBar()
+<h1>Login</h1>
+<form submit="/login" method="post">
+  <input type="text" name="username" />
+  <input type="password" name="password" />
+  <button type="submit">Log in</button>
+</form>
+}

@@ -1,0 +1,29 @@
+package views
+
+import (
+"github.com/sotirismorf/go-htmx/schema"
+"github.com/sotirismorf/go-htmx/components"
+)
+
+templ Index(authors []schema.Author) {
+@components.NavigationBar()
+<h1>Home</h1>
+<ul>
+  for _, author := range authors {
+  <li>
+    <p>{ author.Name }</p>
+    <p>
+      if author.Bio != nil {
+      { *author.Bio }
+      }
+    </p>
+  </li>
+  }
+</ul>
+}
+
+templ BaseLayout(title string, cmp templ.Component) {
+@Base(title) {
+@cmp
+}
+}
