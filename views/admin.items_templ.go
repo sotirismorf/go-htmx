@@ -31,7 +31,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style type=\"text/css\">\n  .tb-col-desc {\n    display: inline-block;\n    width: 180px;\n    white-space: nowrap;\n    overflow: hidden !important;\n    text-overflow: ellipsis;\n  }\n</style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style type=\"text/css\">\n  .tb-col-desc {\n    display: inline-block;\n    width: 180px;\n    white-space: nowrap;\n    overflow: hidden !important;\n    text-overflow: ellipsis;\n  }\n\n  .table-row:hover {\n    background: #CCC;\n  }\n</style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -43,7 +43,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>Admin Panel</h1><p>This is the admin panel</p><form action=\"/admin/items\" method=\"post\"><label for=\"name\">Name</label> <input type=\"text\" id=\"name\" name=\"name\"><br><label for=\"description\">Description</label> <input type=\"text\" id=\"description\" name=\"description\"><br><input type=\"submit\" value=\"Submit\"> <select name=\"author\" id=\"cars\"><option disabled selected value>Author</option> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form action=\"/admin/items\" method=\"post\"><label for=\"name\">Name</label> <input type=\"text\" id=\"name\" name=\"name\"><br><label for=\"description\">Description</label> <input type=\"text\" id=\"description\" name=\"description\"><br><input type=\"submit\" value=\"Submit\"> <select name=\"author\" id=\"cars\"><option disabled selected value>Author</option> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -55,7 +55,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(int(author.ID)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 36, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 38, Col: 48}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -68,7 +68,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(author.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 36, Col: 64}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 38, Col: 64}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -79,12 +79,12 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></form><ul></ul><table><tr><th>Name</th><th>Description</th><th>Authors</th></tr>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</select></form><h1>Items</h1><table><tr><th>Name</th><th>Description</th><th>Authors</th></tr>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, item := range items {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr><td><a href=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr class=\"table-row\"><td><a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -100,7 +100,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 51, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 53, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -114,7 +114,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(*item.Description)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 56, Col: 25}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 58, Col: 25}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -140,9 +140,13 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 					var templ_7745c5c3_Var7 string
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(author.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 66, Col: 18}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 68, Col: 20}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -154,7 +158,20 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 					}
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</td></tr>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</td><td><button hx-delete=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var8 string
+			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs("/admin/items/" + strconv.Itoa(int(item.Id)))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.items.templ`, Line: 77, Col: 62}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest .table-row\">delete</button></td></tr>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

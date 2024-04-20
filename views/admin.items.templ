@@ -1,15 +1,15 @@
 package views
 
 import (
-"strconv"
+	"strconv"
 
-"github.com/sotirismorf/go-htmx/schema"
-"github.com/sotirismorf/go-htmx/models"
-"github.com/sotirismorf/go-htmx/components"
+	"github.com/sotirismorf/go-htmx/schema"
+	"github.com/sotirismorf/go-htmx/models"
+	"github.com/sotirismorf/go-htmx/components"
 )
 
 templ AdminItems(items []models.ItemData, authors []schema.Author) {
-<style type="text/css">
+	<style type="text/css">
   .tb-col-desc {
     display: inline-block;
     width: 180px;
@@ -17,55 +17,70 @@ templ AdminItems(items []models.ItemData, authors []schema.Author) {
     overflow: hidden !important;
     text-overflow: ellipsis;
   }
-</style>
-@components.NavigationBar()
-@components.AdminSidebar()
-<h1>Admin Panel</h1>
-<p>This is the admin panel</p>
-<form action="/admin/items" method="post">
-  <label for="name">Name</label>
-  <input type="text" id="name" name="name" />
-  <br />
-  <label for="description">Description</label>
-  <input type="text" id="description" name="description" />
-  <br />
-  <input type="submit" value="Submit" />
-  <select name="author" id="cars">
-    <option disabled selected value>Author</option>
-    for _, author := range authors {
-    <option value={ strconv.Itoa(int(author.ID)) }>{ author.Name }</option>
-    }
-  </select>
-</form>
-<ul></ul>
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Authors</th>
-  </tr>
-  for _, item := range items {
-  <tr>
-    <td>
-      <a href={ templ.URL("/admin/items/" + strconv.Itoa(int(item.Id))) }>
-        { item.Name }
-      </a>
-    </td>
-    <td class="tb-col-desc">
-      if item.Description != nil {
-      { *item.Description }
-      } else {
-      -
-      }
-    </td>
-    <td>
-      if item.Authors == nil {
-      -
-      } else {
-      for i, author := range item.Authors {
-      {author.Name}if i < len(item.Authors) - 1 {
-        ,&nbsp } } } </td>
-  </tr>
+
+  .table-row:hover {
+    background: #CCC;
   }
-</table>
+</style>
+	@components.NavigationBar()
+	@components.AdminSidebar()
+	<form action="/admin/items" method="post">
+		<label for="name">Name</label>
+		<input type="text" id="name" name="name"/>
+		<br/>
+		<label for="description">Description</label>
+		<input type="text" id="description" name="description"/>
+		<br/>
+		<input type="submit" value="Submit"/>
+		<select name="author" id="cars">
+			<option disabled selected value>Author</option>
+			for _, author := range authors {
+				<option value={ strconv.Itoa(int(author.ID)) }>{ author.Name }</option>
+			}
+		</select>
+	</form>
+  <h1>Items</h1>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Authors</th>
+		</tr>
+		for _, item := range items {
+			<tr class="table-row">
+				<td>
+					<a href={ templ.URL("/admin/items/" + strconv.Itoa(int(item.Id))) }>
+						{ item.Name }
+					</a>
+				</td>
+				<td class="tb-col-desc">
+					if item.Description != nil {
+						{ *item.Description }
+					} else {
+						-
+					}
+				</td>
+				<td>
+					if item.Authors == nil {
+						-
+					} else {
+						for i, author := range item.Authors {
+							{ author.Name }
+							if i < len(item.Authors) - 1 {
+								,&nbsp 
+							}
+						}
+					}
+				</td>
+				<td>
+					<button
+						hx-delete={ "/admin/items/" + strconv.Itoa(int(item.Id)) }
+						hx-target="closest .table-row"
+					>
+						delete
+					</button>
+				</td>
+			</tr>
+		}
+	</table>
 }

@@ -24,8 +24,8 @@ CREATE TABLE publishers (
 CREATE TABLE item_has_author(
     item_id BIGSERIAL NOT NULL,
     author_id BIGSERIAL NOT NULL,
-    FOREIGN KEY (item_id) REFERENCES items(id),
-    FOREIGN KEY (author_id) REFERENCES authors(id),
+    FOREIGN KEY (item_id) REFERENCES items(id) on delete cascade,
+    FOREIGN KEY (author_id) REFERENCES authors(id) on delete cascade,
     UNIQUE (item_id, author_id)
 );
 

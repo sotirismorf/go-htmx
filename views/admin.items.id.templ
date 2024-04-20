@@ -1,28 +1,90 @@
 package views
 
 import (
-"github.com/sotirismorf/go-htmx/models"
-"github.com/sotirismorf/go-htmx/components"
+	"strconv"
+
+	"github.com/sotirismorf/go-htmx/models"
+	"github.com/sotirismorf/go-htmx/components"
 )
 
 templ AdminSingleItem(item models.ItemData) {
-@components.NavigationBar()
-@components.AdminSidebar()
-<p><a href="/admin/items">&lt Items</a></p>
-<h1>{ item.Name }</h1>
-<p><b>Name: </b>{ item.Name }</p>
-<p><b>Description: </b>
-  if item.Description != nil {
-  { *item.Description }
-  } else {
-  -
-  }
-</p>
-<p><b>Authors: </b>
-  if item.Authors == nil {
-  -
-  } else {
-  for i, author := range item.Authors {
-  {author.Name}if i < len(item.Authors) - 1 {
-    ,&nbsp } } } </p>
+	@components.NavigationBar()
+	@components.AdminSidebar()
+	<p><a href="/admin/items">&lt Items</a></p>
+	<h1>{ item.Name }</h1>
+	@SingleItemAttributes(item)
+}
+
+templ SingleItemAttributes(item models.ItemData) {
+	<div id="attributes">
+		<p>
+			<b>Name: </b>
+			<span id="test-test">{ item.Name }</span>
+		</p>
+		<p>
+			<b>Description: </b>
+			if item.Description != nil {
+				{ *item.Description }
+			} else {
+				-
+			}
+		</p>
+		<p>
+			<b>Authors: </b>
+			if item.Authors == nil {
+				-
+			} else {
+				for i, author := range item.Authors {
+					{ author.Name }
+					if i < len(item.Authors) - 1 {
+						,&nbsp 
+					}
+				}
+			}
+		</p>
+		<button
+			hx-get={ "/htmx/admin/items/" + strconv.FormatInt(item.Id, 10) + "/edit" }
+			hx-target="#attributes"
+		>edit</button>
+	</div>
+}
+
+templ SingleItemAttributesEdit(item models.ItemData) {
+	<form>
+		<p>
+			<b>Name: </b>
+			<input type="text" name="name" value={ item.Name }/>
+		</p>
+		<p>
+			<b>Description: </b>
+			if item.Description != nil {
+				<textarea>
+					{ *item.Description }
+				</textarea>
+			} else {
+				-
+			}
+		</p>
+		<p>
+			<b>Authors: </b>
+			if item.Authors == nil {
+				-
+			} else {
+				for i, author := range item.Authors {
+					{ author.Name }
+					if i < len(item.Authors) - 1 {
+						,&nbsp 
+					}
+				}
+			}
+		</p>
+		<button
+			hx-get={ "/htmx/admin/items/" + strconv.FormatInt(item.Id, 10) + "/cancel" }
+			hx-target="#attributes"
+		>cancel</button>
+		<button
+			hx-post={ "/htmx/admin/items/" + strconv.FormatInt(item.Id, 10) }
+			hx-target="#attributes"
+		>submit</button>
+	</form>
 }

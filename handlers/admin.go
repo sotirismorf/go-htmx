@@ -36,12 +36,12 @@ func AdminHandler(c echo.Context) error {
 func AdminItemsHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	items, err := db.Queries.ListItemsWithAuthors(ctx)
+	items, err := db.Queries.SelectItemsWithAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	authors, err := db.Queries.ListAuthors(ctx)
+	authors, err := db.Queries.SelectAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -67,38 +67,6 @@ func AdminItemsHandler(c echo.Context) error {
   view := views.AdminItems(itemsGenerated, authors)
 
 	return Render(c, http.StatusOK, views.BaseLayout("Admin Panel - Items", view))
-}
-
-func AdminSingleItemHandler(c echo.Context) error {
-	ctx := context.Background()
-
-	paramItemId := c.Param("id")
-	id, err := strconv.Atoi(paramItemId)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	item, err := db.Queries.ListSingleItemWithAuthors(ctx,int64(id))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	i := models.ItemData{}
-
-	i.Id = item.ID
-	i.Name = item.Name
-	if item.Description != nil {
-		i.Description = item.Description
-	}
-	if item.Authors != nil {
-		authors := []models.Author{}
-		json.Unmarshal([]byte(item.Authors), &authors)
-		i.Authors = authors
-	}
-
-  view := views.AdminSingleItem(i)
-
-	return Render(c, http.StatusOK, views.BaseLayout(i.Name, view))
 }
 
 func AdminCreateItemHandler(c echo.Context) error {

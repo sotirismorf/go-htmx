@@ -1,0 +1,55 @@
+package views
+
+import (
+	"strconv"
+
+	"github.com/sotirismorf/go-htmx/schema"
+	"github.com/sotirismorf/go-htmx/components"
+)
+
+templ AdminAuthors(authors []schema.Author) {
+	<style type="text/css">
+  .tb-col-desc {
+    display: inline-block;
+    width: 180px;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
+
+  .table-row:hover {
+    background: #CCC;
+  }
+</style>
+	@components.NavigationBar()
+	@components.AdminSidebar()
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Authors</th>
+		</tr>
+		for _, item := range authors {
+			<tr class="table-row">
+				<td>
+					{ item.Name }
+				</td>
+				<td class="tb-col-desc">
+					if item.Bio != nil {
+						{ *item.Bio }
+					} else {
+						-
+					}
+				</td>
+				<td>
+					<button
+						hx-delete={ "/admin/items/" + strconv.Itoa(int(item.ID)) }
+						hx-target="closest .table-row"
+					>
+						delete
+					</button>
+				</td>
+			</tr>
+		}
+	</table>
+}

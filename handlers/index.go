@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	// "github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/views"
 )
@@ -15,12 +14,12 @@ func HomeHandler(c echo.Context) error {
 
 	ctx := context.Background()
 
-	data, err := db.Queries.ListAuthors(ctx)
+	data, err := db.Queries.SelectAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	items, err := db.Queries.ListItemsWithAuthors(ctx)
+	items, err := db.Queries.SelectItemsWithAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
