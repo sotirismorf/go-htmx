@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/db"
@@ -23,15 +22,18 @@ func AdminAuthorsHandler(c echo.Context) error {
 	return Render(c, http.StatusOK, views.BaseLayout("Admin Panel / Authors", view))
 }
 
-func AdminSingleAuthorDelete(c echo.Context) error {
-	paramItemId := c.Param("id")
+type ParamContainsID struct {
+	ID int64 `param:"id"`
+}
 
-	id, err := strconv.ParseInt(paramItemId, 10, 64)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
+func AdminSingleAuthorDelete(c echo.Context) error {
+	var param ParamContainsID
+
+	err := c.Bind(&param); if err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	err = db.Queries.DeleteAuthor(context.Background(), id)
+	err = db.Queries.DeleteAuthor(context.Background(), param.ID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}

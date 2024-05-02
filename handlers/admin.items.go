@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/db"
@@ -37,14 +36,14 @@ func SingleItemPopulated(id int64) (models.ItemData, error) {
 }
 
 func AdminSingleItemHandler(c echo.Context) error {
-	paramItemId := c.Param("id")
+	var param ParamContainsID
 
-	id, err := strconv.ParseInt(paramItemId, 10, 64)
+	err := c.Bind(&param)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	i, err := SingleItemPopulated(id)
+	i, err := SingleItemPopulated(param.ID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -55,14 +54,14 @@ func AdminSingleItemHandler(c echo.Context) error {
 }
 
 func AdminSingleItemDelete(c echo.Context) error {
-	paramItemId := c.Param("id")
+	var param ParamContainsID
 
-	id, err := strconv.ParseInt(paramItemId, 10, 64)
+	err := c.Bind(&param)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	err = db.Queries.DeleteItem(context.Background(), id)
+	err = db.Queries.DeleteItem(context.Background(), param.ID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -71,14 +70,14 @@ func AdminSingleItemDelete(c echo.Context) error {
 }
 
 func HTMXAdminItemsOneEdit(c echo.Context) error {
-	paramItemId := c.Param("id")
+	var param ParamContainsID
 
-	id, err := strconv.ParseInt(paramItemId, 10, 64)
+	err := c.Bind(&param)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	i, err := SingleItemPopulated(id)
+	i, err := SingleItemPopulated(param.ID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -89,14 +88,14 @@ func HTMXAdminItemsOneEdit(c echo.Context) error {
 }
 
 func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
-	paramItemId := c.Param("id")
+	var param ParamContainsID
 
-	id, err := strconv.ParseInt(paramItemId, 10, 64)
+	err := c.Bind(&param)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	i, err := SingleItemPopulated(id)
+	i, err := SingleItemPopulated(param.ID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
