@@ -4,7 +4,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sotirismorf/go-htmx/db"
-	"github.com/sotirismorf/go-htmx/handlers"
+	"github.com/sotirismorf/go-htmx/server"
+	"github.com/sotirismorf/go-htmx/server/authors"
 )
 
 func main() {
@@ -22,12 +23,12 @@ func main() {
 	app.GET ("/admin", handlers.AdminHandler)
 	app.GET ("/admin/items", handlers.AdminItemsHandler)
 	app.POST("/admin/items", handlers.AdminCreateItemHandler)
-	app.GET ("/admin/authors", handlers.AdminAuthorsHandler)
+	app.GET ("/admin/authors", authors.AdminAuthorsHandler)
 
   app.GET   ("/admin/items/:id", handlers.AdminSingleItemHandler)
   app.POST  ("/admin/items/:id", handlers.AdminSingleItemHandler)
   app.DELETE("/admin/items/:id", handlers.AdminSingleItemDelete)
-  app.DELETE("/admin/authors/:id", handlers.AdminSingleAuthorDelete)
+  app.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)
 
   app.GET ("/htmx/admin/items/:id/edit", handlers.HTMXAdminItemsOneEdit)
   app.GET ("/htmx/admin/items/:id/cancel", handlers.HTMXAdminItemsOneCancelEdit)
