@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/views"
-	"github.com/sotirismorf/go-htmx/server"
 	"github.com/sotirismorf/go-htmx/views/admin/authors"
 )
 
@@ -27,7 +27,8 @@ func AdminAuthorsHandler(c echo.Context) error {
 func AdminSingleAuthorDelete(c echo.Context) error {
 	var param handlers.ParamContainsID
 
-	err := c.Bind(&param); if err != nil {
+	err := c.Bind(&param)
+	if err != nil {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 

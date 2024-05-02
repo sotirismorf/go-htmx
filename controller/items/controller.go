@@ -1,4 +1,4 @@
-package handlers
+package items
 
 import (
 	"context"
@@ -6,11 +6,49 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
-	"github.com/sotirismorf/go-htmx/views/admin/items"
 	"github.com/sotirismorf/go-htmx/views"
+	"github.com/sotirismorf/go-htmx/views/admin/items"
 )
+
+
+func AdminItemsHandler(c echo.Context) error {
+	ctx := context.Background()
+
+	itemData, err := db.Queries.SelectItemsWithAuthors(ctx)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	authors, err := db.Queries.SelectAuthors(ctx)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	itemsGenerated := []models.ItemData{}
+
+	for _, i := range itemData {
+		item := models.ItemData{}
+
+		item.Id = i.ID
+		item.Name = i.Name
+		if i.Description != nil {
+			item.Description = i.Description
+		}
+		if i.Authors != nil {
+			authors := []models.Author{}
+			json.Unmarshal([]byte(i.Authors), &authors)
+			item.Authors = authors
+		}
+		itemsGenerated = append(itemsGenerated, item)
+	}
+
+	view := items.AdminItems(itemsGenerated, authors)
+
+	return handlers.Render(c, http.StatusOK, views.BaseLayout("Admin Panel - Items", view))
+}
 
 func SingleItemPopulated(id int64) (models.ItemData, error) {
 	ctx := context.Background()
@@ -37,7 +75,7 @@ func SingleItemPopulated(id int64) (models.ItemData, error) {
 }
 
 func AdminSingleItemHandler(c echo.Context) error {
-	var param ParamContainsID
+	var param handlers.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -51,11 +89,11 @@ func AdminSingleItemHandler(c echo.Context) error {
 
 	view := items.AdminSingleItem(i)
 
-	return Render(c, http.StatusOK, views.BaseLayout(i.Name, view))
+	return handlers.Render(c, http.StatusOK, views.BaseLayout(i.Name, view))
 }
 
 func AdminSingleItemDelete(c echo.Context) error {
-	var param ParamContainsID
+	var param handlers.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -71,7 +109,7 @@ func AdminSingleItemDelete(c echo.Context) error {
 }
 
 func HTMXAdminItemsOneEdit(c echo.Context) error {
-	var param ParamContainsID
+	var param handlers.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -85,11 +123,11 @@ func HTMXAdminItemsOneEdit(c echo.Context) error {
 
 	view := items.SingleItemAttributesEdit(i)
 
-	return Render(c, http.StatusOK, view)
+	return handlers.Render(c, http.StatusOK, view)
 }
 
 func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
-	var param ParamContainsID
+	var param handlers.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -103,5 +141,5 @@ func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
 
 	view := items.SingleItemAttributes(i)
 
-	return Render(c, http.StatusOK, view)
+	return handlers.Render(c, http.StatusOK, view)
 }

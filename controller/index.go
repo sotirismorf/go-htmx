@@ -11,7 +11,6 @@ import (
 	"github.com/sotirismorf/go-htmx/views"
 )
 
-
 type ParamContainsID struct {
 	ID int64 `param:"id"`
 }
@@ -22,7 +21,6 @@ func Render(ctx echo.Context, statusCode int, t templ.Component) error {
 	ctx.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
 	return t.Render(ctx.Request().Context(), ctx.Response().Writer)
 }
-
 
 func HomeHandler(c echo.Context) error {
 
@@ -46,7 +44,7 @@ func HomeHandler(c echo.Context) error {
 	authors := []author{}
 	json.Unmarshal([]byte(items[0].Authors), &authors)
 
-  view := views.Index(data)
+	view := views.Index(data)
 
 	return Render(c, http.StatusOK, views.BaseLayout("Home", view))
 }

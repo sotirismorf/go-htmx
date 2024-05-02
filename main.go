@@ -4,8 +4,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sotirismorf/go-htmx/db"
-	"github.com/sotirismorf/go-htmx/server"
-	"github.com/sotirismorf/go-htmx/server/authors"
+	"github.com/sotirismorf/go-htmx/controller"
+	"github.com/sotirismorf/go-htmx/controller/authors"
+	"github.com/sotirismorf/go-htmx/controller/items"
 )
 
 func main() {
@@ -20,18 +21,17 @@ func main() {
 
 	app.GET("/", handlers.HomeHandler)
 
-	app.GET ("/admin", handlers.AdminHandler)
-	app.GET ("/admin/items", handlers.AdminItemsHandler)
-	app.POST("/admin/items", handlers.AdminCreateItemHandler)
-	app.GET ("/admin/authors", authors.AdminAuthorsHandler)
+	app.GET("/admin", handlers.AdminHandler)
+	app.GET("/admin/items", items.AdminItemsHandler)
+	app.POST("/admin/items", items.AdminCreateItemHandler)
+	app.GET("/admin/items/:id", items.AdminSingleItemHandler)
+	app.POST("/admin/items/:id", items.AdminSingleItemHandler)
+	app.DELETE("/admin/items/:id", items.AdminSingleItemDelete)
+	app.GET("/htmx/admin/items/:id/edit", items.HTMXAdminItemsOneEdit)
+	app.GET("/htmx/admin/items/:id/cancel", items.HTMXAdminItemsOneCancelEdit)
 
-  app.GET   ("/admin/items/:id", handlers.AdminSingleItemHandler)
-  app.POST  ("/admin/items/:id", handlers.AdminSingleItemHandler)
-  app.DELETE("/admin/items/:id", handlers.AdminSingleItemDelete)
-  app.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)
-
-  app.GET ("/htmx/admin/items/:id/edit", handlers.HTMXAdminItemsOneEdit)
-  app.GET ("/htmx/admin/items/:id/cancel", handlers.HTMXAdminItemsOneCancelEdit)
+	app.GET("/admin/authors", authors.AdminAuthorsHandler)
+	app.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)
 
 	app.GET("/admin/login", handlers.LoginHandler)
 
