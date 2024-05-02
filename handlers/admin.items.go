@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
+	"github.com/sotirismorf/go-htmx/views/admin/items"
 	"github.com/sotirismorf/go-htmx/views"
 )
 
@@ -48,7 +49,7 @@ func AdminSingleItemHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	view := views.AdminSingleItem(i)
+	view := items.AdminSingleItem(i)
 
 	return Render(c, http.StatusOK, views.BaseLayout(i.Name, view))
 }
@@ -82,7 +83,7 @@ func HTMXAdminItemsOneEdit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	view := views.SingleItemAttributesEdit(i)
+	view := items.SingleItemAttributesEdit(i)
 
 	return Render(c, http.StatusOK, view)
 }
@@ -100,7 +101,7 @@ func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	view := views.SingleItemAttributes(i)
+	view := items.SingleItemAttributes(i)
 
 	return Render(c, http.StatusOK, view)
 }

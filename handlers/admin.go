@@ -12,6 +12,7 @@ import (
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/schema"
 	"github.com/sotirismorf/go-htmx/views"
+	"github.com/sotirismorf/go-htmx/views/admin/items"
 )
 
 // This custom Render replaces Echo's echo.Context.Render() with templ's templ.Component.Render().
@@ -36,7 +37,7 @@ func AdminHandler(c echo.Context) error {
 func AdminItemsHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	items, err := db.Queries.SelectItemsWithAuthors(ctx)
+	itemData, err := db.Queries.SelectItemsWithAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -48,7 +49,7 @@ func AdminItemsHandler(c echo.Context) error {
 
 	itemsGenerated := []models.ItemData{}
 
-	for _, i := range items {
+	for _, i := range itemData {
 		item := models.ItemData{}
 
 		item.Id = i.ID
@@ -64,7 +65,7 @@ func AdminItemsHandler(c echo.Context) error {
 		itemsGenerated = append(itemsGenerated, item)
 	}
 
-  view := views.AdminItems(itemsGenerated, authors)
+  view := items.AdminItems(itemsGenerated, authors)
 
 	return Render(c, http.StatusOK, views.BaseLayout("Admin Panel - Items", view))
 }

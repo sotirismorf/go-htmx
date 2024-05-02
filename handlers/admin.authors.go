@@ -7,17 +7,18 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/views"
+	"github.com/sotirismorf/go-htmx/views/admin/authors"
 )
 
 func AdminAuthorsHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	authors, err := db.Queries.SelectAuthors(ctx)
+	authorData, err := db.Queries.SelectAuthors(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	view := views.AdminAuthors(authors)
+	view := authors.AdminAuthors(authorData)
 
 	return Render(c, http.StatusOK, views.BaseLayout("Admin Panel / Authors", view))
 }
