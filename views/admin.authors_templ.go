@@ -85,9 +85,9 @@ func AdminAuthors(authors []schema.Author) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs("/admin/items/" + strconv.Itoa(int(item.ID)))
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs("/admin/authors/" + strconv.Itoa(int(item.ID)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.authors.templ`, Line: 46, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin.authors.templ`, Line: 46, Col: 64}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {

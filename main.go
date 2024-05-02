@@ -27,6 +27,7 @@ func main() {
   app.GET   ("/admin/items/:id", handlers.AdminSingleItemHandler)
   app.POST  ("/admin/items/:id", handlers.AdminSingleItemHandler)
   app.DELETE("/admin/items/:id", handlers.AdminSingleItemDelete)
+  app.DELETE("/admin/authors/:id", handlers.AdminSingleAuthorDelete)
 
   app.GET ("/htmx/admin/items/:id/edit", handlers.HTMXAdminItemsOneEdit)
   app.GET ("/htmx/admin/items/:id/cancel", handlers.HTMXAdminItemsOneCancelEdit)

@@ -43,7 +43,7 @@ templ AdminAuthors(authors []schema.Author) {
 				</td>
 				<td>
 					<button
-						hx-delete={ "/admin/items/" + strconv.Itoa(int(item.ID)) }
+						hx-delete={ "/admin/authors/" + strconv.Itoa(int(item.ID)) }
 						hx-target="closest .table-row"
 					>
 						delete
