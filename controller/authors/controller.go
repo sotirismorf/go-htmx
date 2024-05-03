@@ -21,7 +21,7 @@ func AdminAuthorsHandler(c echo.Context) error {
 
 	view := authors.AdminAuthors(authorData)
 
-	return handlers.Render(c, http.StatusOK, views.BaseLayout("Admin Panel / Authors", view))
+	return handlers.Render(c, http.StatusOK, views.AdminLayout("Authors", view))
 }
 
 func AdminSingleAuthorDelete(c echo.Context) error {

@@ -9,7 +9,7 @@ import (
 	"github.com/sotirismorf/go-htmx/schema"
 )
 
-type FormItem struct {
+type formData struct {
 	Name        string `form:"name"`
 	Description string `form:"description"`
 	AuthorID    int64  `form:"author"`
@@ -18,7 +18,7 @@ type FormItem struct {
 func AdminCreateItemHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	var formData FormItem
+	var formData formData
 
 	err := c.Bind(&formData)
 	if err != nil {

@@ -1,0 +1,39 @@
+package components
+
+import (
+	"strconv"
+
+	"github.com/sotirismorf/go-htmx/schema"
+)
+
+templ FormCreateItem(authors []schema.Author) {
+	<form action="/admin/items" method="post">
+		<label for="name">Name</label>
+		<input type="text" id="name" name="name"/>
+		<br/>
+		<label for="description">Description</label>
+		<input type="text" id="description" name="description"/>
+		<br/>
+		<label for="author">Author</label>
+		<select name="author" id="cars">
+			<option disabled selected value>Author</option>
+			for _, author := range authors {
+				<option value={ strconv.Itoa(int(author.ID)) }>{ author.Name }</option>
+			}
+		</select>
+		<br/>
+		<input type="submit" value="Submit"/>
+	</form>
+}
+
+templ FormCreateAuthor() {
+	<form action="/admin/authors" method="post">
+		<label for="name">Name</label>
+		<input type="text" id="name" name="name"/>
+		<br/>
+		<label for="bio">Biography</label>
+		<input type="text" id="bio" name="bio"/>
+		<br/>
+		<input type="submit" value="Submit"/>
+	</form>
+}

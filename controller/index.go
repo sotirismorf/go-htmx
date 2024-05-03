@@ -46,5 +46,5 @@ func HomeHandler(c echo.Context) error {
 
 	view := views.Index(data)
 
-	return Render(c, http.StatusOK, views.BaseLayout("Home", view))
+	return Render(c, http.StatusOK, views.AdminLayout("Home", view))
 }

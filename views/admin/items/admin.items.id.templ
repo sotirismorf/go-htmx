@@ -4,13 +4,13 @@ import (
 	"strconv"
 
 	"github.com/sotirismorf/go-htmx/models"
-	"github.com/sotirismorf/go-htmx/components"
 )
 
 templ AdminSingleItem(item models.ItemData) {
-	@components.NavigationBar()
-	@components.AdminSidebar()
-	<p><a href="/admin/items">&lt Items</a></p>
+	<h1 class="text-4xl font-bold">
+		<a class="hover:underline" href="/admin/items">Items</a>
+    <span>/ { item.Name }</span>
+	</h1>
 	<h1>{ item.Name }</h1>
 	@SingleItemAttributes(item)
 }

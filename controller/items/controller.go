@@ -13,7 +13,6 @@ import (
 	"github.com/sotirismorf/go-htmx/views/admin/items"
 )
 
-
 func AdminItemsHandler(c echo.Context) error {
 	ctx := context.Background()
 
@@ -47,7 +46,7 @@ func AdminItemsHandler(c echo.Context) error {
 
 	view := items.AdminItems(itemsGenerated, authors)
 
-	return handlers.Render(c, http.StatusOK, views.BaseLayout("Admin Panel - Items", view))
+	return handlers.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }
 
 func SingleItemPopulated(id int64) (models.ItemData, error) {
@@ -89,7 +88,7 @@ func AdminSingleItemHandler(c echo.Context) error {
 
 	view := items.AdminSingleItem(i)
 
-	return handlers.Render(c, http.StatusOK, views.BaseLayout(i.Name, view))
+	return handlers.Render(c, http.StatusOK, views.AdminLayout(i.Name, view))
 }
 
 func AdminSingleItemDelete(c echo.Context) error {

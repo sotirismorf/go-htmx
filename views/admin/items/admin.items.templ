@@ -9,58 +9,37 @@ import (
 )
 
 templ AdminItems(items []models.ItemData, authors []schema.Author) {
-	<style type="text/css">
-  .tb-col-desc {
-    display: inline-block;
-    width: 180px;
-    white-space: nowrap;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-  }
-
-  .table-row:hover {
-    background: #CCC;
-  }
-</style>
-	@components.NavigationBar()
-	@components.AdminSidebar()
-	<form action="/admin/items" method="post">
-		<label for="name">Name</label>
-		<input type="text" id="name" name="name"/>
-		<br/>
-		<label for="description">Description</label>
-		<input type="text" id="description" name="description"/>
-		<br/>
-		<input type="submit" value="Submit"/>
-		<select name="author" id="cars">
-			<option disabled selected value>Author</option>
-			for _, author := range authors {
-				<option value={ strconv.Itoa(int(author.ID)) }>{ author.Name }</option>
+	<h1 class="text-4xl font-bold">Items</h1>
+	@components.Table() {
+		<tr class="flex">
+			@components.TableHeader() {
+				Name 
 			}
-		</select>
-	</form>
-  <h1>Items</h1>
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Authors</th>
+			@components.TableHeader() {
+				Description 
+			}
+			@components.TableHeader() {
+				Authors
+			}
+			@components.TableHeader()
 		</tr>
 		for _, item := range items {
-			<tr class="table-row">
-				<td>
-					<a href={ templ.URL("/admin/items/" + strconv.Itoa(int(item.Id))) }>
+			@components.TableRow() {
+				@components.TableData() {
+					<a
+						href={ templ.URL("/admin/items/" + strconv.Itoa(int(item.Id))) }
+					>
 						{ item.Name }
 					</a>
-				</td>
-				<td class="tb-col-desc">
+				}
+				@components.TableData() {
 					if item.Description != nil {
 						{ *item.Description }
 					} else {
 						-
 					}
-				</td>
-				<td>
+				}
+				@components.TableData() {
 					if item.Authors == nil {
 						-
 					} else {
@@ -71,16 +50,16 @@ templ AdminItems(items []models.ItemData, authors []schema.Author) {
 							}
 						}
 					}
-				</td>
-				<td>
+				}
+				@components.TableData() {
 					<button
 						hx-delete={ "/admin/items/" + strconv.Itoa(int(item.Id)) }
-						hx-target="closest .table-row"
+						hx-target="closest tr"
 					>
 						delete
 					</button>
-				</td>
-			</tr>
+				}
+			}
 		}
-	</table>
+	}
 }

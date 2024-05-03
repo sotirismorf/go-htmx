@@ -1,5 +1,9 @@
 package views
 
+import (
+	"github.com/sotirismorf/go-htmx/components"
+)
+
 templ Base(title string) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="dark">
@@ -7,12 +11,23 @@ templ Base(title string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
 			<title>{ title } - Demo</title>
 		</head>
 		<body>
-			<main>
+			<main class="bg-neutral-900 text-neutral-200 min-h-screen">
 				{ children... }
 			</main>
 		</body>
 	</html>
+}
+
+templ AdminLayout(title string, cmp templ.Component) {
+	@Base(title) {
+		@components.NavigationBar()
+		@components.AdminSidebar()
+		<div class="max-w-screen-lg mx-auto mt-12">
+			@cmp
+		</div>
+	}
 }

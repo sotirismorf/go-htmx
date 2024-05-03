@@ -10,11 +10,11 @@ import (
 func LoginHandler(c echo.Context) error {
 	view := views.AdminLogin()
 
-	return Render(c, http.StatusOK, views.BaseLayout("Home", view))
+	return Render(c, http.StatusOK, views.AdminLayout("Home", view))
 }
 
 func AdminHandler(c echo.Context) error {
 	view := views.Admin()
 
-	return Render(c, http.StatusOK, views.BaseLayout("Admin Panel", view))
+	return Render(c, http.StatusOK, views.AdminLayout("Admin Panel", view))
 }

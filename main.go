@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/controller/authors"
 	"github.com/sotirismorf/go-htmx/controller/items"
+	"github.com/sotirismorf/go-htmx/db"
 )
 
 func main() {
@@ -32,6 +32,7 @@ func main() {
 
 	app.GET("/admin/authors", authors.AdminAuthorsHandler)
 	app.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)
+	app.POST("/admin/authors", authors.Create)
 
 	app.GET("/admin/login", handlers.LoginHandler)
 

@@ -1,18 +1,48 @@
 package components
 
 templ NavigationBar() {
-	<div>
-		<a href="/">Home</a>
-		<a href="/admin">Admin</a>
-		<a href="/admin/login">Login</a>
+	<div class="border-white border-solid border-b h-12 text-2xl flex items-center justify-center">
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/">Home</a>
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/admin">About</a>
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/admin">Admin</a>
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/admin/login">Login</a>
 	</div>
 }
 
 templ AdminSidebar() {
-  <h3>Collection Types</h3>
-	<ul>
-		<li><a href="/admin/items">Items</a></li>
-		<li><a href="/admin/authors">Authors</a></li>
-		<li><a href="/admin/items">Groups</a></li>
-	</ul>
+	<div
+		class="border-b border-r border-t border-solid border-white
+           max-w-40 absolute mt-24"
+	>
+		<h2 class="text-xl">Collection Types</h2>
+		<ul>
+			<li><a href="/admin/items">Items</a></li>
+			<li><a href="/admin/authors">Authors</a></li>
+			<li><a href="/admin/items">Groups</a></li>
+		</ul>
+	</div>
+}
+
+templ Table() {
+	<table class="table-fixed w-full mt-9">
+		{ children... }
+	</table>
+}
+
+templ TableRow() {
+	<tr class="hover:bg-fuchsia-950 flex">
+		{ children... }
+	</tr>
+}
+
+templ TableData() {
+	<td class="flex-1 w-max border-t border-t-neutral-600 whitespace-nowrap overflow-hidden overflow-ellipsis inline-block">
+		{ children... }
+	</td>
+}
+
+templ TableHeader() {
+	<th class="flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis inline-block font-bold">
+		{ children... }
+	</th>
 }

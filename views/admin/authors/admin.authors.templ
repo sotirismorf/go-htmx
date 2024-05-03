@@ -8,48 +8,38 @@ import (
 )
 
 templ AdminAuthors(authors []schema.Author) {
-	<style type="text/css">
-  .tb-col-desc {
-    display: inline-block;
-    width: 180px;
-    white-space: nowrap;
-    overflow: hidden !important;
-    text-overflow: ellipsis;
-  }
-
-  .table-row:hover {
-    background: #CCC;
-  }
-</style>
-	@components.NavigationBar()
-	@components.AdminSidebar()
-	<table>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Authors</th>
+	<h1 class="text-4xl font-bold">Authors</h1>
+	@components.Table() {
+		<tr class="flex">
+			@components.TableHeader() {
+				Name 
+			}
+			@components.TableHeader() {
+				Bio 
+			}
+			@components.TableHeader()
 		</tr>
 		for _, item := range authors {
-			<tr class="table-row">
-				<td>
+			@components.TableRow() {
+				@components.TableData() {
 					{ item.Name }
-				</td>
-				<td class="tb-col-desc">
+				}
+				@components.TableData() {
 					if item.Bio != nil {
 						{ *item.Bio }
 					} else {
 						-
 					}
-				</td>
-				<td>
+				}
+				@components.TableData() {
 					<button
 						hx-delete={ "/admin/authors/" + strconv.Itoa(int(item.ID)) }
-						hx-target="closest .table-row"
+						hx-target="closest tr"
 					>
 						delete
 					</button>
-				</td>
-			</tr>
+				}
+			}
 		}
-	</table>
+	}
 }
