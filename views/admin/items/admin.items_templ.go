@@ -31,7 +31,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"text-4xl font-bold\">Items</h1>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex-row items-stretch\"><h1 class=\"text-4xl font-bold inline-block\">Items</h1><a href=\"/admin/items/create\" class=\"float-right bord text-center border-white border-solid border\">Create new</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -139,7 +139,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 						var templ_7745c5c3_Var9 string
 						templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(item.Name)
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 32, Col: 17}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 35, Col: 17}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 						if templ_7745c5c3_Err != nil {
@@ -172,7 +172,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 							var templ_7745c5c3_Var11 string
 							templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(*item.Description)
 							if templ_7745c5c3_Err != nil {
-								return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 37, Col: 25}
+								return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 40, Col: 25}
 							}
 							_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 							if templ_7745c5c3_Err != nil {
@@ -213,7 +213,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 								var templ_7745c5c3_Var13 string
 								templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(author.Name)
 								if templ_7745c5c3_Err != nil {
-									return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 47, Col: 20}
+									return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 50, Col: 20}
 								}
 								_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 								if templ_7745c5c3_Err != nil {
@@ -257,7 +257,7 @@ func AdminItems(items []models.ItemData, authors []schema.Author) templ.Componen
 						var templ_7745c5c3_Var15 string
 						templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs("/admin/items/" + strconv.Itoa(int(item.Id)))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 56, Col: 62}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/items/admin.items.templ`, Line: 59, Col: 62}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 						if templ_7745c5c3_Err != nil {

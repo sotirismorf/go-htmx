@@ -9,7 +9,10 @@ import (
 )
 
 templ AdminItems(items []models.ItemData, authors []schema.Author) {
-	<h1 class="text-4xl font-bold">Items</h1>
+	<div class="flex-row items-stretch">
+		<h1 class="text-4xl font-bold inline-block">Items</h1>
+		<a href="/admin/items/create" class="float-right bord text-center border-white border-solid border">Create new</a>
+	</div>
 	@components.Table() {
 		<tr class="flex">
 			@components.TableHeader() {

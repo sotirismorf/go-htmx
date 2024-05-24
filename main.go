@@ -23,7 +23,8 @@ func main() {
 
 	app.GET("/admin", handlers.AdminHandler)
 	app.GET("/admin/items", items.AdminItemsHandler)
-	app.POST("/admin/items", items.AdminCreateItemHandler)
+	app.POST("/admin/items/create", items.AdminCreateItemHandler)
+	app.GET("/admin/items/create", items.CreateItemController)
 	app.GET("/admin/items/:id", items.AdminSingleItemHandler)
 	app.POST("/admin/items/:id", items.AdminSingleItemHandler)
 	app.DELETE("/admin/items/:id", items.AdminSingleItemDelete)

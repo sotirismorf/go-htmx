@@ -2,28 +2,44 @@ package components
 
 import (
 	"strconv"
-
-	"github.com/sotirismorf/go-htmx/schema"
 )
 
-templ FormCreateItem(authors []schema.Author) {
-	<form action="/admin/items" method="post">
-		<label for="name">Name</label>
-		<input type="text" id="name" name="name"/>
-		<br/>
-		<label for="description">Description</label>
-		<input type="text" id="description" name="description"/>
-		<br/>
-		<label for="author">Author</label>
-		<select name="author" id="cars">
-			<option disabled selected value>Author</option>
-			for _, author := range authors {
-				<option value={ strconv.Itoa(int(author.ID)) }>{ author.Name }</option>
-			}
-		</select>
-		<br/>
-		<input type="submit" value="Submit"/>
+templ FormCreateItem(authors []SelectOption) {
+	<form action="/admin/items/create" method="post">
+		@InputText("name", "Name")
+		@InputText("description", "Description")
+		@Select("author", "Author", authors)
+		<div>
+			<button type="submit">Submit</button>
+		</div>
 	</form>
+}
+
+type SelectOption struct {
+	Name string
+	ID   int64
+}
+
+templ Select(name string, displayName string, options []SelectOption) {
+	<label for="author">{ displayName }</label>
+	<select class="bg-transparent" name="author" id="cars">
+		<option disabled selected value>Select one</option>
+		for _, option := range options {
+			<option value={ strconv.Itoa(int(option.ID)) }>{ option.Name }</option>
+		}
+	</select>
+}
+
+templ InputText(name string, displayName string) {
+	<div>
+		<label for={ "input-text-" + name }>{ displayName }</label>
+		<input
+			class="bg-transparent"
+			id={ "input-text-" + name }
+			name={ name }
+			type="text"
+		/>
+	</div>
 }
 
 templ FormCreateAuthor() {
