@@ -21,6 +21,16 @@ CREATE TABLE publishers (
   description text
 );
 
+CREATE TYPE filetype AS ENUM ('pdf', 'jpeg', 'png');
+
+CREATE TABLE uploads (
+  id          BIGSERIAL PRIMARY KEY,
+  sum         char(32)  NOT NULL UNIQUE,
+  name        text      NOT NULL,
+  size        INTEGER   NOT NULL,
+  type        filetype  NOT NULL
+);
+
 CREATE TABLE item_has_author(
     item_id BIGSERIAL NOT NULL,
     author_id BIGSERIAL NOT NULL,

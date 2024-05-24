@@ -6,6 +6,7 @@ import (
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/controller/authors"
 	"github.com/sotirismorf/go-htmx/controller/items"
+	"github.com/sotirismorf/go-htmx/controller/uploads"
 	"github.com/sotirismorf/go-htmx/db"
 )
 
@@ -25,9 +26,8 @@ func main() {
 	app.GET("/admin/items", items.AdminItemsHandler)
 	app.POST("/admin/items/create", items.AdminCreateItemHandler)
 	app.GET("/admin/items/create", items.CreateItemController)
-	app.GET("/admin/items/:id", items.AdminSingleItemHandler)
-	app.POST("/admin/items/:id", items.AdminSingleItemHandler)
-	app.DELETE("/admin/items/:id", items.AdminSingleItemDelete)
+	app.GET("/admin/items/:id", items.AdminGetSingleItem)
+	app.DELETE("/admin/items/:id", items.AdminDeleteSingleItem)
 	app.GET("/htmx/admin/items/:id/edit", items.HTMXAdminItemsOneEdit)
 	app.GET("/htmx/admin/items/:id/cancel", items.HTMXAdminItemsOneCancelEdit)
 
@@ -35,6 +35,10 @@ func main() {
 	app.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)
 	app.GET("/admin/authors/create", authors.CreateAuthorForm)
 	app.POST("/admin/authors/create", authors.Create)
+
+	app.GET("/admin/uploads", uploads.AdminGetUploads)
+	app.GET("/admin/uploads/create", uploads.AdminGetUploadForm)
+	app.POST("/admin/uploads/create", uploads.AdminCreateUpload)
 
 	app.GET("/admin/login", handlers.LoginHandler)
 

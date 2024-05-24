@@ -13,11 +13,23 @@ templ FormCreateItem(authors []SelectOption) {
 
 templ FormCreateAuthor() {
 	<form action="/admin/authors/create" method="post">
-    @InputText("name", "Name")
-    @InputText("bio", "Bio")
+		@InputText("name", "Name")
+		@InputText("bio", "Bio")
 		<div>
 			<button type="submit">Submit</button>
 		</div>
 	</form>
 }
 
+templ FormCreateUpload() {
+	<form
+		action="/admin/uploads/create"
+		enctype="multipart/form-data"
+		method="post"
+	>
+		<input type="file" id="input-file" name="file"/>
+		<div>
+			<button type="submit">Submit</button>
+		</div>
+	</form>
+}

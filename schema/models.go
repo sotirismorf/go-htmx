@@ -4,7 +4,53 @@
 
 package schema
 
-import ()
+import (
+	"database/sql/driver"
+	"fmt"
+)
+
+type Filetype string
+
+const (
+	FiletypePdf  Filetype = "pdf"
+	FiletypeJpeg Filetype = "jpeg"
+	FiletypePng  Filetype = "png"
+)
+
+func (e *Filetype) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = Filetype(s)
+	case string:
+		*e = Filetype(s)
+	default:
+		return fmt.Errorf("unsupported scan type for Filetype: %T", src)
+	}
+	return nil
+}
+
+type NullFiletype struct {
+	Filetype Filetype
+	Valid    bool // Valid is true if Filetype is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullFiletype) Scan(value interface{}) error {
+	if value == nil {
+		ns.Filetype, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.Filetype.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullFiletype) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.Filetype), nil
+}
 
 type Author struct {
 	ID   int64
@@ -32,4 +78,12 @@ type Publisher struct {
 	ID          int64
 	Name        string
 	Description *string
+}
+
+type Upload struct {
+	ID   int64
+	Sum  string
+	Name string
+	Size int32
+	Type Filetype
 }
