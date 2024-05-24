@@ -52,7 +52,7 @@ templ Breadcrumb(collectionType string, displayName string) {
 		<h1 class="text-4xl font-bold inline-block">{ displayName }</h1>
 		<a
 			href={ templ.SafeURL("/admin/" + collectionType + "/create") }
-			class="float-right bord text-center border-white border-solid border"
+			class="float-right py-1 px-2 hover:bg-neutral-700 text-center border-white border-solid border rounded-full"
 		>Create new</a>
 	</div>
 }

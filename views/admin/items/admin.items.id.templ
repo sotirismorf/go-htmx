@@ -8,10 +8,9 @@ import (
 
 templ AdminSingleItem(item models.ItemData) {
 	<h1 class="text-4xl font-bold">
-		<a class="hover:underline" href="/admin/items">Items</a>
+		<a class="hover:underline decoration-4" href="/admin/items">Items</a>
     <span>/ { item.Name }</span>
 	</h1>
-	<h1>{ item.Name }</h1>
 	@SingleItemAttributes(item)
 }
 

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/views"
@@ -38,4 +39,23 @@ func AdminSingleAuthorDelete(c echo.Context) error {
 	}
 
 	return c.NoContent(http.StatusOK)
+}
+
+func CreateAuthorForm(c echo.Context) error {
+	ctx := context.Background()
+
+	authors, err := db.Queries.SelectAuthors(ctx)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	options := []components.SelectOption{}
+
+	for _, v := range authors {
+		options = append(options, components.SelectOption{ID: v.ID, Name: v.Name})
+	}
+
+	view := components.FormCreateAuthor()
+
+	return handlers.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }

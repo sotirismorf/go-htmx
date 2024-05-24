@@ -221,7 +221,7 @@ func Breadcrumb(collectionType string, displayName string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"float-right bord text-center border-white border-solid border\">Create new</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"float-right py-1 px-2 hover:bg-neutral-700 text-center border-white border-solid border rounded-full\">Create new</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

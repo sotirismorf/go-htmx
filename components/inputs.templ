@@ -1,0 +1,32 @@
+package components
+
+import (
+	"strconv"
+)
+
+type SelectOption struct {
+	Name string
+	ID   int64
+}
+
+templ Select(name string, displayName string, options []SelectOption) {
+	<label for="author">{ displayName }</label>
+	<select class="bg-transparent" name="author" id="cars">
+		<option disabled selected value>Select one</option>
+		for _, option := range options {
+			<option value={ strconv.Itoa(int(option.ID)) }>{ option.Name }</option>
+		}
+	</select>
+}
+
+templ InputText(name string, displayName string) {
+	<div>
+		<label for={ "input-text-" + name }>{ displayName }</label>
+		<input
+			class="bg-transparent"
+			id={ "input-text-" + name }
+			name={ name }
+			type="text"
+		/>
+	</div>
+}
