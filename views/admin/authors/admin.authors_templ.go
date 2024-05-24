@@ -30,7 +30,7 @@ func AdminAuthors(authors []schema.Author) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"text-4xl font-bold\">Authors</h1>")
+		templ_7745c5c3_Err = components.Breadcrumb("authors", "Authors").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

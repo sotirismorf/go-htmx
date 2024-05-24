@@ -8,7 +8,7 @@ import (
 )
 
 templ AdminAuthors(authors []schema.Author) {
-	<h1 class="text-4xl font-bold">Authors</h1>
+	@components.Breadcrumb("authors", "Authors")
 	@components.Table() {
 		<tr class="flex">
 			@components.TableHeader() {

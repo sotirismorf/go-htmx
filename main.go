@@ -33,7 +33,8 @@ func main() {
 
 	app.GET("/admin/authors", authors.AdminAuthorsHandler)
 	app.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)
-	app.POST("/admin/authors", authors.Create)
+	app.GET("/admin/authors/create", authors.CreateAuthorForm)
+	app.POST("/admin/authors/create", authors.Create)
 
 	app.GET("/admin/login", handlers.LoginHandler)
 

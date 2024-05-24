@@ -15,6 +15,16 @@ templ FormCreateItem(authors []SelectOption) {
 	</form>
 }
 
+templ FormCreateAuthor() {
+	<form action="/admin/authors/create" method="post">
+    @InputText("name", "Name")
+    @InputText("bio", "Bio")
+		<div>
+			<button type="submit">Submit</button>
+		</div>
+	</form>
+}
+
 type SelectOption struct {
 	Name string
 	ID   int64
@@ -40,16 +50,4 @@ templ InputText(name string, displayName string) {
 			type="text"
 		/>
 	</div>
-}
-
-templ FormCreateAuthor() {
-	<form action="/admin/authors" method="post">
-		<label for="name">Name</label>
-		<input type="text" id="name" name="name"/>
-		<br/>
-		<label for="bio">Biography</label>
-		<input type="text" id="bio" name="bio"/>
-		<br/>
-		<input type="submit" value="Submit"/>
-	</form>
 }
