@@ -22,11 +22,11 @@ func AdminAuthorsHandler(c echo.Context) error {
 
 	view := authors.AdminAuthors(authorData)
 
-	return handlers.Render(c, http.StatusOK, views.AdminLayout("Authors", view))
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Authors", view))
 }
 
 func AdminSingleAuthorDelete(c echo.Context) error {
-	var param handlers.ParamContainsID
+	var param controller.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -44,5 +44,5 @@ func AdminSingleAuthorDelete(c echo.Context) error {
 func CreateAuthorForm(c echo.Context) error {
 	view := components.FormCreateAuthor()
 
-	return handlers.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }

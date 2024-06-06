@@ -20,9 +20,12 @@ func main() {
 		Format: "${status} ${method} ${uri}\n",
 	}))
 
-	app.GET("/", handlers.HomeHandler)
+	app.GET("/", controller.HomeHandler)
 
-	app.GET("/admin", handlers.AdminHandler)
+	app.GET("/downloads/:id", uploads.GetUpload)
+	app.GET("/admin/uploads/1", uploads.GetUpload)
+
+	app.GET("/admin", controller.AdminHandler)
 	app.GET("/admin/items", items.AdminItemsHandler)
 	app.POST("/admin/items/create", items.AdminCreateItemHandler)
 	app.GET("/admin/items/create", items.CreateItemController)
@@ -40,7 +43,7 @@ func main() {
 	app.GET("/admin/uploads/create", uploads.AdminGetUploadForm)
 	app.POST("/admin/uploads/create", uploads.AdminCreateUpload)
 
-	app.GET("/admin/login", handlers.LoginHandler)
+	app.GET("/admin/login", controller.LoginHandler)
 
 	app.Logger.Fatal(app.Start(":8080"))
 }

@@ -46,5 +46,5 @@ func AdminItemsHandler(c echo.Context) error {
 
 	view := items.AdminItems(itemsGenerated, authors)
 
-	return handlers.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }

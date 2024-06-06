@@ -70,5 +70,5 @@ func CreateItemController(c echo.Context) error {
 
 	view := components.FormCreateItem(options)
 
-	return handlers.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }

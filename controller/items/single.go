@@ -38,7 +38,7 @@ func SingleItemPopulated(id int64) (models.ItemData, error) {
 }
 
 func AdminGetSingleItem(c echo.Context) error {
-	var param handlers.ParamContainsID
+	var param controller.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -52,11 +52,11 @@ func AdminGetSingleItem(c echo.Context) error {
 
 	view := items.AdminSingleItem(i)
 
-	return handlers.Render(c, http.StatusOK, views.AdminLayout(i.Name, view))
+	return controller.Render(c, http.StatusOK, views.AdminLayout(i.Name, view))
 }
 
 func AdminDeleteSingleItem(c echo.Context) error {
-	var param handlers.ParamContainsID
+	var param controller.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -72,7 +72,7 @@ func AdminDeleteSingleItem(c echo.Context) error {
 }
 
 func HTMXAdminItemsOneEdit(c echo.Context) error {
-	var param handlers.ParamContainsID
+	var param controller.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -86,11 +86,11 @@ func HTMXAdminItemsOneEdit(c echo.Context) error {
 
 	view := items.SingleItemAttributesEdit(i)
 
-	return handlers.Render(c, http.StatusOK, view)
+	return controller.Render(c, http.StatusOK, view)
 }
 
 func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
-	var param handlers.ParamContainsID
+	var param controller.ParamContainsID
 
 	err := c.Bind(&param)
 	if err != nil {
@@ -104,5 +104,5 @@ func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
 
 	view := items.SingleItemAttributes(i)
 
-	return handlers.Render(c, http.StatusOK, view)
+	return controller.Render(c, http.StatusOK, view)
 }

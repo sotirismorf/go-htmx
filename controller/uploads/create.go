@@ -73,5 +73,5 @@ func AdminCreateUpload(c echo.Context) error {
 func AdminGetUploadForm(c echo.Context) error {
 	view := components.FormCreateUpload()
 
-	return handlers.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }
