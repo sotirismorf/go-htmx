@@ -48,6 +48,11 @@ func AdminCreateUpload(c echo.Context) error {
 	}
 	defer dst.Close()
 
+	// Rewind the file to the beginning after hashing
+	if _, err := src.Seek(0, io.SeekStart); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
 	// Copy to destination file
 	if _, err = io.Copy(dst, src); err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)

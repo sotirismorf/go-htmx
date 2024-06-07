@@ -9,3 +9,7 @@ RETURNING *;
 -- name: SelectUploads :many
 SELECT * FROM uploads
 ORDER BY id;
+
+-- name: SelectSingleUpload :many
+SELECT * FROM uploads
+WHERE id = $1;

@@ -47,7 +47,7 @@ func AdminSidebar() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"border-b border-r border-t border-solid border-white\n           max-w-40 absolute mt-24\"><h2 class=\"text-xl\">Collection Types</h2><ul><li><a href=\"/admin/items\">Items</a></li><li><a href=\"/admin/authors\">Authors</a></li><li><a href=\"/admin/items\">Groups</a></li></ul></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"border-b border-r border-t border-solid border-white\n           max-w-40 absolute mt-24\"><h2 class=\"text-xl\"><a href=\"/admin/uploads\">Uploads</a></h2><h2 class=\"text-xl\">Collection Types</h2><ul><li><a href=\"/admin/items\">Items</a></li><li><a href=\"/admin/authors\">Authors</a></li><li><a href=\"/admin/items\">Groups</a></li></ul></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -206,7 +206,7 @@ func Breadcrumb(collectionType string, displayName string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(displayName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 52, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 53, Col: 59}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {

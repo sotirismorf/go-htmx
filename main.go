@@ -23,7 +23,6 @@ func main() {
 	app.GET("/", controller.HomeHandler)
 
 	app.GET("/downloads/:id", uploads.GetUpload)
-	app.GET("/admin/uploads/1", uploads.GetUpload)
 
 	app.GET("/admin", controller.AdminHandler)
 	app.GET("/admin/items", items.AdminItemsHandler)

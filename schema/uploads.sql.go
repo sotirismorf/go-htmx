@@ -43,6 +43,37 @@ func (q *Queries) CreateUpload(ctx context.Context, arg CreateUploadParams) (Upl
 	return i, err
 }
 
+const selectSingleUpload = `-- name: SelectSingleUpload :many
+SELECT id, sum, name, size, type FROM uploads
+WHERE id = $1
+`
+
+func (q *Queries) SelectSingleUpload(ctx context.Context, id int64) ([]Upload, error) {
+	rows, err := q.db.Query(ctx, selectSingleUpload, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Upload
+	for rows.Next() {
+		var i Upload
+		if err := rows.Scan(
+			&i.ID,
+			&i.Sum,
+			&i.Name,
+			&i.Size,
+			&i.Type,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectUploads = `-- name: SelectUploads :many
 SELECT id, sum, name, size, type FROM uploads
 ORDER BY id
