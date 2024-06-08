@@ -10,36 +10,34 @@ import (
 templ AdminAuthors(authors []schema.Author) {
 	@components.Breadcrumb("authors", "Authors")
 	@components.Table() {
-		<tr class="flex">
-			@components.TableHeader() {
-				Name 
-			}
-			@components.TableHeader() {
-				Bio 
-			}
-			@components.TableHeader()
-		</tr>
-		for _, item := range authors {
-			@components.TableRow() {
-				@components.TableData() {
-					{ item.Name }
-				}
-				@components.TableData() {
+		<thead class="text-left">
+			<tr>
+				@components.TableHeader("ID")
+				@components.TableHeader("Name")
+				@components.TableHeader("Bio")
+				@components.TableHeader("")
+			</tr>
+		</thead>
+		<tbody>
+			for _, item := range authors {
+				@components.TableRow() {
+					@components.TableData(strconv.FormatInt(item.ID, 10))
+					@components.TableDataWithLink(item.Name, "authors", item.ID)
 					if item.Bio != nil {
-						{ *item.Bio }
+						@components.TableData(*item.Bio)
 					} else {
-						-
+						@components.TableData("-")
+					}
+					@components.TableDataWithChildren() {
+						<button
+							hx-delete={ "/admin/authors/" + strconv.Itoa(int(item.ID)) }
+							hx-target="closest tr"
+						>
+							delete
+						</button>
 					}
 				}
-				@components.TableData() {
-					<button
-						hx-delete={ "/admin/authors/" + strconv.Itoa(int(item.ID)) }
-						hx-target="closest tr"
-					>
-						delete
-					</button>
-				}
 			}
-		}
+		</tbody>
 	}
 }

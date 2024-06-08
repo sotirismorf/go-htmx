@@ -21,5 +21,5 @@ func AdminGetUploads(c echo.Context) error {
 
 	view := uploads.AdminUploads(data)
 
-	return controller.Render(c, http.StatusOK, views.AdminLayout("Authors", view))
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Uploads", view))
 }

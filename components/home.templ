@@ -1,5 +1,7 @@
 package components
 
+import "strconv"
+
 templ NavigationBar() {
 	<div class="border-white border-solid border-b h-12 text-2xl flex items-center justify-center">
 		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/">Home</a>
@@ -25,27 +27,46 @@ templ AdminSidebar() {
 }
 
 templ Table() {
-	<table class="table-fixed w-full mt-9">
-		{ children... }
-	</table>
+	<div class="p-4 bg-neutral-800 mt-9 rounded-md">
+		<table class="table-fixed w-full">
+			{ children... }
+		</table>
+	</div>
 }
 
 templ TableRow() {
-	<tr class="hover:bg-fuchsia-950 flex">
+	<tr class="hover:bg-fuchsia-950">
 		{ children... }
 	</tr>
 }
 
-templ TableData() {
-	<td class="flex-1 w-max border-t border-t-neutral-600 whitespace-nowrap overflow-hidden overflow-ellipsis inline-block">
-		{ children... }
+templ TableHeader(text string) {
+	<th class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
+		{ text }
+	</th>
+}
+
+templ TableData(text string) {
+	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
+		{ text }
 	</td>
 }
 
-templ TableHeader() {
-	<th class="flex-1 whitespace-nowrap overflow-hidden overflow-ellipsis inline-block font-bold">
+templ TableDataWithLink(text string, collectionType string, id int64) {
+	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
+		<a
+			class="hover:underline"
+			href={ templ.URL("/admin/" + collectionType + "/" + strconv.Itoa(int(id))) }
+		>
+			{ text }
+		</a>
+	</td>
+}
+
+templ TableDataWithChildren() {
+	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
 		{ children... }
-	</th>
+	</td>
 }
 
 templ Breadcrumb(collectionType string, displayName string) {

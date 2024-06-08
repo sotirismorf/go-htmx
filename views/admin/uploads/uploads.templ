@@ -10,54 +10,36 @@ import (
 templ AdminUploads(uploads []schema.Upload) {
 	@components.Breadcrumb("uploads", "Uploads")
 	@components.Table() {
-		<tr class="flex">
-			@components.TableHeader() {
-				ID
-			}
-			@components.TableHeader() {
-				Name
-			}
-			@components.TableHeader() {
-				Type
-			}
-			@components.TableHeader() {
-				Size
-			}
-			@components.TableHeader()
-		</tr>
-		for _, i := range uploads {
-			@components.TableRow() {
-				@components.TableData() {
-					{ strconv.FormatInt(i.ID, 10) }
-				}
-				@components.TableData() {
-					<a
-						href={ templ.URL("/downloads/" + strconv.Itoa(int(i.ID))) }
-					>
-						{ i.Name }
-					</a>
-				}
-				@components.TableData() {
-					{ string(i.Type) }
-				}
-				if (i.Size < 1 * 1000 * 1000) {
-					@components.TableData() {
-						{ strconv.Itoa(int(i.Size)) }
+		<thead class="text-left">
+			<tr>
+				@components.TableHeader("ID")
+				@components.TableHeader("Name")
+				@components.TableHeader("Type")
+				@components.TableHeader("Size")
+				@components.TableHeader("Delete")
+			</tr>
+		</thead>
+		<tbody>
+			for _, i := range uploads {
+				@components.TableRow() {
+					@components.TableData(strconv.FormatInt(i.ID, 10))
+					@components.TableDataWithLink(i.Name, "uploads", i.ID)
+					@components.TableData(string(i.Type))
+					if (i.Size < 1 * 1000 * 1000) {
+						@components.TableData(strconv.Itoa(int(i.Size)))
+					} else {
+						@components.TableData(strconv.Itoa(int(i.Size / (1000 * 1000) )))
 					}
-				} else {
-					@components.TableData() {
-						{ strconv.Itoa(int(i.Size / (1000 * 1000) )) }
-					}
-				}
-				@components.TableData() {
-					<button
-						hx-delete={ "/admin/uploads/" + strconv.Itoa(int(i.ID)) }
-						hx-target="closest tr"
-					>
-						delete
-					</button>
+					<td>
+						<button
+							hx-delete={ "/admin/uploads/" + strconv.Itoa(int(i.ID)) }
+							hx-target="closest tr"
+						>
+							delete
+						</button>
+					</td>
 				}
 			}
-		}
+		</tbody>
 	}
 }

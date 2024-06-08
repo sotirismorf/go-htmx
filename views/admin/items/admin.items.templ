@@ -9,57 +9,49 @@ import (
 )
 
 templ AdminItems(items []models.ItemData, authors []schema.Author) {
-  @components.Breadcrumb("items", "Items")
+	@components.Breadcrumb("items", "Items")
 	@components.Table() {
-		<tr class="flex">
-			@components.TableHeader() {
-				Name 
-			}
-			@components.TableHeader() {
-				Description 
-			}
-			@components.TableHeader() {
-				Authors
-			}
-			@components.TableHeader()
-		</tr>
-		for _, item := range items {
-			@components.TableRow() {
-				@components.TableData() {
-					<a
-						href={ templ.URL("/admin/items/" + strconv.Itoa(int(item.Id))) }
-					>
-						{ item.Name }
-					</a>
-				}
-				@components.TableData() {
+		<thead class="text-left">
+			<tr>
+				@components.TableHeader("ID")
+				@components.TableHeader("Name")
+				@components.TableHeader("Description")
+				@components.TableHeader("Authors")
+				@components.TableHeader("-")
+			</tr>
+		</thead>
+		<tbody>
+			for _, item := range items {
+				@components.TableRow() {
+					@components.TableDataWithLink(strconv.FormatInt(item.Id, 10), "items", item.Id)
+					@components.TableDataWithLink(item.Name, "items", item.Id)
 					if item.Description != nil {
-						{ *item.Description }
+						@components.TableData(*item.Description)
 					} else {
-						-
+						@components.TableData("-")
 					}
-				}
-				@components.TableData() {
 					if item.Authors == nil {
-						-
+						@components.TableData("-")
 					} else {
-						for i, author := range item.Authors {
-							{ author.Name }
-							if i < len(item.Authors) - 1 {
-								,&nbsp 
+						@components.TableDataWithChildren() {
+							for i, author := range item.Authors {
+								{ author.Name }
+								if i < len(item.Authors) - 1 {
+									,&nbsp
+								}
 							}
 						}
 					}
-				}
-				@components.TableData() {
-					<button
-						hx-delete={ "/admin/items/" + strconv.Itoa(int(item.Id)) }
-						hx-target="closest tr"
-					>
-						delete
-					</button>
+					@components.TableDataWithChildren() {
+						<button
+							hx-delete={ "/admin/items/" + strconv.Itoa(int(item.Id)) }
+							hx-target="closest tr"
+						>
+							delete
+						</button>
+					}
 				}
 			}
-		}
+		</tbody>
 	}
 }
