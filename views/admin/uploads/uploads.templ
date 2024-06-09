@@ -28,16 +28,16 @@ templ AdminUploads(uploads []schema.Upload) {
 					if (i.Size < 1 * 1000 * 1000) {
 						@components.TableData(strconv.Itoa(int(i.Size)))
 					} else {
-						@components.TableData(strconv.Itoa(int(i.Size / (1000 * 1000) )))
+						@components.TableData(strconv.Itoa(int(i.Size / (1000 * 1000))))
 					}
-					<td>
+					@components.TableDataWithChildren() {
 						<button
 							hx-delete={ "/admin/uploads/" + strconv.Itoa(int(i.ID)) }
 							hx-target="closest tr"
 						>
 							delete
 						</button>
-					</td>
+					}
 				}
 			}
 		</tbody>
