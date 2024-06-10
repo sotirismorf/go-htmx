@@ -11,3 +11,10 @@ type ItemData struct {
 	Description *string
 	Authors     []Author
 }
+
+type UploadTemplateData struct {
+	ID   int64
+	Name string
+	Size string
+	Type string
+}

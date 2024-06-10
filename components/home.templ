@@ -28,7 +28,7 @@ templ AdminSidebar() {
 
 templ Table() {
 	<div class="p-4 bg-neutral-800 mt-9 rounded-md">
-		<table class="table-fixed w-full">
+		<table class="table-auto w-full">
 			{ children... }
 		</table>
 	</div>
@@ -47,7 +47,7 @@ templ TableHeader(text string) {
 }
 
 templ TableData(text string) {
-	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
+	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-14">
 		{ text }
 	</td>
 }

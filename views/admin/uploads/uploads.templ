@@ -3,11 +3,11 @@ package uploads
 import (
 	"strconv"
 
-	"github.com/sotirismorf/go-htmx/schema"
 	"github.com/sotirismorf/go-htmx/components"
+	"github.com/sotirismorf/go-htmx/models"
 )
 
-templ AdminUploads(uploads []schema.Upload) {
+templ AdminUploads(uploads []models.UploadTemplateData) {
 	@components.Breadcrumb("uploads", "Uploads")
 	@components.Table() {
 		<thead class="text-left">
@@ -16,7 +16,7 @@ templ AdminUploads(uploads []schema.Upload) {
 				@components.TableHeader("Name")
 				@components.TableHeader("Type")
 				@components.TableHeader("Size")
-				@components.TableHeader("Delete")
+				@components.TableHeader("")
 			</tr>
 		</thead>
 		<tbody>
@@ -24,19 +24,21 @@ templ AdminUploads(uploads []schema.Upload) {
 				@components.TableRow() {
 					@components.TableData(strconv.FormatInt(i.ID, 10))
 					@components.TableDataWithLink(i.Name, "uploads", i.ID)
-					@components.TableData(string(i.Type))
-					if (i.Size < 1 * 1000 * 1000) {
-						@components.TableData(strconv.Itoa(int(i.Size)))
-					} else {
-						@components.TableData(strconv.Itoa(int(i.Size / (1000 * 1000))))
-					}
+					@components.TableData(i.Type)
+					@components.TableData(i.Size)
 					@components.TableDataWithChildren() {
 						<button
-							hx-delete={ "/admin/uploads/" + strconv.Itoa(int(i.ID)) }
+							hx-delete={ "/admin/uploads/" + strconv.FormatInt(i.ID, 10) }
 							hx-target="closest tr"
 						>
-							delete
+							@components.IconDelete()
 						</button>
+						<a
+							class="inline-block"
+							href={ templ.SafeURL("/downloads/" + strconv.FormatInt(i.ID, 10)) }
+						>
+							@components.IconDownload()
+						</a>
 					}
 				}
 			}
