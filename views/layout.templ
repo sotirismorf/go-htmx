@@ -34,9 +34,16 @@ templ Base(title string) {
 templ AdminLayout(title string, cmp templ.Component) {
 	@Base(title) {
 		@components.NavigationBar()
-		@components.AdminSidebar()
-		<div class="max-w-screen-lg mx-auto mt-12">
-			@cmp
+		<div class="flex">
+			<div class="w-1/4">
+				<div class="float-right mr-12">
+					@components.AdminSidebar()
+				</div>
+			</div>
+			<div class="w-1/2">
+				@cmp
+			</div>
+			<div class="w-1/4"></div>
 		</div>
 	}
 }

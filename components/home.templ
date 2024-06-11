@@ -3,25 +3,24 @@ package components
 import "strconv"
 
 templ NavigationBar() {
-	<div class="border-white border-solid border-b h-12 text-2xl flex items-center justify-center">
+	<div class="bg-neutral-800 h-12 text-2xl flex items-center justify-center mb-12">
 		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/">Home</a>
-		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/admin">About</a>
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/texts">Έντυπα</a>
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/posters">Αφίσες</a>
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/photos">Εικόνες</a>
+		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/about">Σχετικά</a>
 		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/admin">Admin</a>
-		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/admin/login">Login</a>
 	</div>
 }
 
 templ AdminSidebar() {
-	<div
-		class="border-b border-r border-t border-solid border-white
-           max-w-40 absolute mt-24"
-	>
-		<h2 class="text-xl"><a href="/admin/uploads">Uploads</a></h2>
-		<h2 class="text-xl">Collection Types</h2>
-		<ul>
-			<li><a href="/admin/items">Items</a></li>
-			<li><a href="/admin/authors">Authors</a></li>
-			<li><a href="/admin/items">Groups</a></li>
+	<div class="min-w-60 text-nowrap bg-neutral-800 rounded-md p-3">
+		<h2 class="text-xl font-bold mb-1">Material</h2>
+		<ul class="text-lg">
+			<li class="py-0.5"><a class="hover:underline " href="/admin/uploads">Uploads</a></li>
+			<li class="py-0.5"><a class="hover:underline " href="/admin/items">Items</a></li>
+			<li class="py-0.5"><a class="hover:underline " href="/admin/authors">Authors</a></li>
+			<li class="py-0.5"><a class="hover:underline " href="/admin/items">Groups</a></li>
 		</ul>
 	</div>
 }
