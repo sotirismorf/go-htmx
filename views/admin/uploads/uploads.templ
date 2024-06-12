@@ -12,6 +12,7 @@ templ AdminUploads(uploads []models.UploadTemplateData) {
 	@components.Table() {
 		<thead class="text-left">
 			<tr>
+				@components.TableHeader("")
 				@components.TableHeader("ID")
 				@components.TableHeader("Name")
 				@components.TableHeader("Type")
@@ -22,6 +23,17 @@ templ AdminUploads(uploads []models.UploadTemplateData) {
 		<tbody>
 			for _, i := range uploads {
 				@components.TableRow() {
+					@components.TableDataWithChildren() {
+						if i.Type == "image/jpeg" || i.Type == "image/png" {
+							<img
+								class="object-contain size-12 mx-auto"
+								src={ "/static/" + strconv.FormatInt(i.ID, 10) }
+								alt="slakdf"
+							/>
+						} else {
+							<div class="size-12">nope</div>
+						}
+					}
 					@components.TableData(strconv.FormatInt(i.ID, 10))
 					@components.TableDataWithLink(i.Name, "uploads", i.ID)
 					@components.TableData(i.Type)
