@@ -9,9 +9,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
+	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/views"
 	"github.com/sotirismorf/go-htmx/views/admin/uploads"
-	"github.com/sotirismorf/go-htmx/models"
 )
 
 func prettyByteSize(bytes int32) string {
@@ -33,7 +33,6 @@ func AdminGetUploads(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-
 	templateData := []models.UploadTemplateData{}
 
 	for _, v := range data {
@@ -43,7 +42,6 @@ func AdminGetUploads(c echo.Context) error {
 			Size: prettyByteSize(v.Size),
 			Type: string(v.Type),
 		})
-		fmt.Println(prettyByteSize(v.Size))
 	}
 
 	view := uploads.AdminUploads(templateData)

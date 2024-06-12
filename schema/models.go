@@ -12,9 +12,9 @@ import (
 type Filetype string
 
 const (
-	FiletypePdf  Filetype = "pdf"
-	FiletypeJpeg Filetype = "jpeg"
-	FiletypePng  Filetype = "png"
+	FiletypeApplicationPdf Filetype = "application/pdf"
+	FiletypeImageJpeg      Filetype = "image/jpeg"
+	FiletypeImagePng       Filetype = "image/png"
 )
 
 func (e *Filetype) Scan(src interface{}) error {

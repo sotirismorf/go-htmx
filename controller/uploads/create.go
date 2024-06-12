@@ -5,8 +5,10 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"io"
+	"mime"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/components"
@@ -25,6 +27,22 @@ func AdminCreateUpload(c echo.Context) error {
 	file, err := c.FormFile("file")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	// Determine filetype
+	extension := filepath.Ext(file.Filename)
+	ft := mime.TypeByExtension(extension)
+	var fileType schema.Filetype
+
+	switch ft {
+	case "image/jpeg":
+		fileType = schema.FiletypeImageJpeg
+	case "image/png":
+		fileType = schema.FiletypeImagePng
+	case "application/pdf":
+		fileType = schema.FiletypeApplicationPdf
+	default:
+		return echo.NewHTTPError(http.StatusNotFound, "Filetype \""+ft+"\" is not supported")
 	}
 
 	// Read file
@@ -59,15 +77,13 @@ func AdminCreateUpload(c echo.Context) error {
 	}
 
 	// Create database entry
-	ctx := context.Background()
-
 	params := schema.CreateUploadParams{
 		Sum:  sum,
 		Name: file.Filename,
-		Type: "pdf",
+		Type: fileType,
 		Size: int32(file.Size),
 	}
-	_, err = db.Queries.CreateUpload(ctx, params)
+	_, err = db.Queries.CreateUpload(context.Background(), params)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}

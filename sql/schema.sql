@@ -21,7 +21,7 @@ CREATE TABLE publishers (
   description text
 );
 
-CREATE TYPE filetype AS ENUM ('pdf', 'jpeg', 'png');
+CREATE TYPE filetype AS ENUM ('application/pdf', 'image/jpeg', 'image/png');
 
 CREATE TABLE uploads (
   id          BIGSERIAL PRIMARY KEY,
