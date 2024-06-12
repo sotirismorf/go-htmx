@@ -16,5 +16,6 @@ type UploadTemplateData struct {
 	ID   int64
 	Name string
 	Size string
+	Sum  string
 	Type string
 }

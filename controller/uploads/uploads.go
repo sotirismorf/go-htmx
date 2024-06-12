@@ -39,6 +39,7 @@ func AdminGetUploads(c echo.Context) error {
 		templateData = append(templateData, models.UploadTemplateData{
 			ID:   v.ID,
 			Name: v.Name,
+			Sum:  v.Sum,
 			Size: prettyByteSize(v.Size),
 			Type: string(v.Type),
 		})

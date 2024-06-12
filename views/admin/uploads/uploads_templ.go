@@ -85,29 +85,22 @@ func AdminUploads(uploads []models.UploadTemplateData) templ.Component {
 							templ_7745c5c3_Buffer = templ.GetBuffer()
 							defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 						}
-						if i.Type == "image/jpeg" || i.Type == "image/png" {
-							_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<img class=\"object-contain size-12 mx-auto\" src=\"")
-							if templ_7745c5c3_Err != nil {
-								return templ_7745c5c3_Err
-							}
-							var templ_7745c5c3_Var5 string
-							templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/static/" + strconv.FormatInt(i.ID, 10))
-							if templ_7745c5c3_Err != nil {
-								return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/uploads/uploads.templ`, Line: 30, Col: 54}
-							}
-							_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
-							if templ_7745c5c3_Err != nil {
-								return templ_7745c5c3_Err
-							}
-							_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" alt=\"slakdf\">")
-							if templ_7745c5c3_Err != nil {
-								return templ_7745c5c3_Err
-							}
-						} else {
-							_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"size-12\">nope</div>")
-							if templ_7745c5c3_Err != nil {
-								return templ_7745c5c3_Err
-							}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<img class=\"object-contain size-16 mx-auto\" src=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var5 string
+						templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs("/static/thumbnails/" + i.Sum + ".jpg")
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/uploads/uploads.templ`, Line: 29, Col: 51}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" alt=\"slakdf\">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
 						}
 						if !templ_7745c5c3_IsBuffer {
 							_, templ_7745c5c3_Err = io.Copy(templ_7745c5c3_W, templ_7745c5c3_Buffer)
@@ -167,7 +160,7 @@ func AdminUploads(uploads []models.UploadTemplateData) templ.Component {
 						var templ_7745c5c3_Var7 string
 						templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs("/admin/uploads/" + strconv.FormatInt(i.ID, 10))
 						if templ_7745c5c3_Err != nil {
-							return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/uploads/uploads.templ`, Line: 43, Col: 66}
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/admin/uploads/uploads.templ`, Line: 39, Col: 66}
 						}
 						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 						if templ_7745c5c3_Err != nil {

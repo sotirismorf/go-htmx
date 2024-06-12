@@ -40,19 +40,19 @@ templ TableRow() {
 }
 
 templ TableHeader(text string) {
-	<th class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
+	<th class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
 		{ text }
 	</th>
 }
 
 templ TableData(text string) {
-	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-14">
+	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
 		{ text }
 	</td>
 }
 
 templ TableDataWithLink(text string, collectionType string, id int64) {
-	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
+	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
 		<a
 			class="hover:underline"
 			href={ templ.URL("/admin/" + collectionType + "/" + strconv.Itoa(int(id))) }
@@ -63,7 +63,7 @@ templ TableDataWithLink(text string, collectionType string, id int64) {
 }
 
 templ TableDataWithChildren() {
-	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1">
+	<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
 		{ children... }
 	</td>
 }

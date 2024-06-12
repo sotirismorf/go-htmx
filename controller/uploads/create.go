@@ -8,6 +8,7 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/labstack/echo/v4"
@@ -74,6 +75,16 @@ func AdminCreateUpload(c echo.Context) error {
 	// Copy to destination file
 	if _, err = io.Copy(dst, src); err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	// Generate thumbnail
+	magickInputFile := "uploads/" + sum
+	if fileType == "application/pdf" {
+		magickInputFile += "[0]"
+	}
+	cmd := exec.Command("magick", magickInputFile, "-thumbnail", "256x256>", "uploads/thumbnails/"+sum+".jpg")
+	if err := cmd.Run(); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	// Create database entry

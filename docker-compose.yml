@@ -12,6 +12,7 @@ services:
     configs:
       - source: schema
         target: /docker-entrypoint-initdb.d/schema.sql
+    command: ["postgres", "-c", "log_statement=all"]
 
 configs:
   schema:

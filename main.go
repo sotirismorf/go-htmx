@@ -24,6 +24,7 @@ func main() {
 
 	app.GET("/downloads/:id", uploads.GetUpload)
 	app.GET("/static/:id", uploads.GetFileAsInline)
+	app.Static("/static/thumbnails", "uploads/thumbnails")
 
 	app.GET("/admin", controller.AdminHandler)
 	app.GET("/admin/items", items.AdminItemsHandler)
