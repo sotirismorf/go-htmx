@@ -22,7 +22,7 @@ func GetUpload(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	return c.Attachment("uploads/" + data[0].Sum, data[0].Name)
+	return c.Attachment("uploads/"+data[0].Sum, data[0].Name)
 }
 
 func GetFileAsInline(c echo.Context) error {
@@ -38,5 +38,5 @@ func GetFileAsInline(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	return c.Inline("uploads/" + data[0].Sum, data[0].Sum)
+	return c.Inline("uploads/"+data[0].Sum, data[0].Sum)
 }

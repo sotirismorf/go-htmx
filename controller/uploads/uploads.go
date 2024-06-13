@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
@@ -48,4 +49,10 @@ func AdminGetUploads(c echo.Context) error {
 	view := uploads.AdminUploads(templateData)
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout("Uploads", view))
+}
+
+func AdminGetUploadForm(c echo.Context) error {
+	view := components.FormCreateUpload()
+
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }

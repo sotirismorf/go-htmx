@@ -27,7 +27,7 @@ templ AdminUploads(uploads []models.UploadTemplateData) {
 						<img
 							class="object-contain size-16 mx-auto"
 							src={ "/static/thumbnails/" + i.Sum + ".jpg" }
-							alt="slakdf"
+							alt={ i.Name }
 						/>
 					}
 					@components.TableData(strconv.FormatInt(i.ID, 10))

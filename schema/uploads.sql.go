@@ -43,6 +43,16 @@ func (q *Queries) CreateUpload(ctx context.Context, arg CreateUploadParams) (Upl
 	return i, err
 }
 
+const deleteSingleUpload = `-- name: DeleteSingleUpload :exec
+DELETE FROM uploads
+WHERE id = $1
+`
+
+func (q *Queries) DeleteSingleUpload(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteSingleUpload, id)
+	return err
+}
+
 const selectSingleUpload = `-- name: SelectSingleUpload :many
 SELECT id, sum, name, size, type FROM uploads
 WHERE id = $1

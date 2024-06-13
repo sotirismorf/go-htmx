@@ -13,3 +13,7 @@ ORDER BY id;
 -- name: SelectSingleUpload :many
 SELECT * FROM uploads
 WHERE id = $1;
+
+-- name: DeleteSingleUpload :exec
+DELETE FROM uploads
+WHERE id = $1;

@@ -43,6 +43,7 @@ func main() {
 	app.GET("/admin/uploads", uploads.AdminGetUploads)
 	app.GET("/admin/uploads/create", uploads.AdminGetUploadForm)
 	app.POST("/admin/uploads/create", uploads.AdminCreateUpload)
+	app.DELETE("/admin/uploads/:id", uploads.DeleteUpload)
 
 	app.GET("/admin/login", controller.LoginHandler)
 

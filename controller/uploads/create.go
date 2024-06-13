@@ -12,11 +12,9 @@ import (
 	"path/filepath"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/schema"
-	"github.com/sotirismorf/go-htmx/views"
 )
 
 type formData struct {
@@ -102,8 +100,33 @@ func AdminCreateUpload(c echo.Context) error {
 	return c.Redirect(http.StatusFound, "/admin/uploads")
 }
 
-func AdminGetUploadForm(c echo.Context) error {
-	view := components.FormCreateUpload()
+func DeleteUpload(c echo.Context) error {
+	var param controller.ParamContainsID
 
-	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
+	err := c.Bind(&param)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
+
+	data, err := db.Queries.SelectSingleUpload(context.Background(), param.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	err = db.Queries.DeleteSingleUpload(context.Background(), param.ID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	err = os.Remove("uploads/" + data[0].Sum)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	err = os.Remove("uploads/thumbnails/" + data[0].Sum + ".jpg")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	return c.NoContent(http.StatusOK)
 }
