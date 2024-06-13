@@ -10,23 +10,37 @@ type SelectOption struct {
 }
 
 templ Select(name string, displayName string, options []SelectOption) {
-	<label for="author">{ displayName }</label>
-	<select class="bg-transparent" name="author" id="cars">
-		<option disabled selected value>Select one</option>
-		for _, option := range options {
-			<option value={ strconv.Itoa(int(option.ID)) }>{ option.Name }</option>
-		}
-	</select>
+	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
+		<label class="bg-neutral-900 px-4 py-2" for="author">{ displayName }</label>
+		<select
+			class="bg-transparent px-4 focus:bg-neutral-700 hover:bg-neutral-700 transition rounded-r-lg"
+			name={ name }
+			id={ "select-" + name }
+		>
+			<option disabled selected value>Select one</option>
+			for _, option := range options {
+				<option value={ strconv.Itoa(int(option.ID)) }>{ option.Name }</option>
+			}
+		</select>
+	</div>
 }
 
 templ InputText(name string, displayName string) {
-	<div>
-		<label for={ "input-text-" + name }>{ displayName }</label>
+	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
+		<label class="bg-neutral-900 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
 		<input
-			class="bg-transparent"
+			class="bg-transparent px-4 focus:outline-none focus:bg-neutral-700 hover:bg-neutral-700 transition rounded-r-lg"
 			id={ "input-text-" + name }
 			name={ name }
+			autocomplete="off"
 			type="text"
 		/>
 	</div>
+}
+
+templ ButtonSubmit(text string) {
+	<button
+		class="border-2 border-solid border-fuchsia-300 hover:bg-fuchsia-300 hover:text-black px-4 py-1 rounded-full transition"
+		type="submit"
+	>{ text }</button>
 }

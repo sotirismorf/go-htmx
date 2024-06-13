@@ -76,11 +76,24 @@ func AdminCreateUpload(c echo.Context) error {
 	}
 
 	// Generate thumbnail
+	var cmd *exec.Cmd
 	magickInputFile := "uploads/" + sum
 	if fileType == "application/pdf" {
-		magickInputFile += "[0]"
+		cmd = exec.Command(
+			"magick",
+			magickInputFile+"[0]",
+			"-thumbnail", "256x256>",
+			"-background", "white",
+			"-flatten",
+			"uploads/thumbnails/"+sum+".jpg")
+	} else {
+		cmd = exec.Command(
+			"magick",
+			magickInputFile,
+			"-thumbnail",
+			"256x256>",
+			"uploads/thumbnails/"+sum+".jpg")
 	}
-	cmd := exec.Command("magick", magickInputFile, "-thumbnail", "256x256>", "uploads/thumbnails/"+sum+".jpg")
 	if err := cmd.Run(); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

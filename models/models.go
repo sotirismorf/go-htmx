@@ -1,5 +1,10 @@
 package models
 
+import (
+	"fmt"
+	"math"
+)
+
 type Author struct {
 	Id   int64  `json:"f1"`
 	Name string `json:"f2"`
@@ -18,4 +23,15 @@ type UploadTemplateData struct {
 	Size string
 	Sum  string
 	Type string
+}
+
+func PrettyByteSize(bytes int32) string {
+	bytesFloat := float64(bytes)
+	for _, unit := range []string{"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"} {
+		if math.Abs(bytesFloat) < 1024.0 {
+			return fmt.Sprintf("%3.1f%sB", bytesFloat, unit)
+		}
+		bytesFloat /= 1024.0
+	}
+	return fmt.Sprintf("%.1fYiB", bytesFloat)
 }

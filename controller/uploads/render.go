@@ -2,8 +2,6 @@ package uploads
 
 import (
 	"context"
-	"fmt"
-	"math"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -15,17 +13,6 @@ import (
 	"github.com/sotirismorf/go-htmx/views/admin/uploads"
 )
 
-func prettyByteSize(bytes int32) string {
-	bytesFloat := float64(bytes)
-	for _, unit := range []string{"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"} {
-		if math.Abs(bytesFloat) < 1024.0 {
-			return fmt.Sprintf("%3.1f%sB", bytesFloat, unit)
-		}
-		bytesFloat /= 1024.0
-	}
-	return fmt.Sprintf("%.1fYiB", bytesFloat)
-}
-
 func AdminGetUploads(c echo.Context) error {
 	ctx := context.Background()
 
@@ -35,13 +22,12 @@ func AdminGetUploads(c echo.Context) error {
 	}
 
 	templateData := []models.UploadTemplateData{}
-
 	for _, v := range data {
 		templateData = append(templateData, models.UploadTemplateData{
 			ID:   v.ID,
 			Name: v.Name,
 			Sum:  v.Sum,
-			Size: prettyByteSize(v.Size),
+			Size: models.PrettyByteSize(v.Size),
 			Type: string(v.Type),
 		})
 	}

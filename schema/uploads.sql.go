@@ -114,3 +114,47 @@ func (q *Queries) SelectUploads(ctx context.Context) ([]Upload, error) {
 	}
 	return items, nil
 }
+
+const selectUploadsOfItemByItemID = `-- name: SelectUploadsOfItemByItemID :many
+SELECT id, sum, name, size, type, item_id, upload_id FROM uploads
+INNER JOIN item_has_upload on uploads.id = item_has_upload.upload_id
+AND item_has_upload.item_id = $1
+`
+
+type SelectUploadsOfItemByItemIDRow struct {
+	ID       int64
+	Sum      string
+	Name     string
+	Size     int32
+	Type     Filetype
+	ItemID   int64
+	UploadID int64
+}
+
+func (q *Queries) SelectUploadsOfItemByItemID(ctx context.Context, itemID int64) ([]SelectUploadsOfItemByItemIDRow, error) {
+	rows, err := q.db.Query(ctx, selectUploadsOfItemByItemID, itemID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectUploadsOfItemByItemIDRow
+	for rows.Next() {
+		var i SelectUploadsOfItemByItemIDRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Sum,
+			&i.Name,
+			&i.Size,
+			&i.Type,
+			&i.ItemID,
+			&i.UploadID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

@@ -39,6 +39,14 @@ CREATE TABLE item_has_author(
     UNIQUE (item_id, author_id)
 );
 
+CREATE TABLE item_has_upload(
+    item_id BIGSERIAL NOT NULL,
+    upload_id BIGSERIAL NOT NULL,
+    FOREIGN KEY (item_id) REFERENCES items(id) on delete cascade,
+    FOREIGN KEY (upload_id) REFERENCES uploads(id) on delete cascade,
+    UNIQUE (item_id, upload_id)
+);
+
 INSERT INTO authors (name, bio)
 VALUES
 ('William Shakespeare', 'William Shakespeare was an English playwright, poet and actor. He is widely regarded as the greatest writer in the English language and the world''s pre-eminent dramatist. He is often called England''s national poet and the "Bard of Avon".' ),

@@ -25,6 +25,15 @@ INSERT INTO item_has_author (
   $1, $2
 )
 RETURNING *;
+
+-- name: CreateItemHasUploadRelationship :one
+INSERT INTO item_has_upload (
+  item_id, upload_id
+) VALUES (
+  $1, $2
+)
+RETURNING *;
+
 -- https://github.com/sqlc-dev/sqlc/issues/3238
 
 -- name: SelectItemsWithAuthors :many

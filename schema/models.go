@@ -74,6 +74,11 @@ type ItemHasAuthor struct {
 	AuthorID int64
 }
 
+type ItemHasUpload struct {
+	ItemID   int64
+	UploadID int64
+}
+
 type Publisher struct {
 	ID          int64
 	Name        string

@@ -3,6 +3,7 @@ package items
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -50,7 +51,26 @@ func AdminGetSingleItem(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	view := items.AdminSingleItem(i)
+	uploads, err := db.Queries.SelectUploadsOfItemByItemID(context.WithValue(c.Request().Context(), 1, c), i.Id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+	fmt.Println(uploads)
+
+
+	templateData := []models.UploadTemplateData{}
+
+	for _, v := range uploads {
+		templateData = append(templateData, models.UploadTemplateData{
+			ID:   v.ID,
+			Name: v.Name,
+			Sum:  v.Sum,
+			Size: models.PrettyByteSize(v.Size),
+			Type: string(v.Type),
+		})
+	}
+
+	view := items.AdminSingleItem(i, templateData)
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout(i.Name, view))
 }
@@ -88,21 +108,21 @@ func HTMXAdminItemsOneEdit(c echo.Context) error {
 
 	return controller.Render(c, http.StatusOK, view)
 }
-
-func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
-	var param controller.ParamContainsID
-
-	err := c.Bind(&param)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
-	}
-
-	i, err := SingleItemPopulated(param.ID)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	view := items.SingleItemAttributes(i)
-
-	return controller.Render(c, http.StatusOK, view)
-}
+//
+// func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
+// 	var param controller.ParamContainsID
+//
+// 	err := c.Bind(&param)
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, err)
+// 	}
+//
+// 	i, err := SingleItemPopulated(param.ID)
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusNotFound, err)
+// 	}
+//
+// 	view := items.SingleItemAttributes(i)
+//
+// 	return controller.Render(c, http.StatusOK, view)
+// }

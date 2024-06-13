@@ -6,15 +6,15 @@ import (
 	"github.com/sotirismorf/go-htmx/models"
 )
 
-templ AdminSingleItem(item models.ItemData) {
+templ AdminSingleItem(item models.ItemData, uploads []models.UploadTemplateData) {
 	<h1 class="text-4xl font-bold">
 		<a class="hover:underline decoration-4" href="/admin/items">Items</a>
     <span>/ { item.Name }</span>
 	</h1>
-	@SingleItemAttributes(item)
+	@SingleItemAttributes(item, uploads)
 }
 
-templ SingleItemAttributes(item models.ItemData) {
+templ SingleItemAttributes(item models.ItemData, uploads []models.UploadTemplateData) {
 	<div id="attributes">
 		<p>
 			<b>Name: </b>
@@ -36,6 +36,19 @@ templ SingleItemAttributes(item models.ItemData) {
 				for i, author := range item.Authors {
 					{ author.Name }
 					if i < len(item.Authors) - 1 {
+						,&nbsp 
+					}
+				}
+			}
+		</p>
+		<p>
+			<b>Files: </b>
+			if len(uploads) == 0 {
+				-
+			} else {
+				for i, v := range uploads {
+					{ v.Name }
+					if i < len(uploads) - 1 {
 						,&nbsp 
 					}
 				}

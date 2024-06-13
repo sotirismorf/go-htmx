@@ -21,9 +21,9 @@ func main() {
 	}))
 
 	app.GET("/", controller.HomeHandler)
+	app.GET("/search", controller.GetSearchView)
 
 	app.GET("/downloads/:id", uploads.GetUpload)
-	app.GET("/static/:id", uploads.GetFileAsInline)
 	app.Static("/static/thumbnails", "uploads/thumbnails")
 
 	app.GET("/admin", controller.AdminHandler)
@@ -33,7 +33,7 @@ func main() {
 	app.GET("/admin/items/:id", items.AdminGetSingleItem)
 	app.DELETE("/admin/items/:id", items.AdminDeleteSingleItem)
 	app.GET("/htmx/admin/items/:id/edit", items.HTMXAdminItemsOneEdit)
-	app.GET("/htmx/admin/items/:id/cancel", items.HTMXAdminItemsOneCancelEdit)
+	// app.GET("/htmx/admin/items/:id/cancel", items.HTMXAdminItemsOneCancelEdit)
 
 	app.GET("/admin/authors", authors.AdminAuthorsHandler)
 	app.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)

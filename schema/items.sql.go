@@ -51,6 +51,27 @@ func (q *Queries) CreateItemHasAuthorRelationship(ctx context.Context, arg Creat
 	return i, err
 }
 
+const createItemHasUploadRelationship = `-- name: CreateItemHasUploadRelationship :one
+INSERT INTO item_has_upload (
+  item_id, upload_id
+) VALUES (
+  $1, $2
+)
+RETURNING item_id, upload_id
+`
+
+type CreateItemHasUploadRelationshipParams struct {
+	ItemID   int64
+	UploadID int64
+}
+
+func (q *Queries) CreateItemHasUploadRelationship(ctx context.Context, arg CreateItemHasUploadRelationshipParams) (ItemHasUpload, error) {
+	row := q.db.QueryRow(ctx, createItemHasUploadRelationship, arg.ItemID, arg.UploadID)
+	var i ItemHasUpload
+	err := row.Scan(&i.ItemID, &i.UploadID)
+	return i, err
+}
+
 const deleteItem = `-- name: DeleteItem :exec
 DELETE FROM items
 WHERE id = $1

@@ -14,6 +14,11 @@ ORDER BY id;
 SELECT * FROM uploads
 WHERE id = $1;
 
+-- name: SelectUploadsOfItemByItemID :many
+SELECT * FROM uploads
+INNER JOIN item_has_upload on uploads.id = item_has_upload.upload_id
+AND item_has_upload.item_id = $1;
+
 -- name: DeleteSingleUpload :exec
 DELETE FROM uploads
 WHERE id = $1;

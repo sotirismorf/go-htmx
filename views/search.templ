@@ -1,0 +1,21 @@
+package views
+
+import (
+	"github.com/sotirismorf/go-htmx/schema"
+)
+
+templ Search(authors []schema.Author) {
+	<h1>Home</h1>
+	<ul>
+		for _, author := range authors {
+			<li>
+				<p>{ author.Name }</p>
+				<p>
+					if author.Bio != nil {
+						{ *author.Bio }
+					}
+				</p>
+			</li>
+		}
+	</ul>
+}

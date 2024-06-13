@@ -1,22 +1,23 @@
 package components
 
-templ FormCreateItem(authors []SelectOption) {
-	<form action="/admin/items/create" method="post">
+templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
+	<form class="bg-neutral-800 rounded-md p-4" action="/admin/items/create" method="post">
 		@InputText("name", "Name")
 		@InputText("description", "Description")
 		@Select("author", "Author", authors)
+		@Select("upload", "Upload", uploads)
 		<div>
-			<button type="submit">Submit</button>
+			@ButtonSubmit("Submit")
 		</div>
 	</form>
 }
 
 templ FormCreateAuthor() {
-	<form action="/admin/authors/create" method="post">
+	<form class="bg-neutral-800 rounded-md p-4" action="/admin/authors/create" method="post">
 		@InputText("name", "Name")
 		@InputText("bio", "Bio")
 		<div>
-			<button type="submit">Submit</button>
+			@ButtonSubmit("Submit")
 		</div>
 	</form>
 }

@@ -25,7 +25,7 @@ func NavigationBar() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-neutral-800 h-12 text-2xl flex items-center justify-center mb-12\"><a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/\">Home</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/texts\">Έντυπα</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/posters\">Αφίσες</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/photos\">Εικόνες</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/about\">Σχετικά</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/admin\">Admin</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-neutral-800 h-12 text-2xl flex items-center justify-center mb-12\"><a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/\">Home</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/search\">Αναζήτηση</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/photos\">Εικόνες</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/about\">Σχετικά</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/admin\">Admin</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -144,7 +144,7 @@ func TableHeader(text string) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 44, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 43, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -181,7 +181,7 @@ func TableData(text string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 50, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 49, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -227,7 +227,7 @@ func TableDataWithLink(text string, collectionType string, id int64) templ.Compo
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 60, Col: 9}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 59, Col: 9}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -296,7 +296,7 @@ func Breadcrumb(collectionType string, displayName string) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(displayName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 73, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 72, Col: 59}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {

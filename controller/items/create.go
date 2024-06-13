@@ -5,17 +5,15 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sotirismorf/go-htmx/components"
-	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/schema"
-	"github.com/sotirismorf/go-htmx/views"
 )
 
 type formData struct {
 	Name        string `form:"name"`
 	Description string `form:"description"`
 	AuthorID    int64  `form:"author"`
+	UploadID    int64  `form:"upload"`
 }
 
 func AdminCreateItemHandler(c echo.Context) error {
@@ -51,24 +49,17 @@ func AdminCreateItemHandler(c echo.Context) error {
 		}
 	}
 
+	if formData.UploadID != 0 {
+		itemHasUploadParams := schema.CreateItemHasUploadRelationshipParams{
+			ItemID:   createdItem.ID,
+			UploadID: int64(formData.UploadID),
+		}
+
+		_, err = db.Queries.CreateItemHasUploadRelationship(ctx, itemHasUploadParams)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusNotFound, err)
+		}
+	}
+
 	return c.Redirect(http.StatusFound, "/admin/items")
-}
-
-func CreateItemController(c echo.Context) error {
-	ctx := context.Background()
-
-	authors, err := db.Queries.SelectAuthors(ctx)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	options := []components.SelectOption{}
-
-	for _, v := range authors {
-		options = append(options, components.SelectOption{ID: v.ID, Name: v.Name})
-	}
-
-	view := components.FormCreateItem(options)
-
-	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }
