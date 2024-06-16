@@ -25,6 +25,23 @@ type UploadTemplateData struct {
 	Type string
 }
 
+type TemplItemResultCard struct {
+	Name          string
+	Year          string
+	ThumbnailLink string
+	Authors       []TemplItemResultCardAuthors
+	Uploads       []TemplItemResultCardUploads
+}
+
+type TemplItemResultCardAuthors struct {
+	Name       string
+	AuthorLink string
+}
+
+type TemplItemResultCardUploads struct {
+	Type       string
+}
+
 func PrettyByteSize(bytes int32) string {
 	bytesFloat := float64(bytes)
 	for _, unit := range []string{"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"} {

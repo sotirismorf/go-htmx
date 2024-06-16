@@ -12,6 +12,7 @@ import (
 type formData struct {
 	Name        string `form:"name"`
 	Description string `form:"description"`
+	Year        int16  `form:"year"`
 	AuthorID    int64  `form:"author"`
 	UploadID    int64  `form:"upload"`
 }
@@ -26,7 +27,10 @@ func AdminCreateItemHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	itemParams := schema.CreateItemParams{Name: formData.Name}
+	itemParams := schema.CreateItemParams{
+    Name: formData.Name,
+    Year: formData.Year,
+  }
 
 	if formData.Description != "" {
 		itemParams.Description = &formData.Description

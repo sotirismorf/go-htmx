@@ -17,7 +17,7 @@ import (
 func AdminItemsHandler(c echo.Context) error {
 	ctx := context.Background()
 
-	itemData, err := db.Queries.SelectItemsWithAuthors(ctx)
+	itemData, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}

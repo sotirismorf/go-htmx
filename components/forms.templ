@@ -4,6 +4,7 @@ templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
 	<form class="bg-neutral-800 rounded-md p-4" action="/admin/items/create" method="post">
 		@InputText("name", "Name")
 		@InputText("description", "Description")
+		@InputNumber("year", "Year published")
 		@Select("author", "Author", authors)
 		@Select("upload", "Upload", uploads)
 		<div>

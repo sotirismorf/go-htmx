@@ -1,21 +1,31 @@
 package views
 
 import (
-	"github.com/sotirismorf/go-htmx/schema"
+	"github.com/sotirismorf/go-htmx/models"
 )
 
-templ Search(authors []schema.Author) {
+templ Search(items []models.TemplItemResultCard) {
 	<h1>Home</h1>
-	<ul>
-		for _, author := range authors {
-			<li>
-				<p>{ author.Name }</p>
-				<p>
-					if author.Bio != nil {
-						{ *author.Bio }
+	<div class="bg-neutral-800 rounded-md p-3">
+		for _, v := range items {
+			<div class="my-10 flex">
+				<div>
+					<img class="object-contain size-40" src={ v.ThumbnailLink } alt=""/>
+				</div>
+				<div>
+					<p class="font-bold text-xl">
+						<a href={ "/item/1" }>{ v.Name }</a>
+					</p>
+					<p class="">Published: { v.Year }</p>
+					for _, k := range v.Authors {
+						<span>
+							<a href={ templ.SafeURL(k.AuthorLink) }>
+								{ k.Name }
+							</a>
+						</span>
 					}
-				</p>
-			</li>
+				</div>
+			</div>
 		}
-	</ul>
+	</div>
 }

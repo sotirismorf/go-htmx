@@ -67,6 +67,7 @@ type Item struct {
 	ID          int64
 	Name        string
 	Description *string
+	Year        int16
 }
 
 type ItemHasAuthor struct {

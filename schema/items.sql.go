@@ -11,22 +11,28 @@ import (
 
 const createItem = `-- name: CreateItem :one
 INSERT INTO items (
-  name, description
+  name, description, year
 ) VALUES (
-  $1, $2
+  $1, $2, $3
 )
-RETURNING id, name, description
+RETURNING id, name, description, year
 `
 
 type CreateItemParams struct {
 	Name        string
 	Description *string
+	Year        int16
 }
 
 func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, error) {
-	row := q.db.QueryRow(ctx, createItem, arg.Name, arg.Description)
+	row := q.db.QueryRow(ctx, createItem, arg.Name, arg.Description, arg.Year)
 	var i Item
-	err := row.Scan(&i.ID, &i.Name, &i.Description)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Year,
+	)
 	return i, err
 }
 
@@ -83,19 +89,24 @@ func (q *Queries) DeleteItem(ctx context.Context, id int64) error {
 }
 
 const selectItem = `-- name: SelectItem :one
-SELECT id, name, description FROM items
+SELECT id, name, description, year FROM items
 WHERE id = $1
 `
 
 func (q *Queries) SelectItem(ctx context.Context, id int64) (Item, error) {
 	row := q.db.QueryRow(ctx, selectItem, id)
 	var i Item
-	err := row.Scan(&i.ID, &i.Name, &i.Description)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Year,
+	)
 	return i, err
 }
 
 const selectItems = `-- name: SelectItems :many
-SELECT id, name, description FROM items
+SELECT id, name, description, year FROM items
 ORDER BY name
 `
 
@@ -108,7 +119,12 @@ func (q *Queries) SelectItems(ctx context.Context) ([]Item, error) {
 	var items []Item
 	for rows.Next() {
 		var i Item
-		if err := rows.Scan(&i.ID, &i.Name, &i.Description); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Year,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -119,43 +135,55 @@ func (q *Queries) SelectItems(ctx context.Context) ([]Item, error) {
 	return items, nil
 }
 
-const selectItemsWithAuthors = `-- name: SelectItemsWithAuthors :many
+const selectItemsWithAuthorsAndUploads = `-- name: SelectItemsWithAuthorsAndUploads :many
 
-SELECT items.id, items.name, items.description,
+SELECT items.id, items.name, items.description, items.year,
 CAST(
   CASE
     WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
-    THEN jsonb_agg((authors.id, authors.name))::jsonb
+    THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
   END
-AS jsonb) as authors
+AS jsonb) as authors,
+CAST(
+  CASE
+    WHEN (array_length(array_remove(array_agg(uploads.id), null), 1) > 0)
+    THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
+  END
+AS jsonb) as uploads
 FROM items
 left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id
+left join item_has_upload on items.id = item_has_upload.item_id
+left join uploads on item_has_upload.upload_id = uploads.id
 group by items.id
 `
 
-type SelectItemsWithAuthorsRow struct {
+type SelectItemsWithAuthorsAndUploadsRow struct {
 	ID          int64
 	Name        string
 	Description *string
+	Year        int16
 	Authors     []byte
+	Uploads     []byte
 }
 
 // https://github.com/sqlc-dev/sqlc/issues/3238
-func (q *Queries) SelectItemsWithAuthors(ctx context.Context) ([]SelectItemsWithAuthorsRow, error) {
-	rows, err := q.db.Query(ctx, selectItemsWithAuthors)
+func (q *Queries) SelectItemsWithAuthorsAndUploads(ctx context.Context) ([]SelectItemsWithAuthorsAndUploadsRow, error) {
+	rows, err := q.db.Query(ctx, selectItemsWithAuthorsAndUploads)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []SelectItemsWithAuthorsRow
+	var items []SelectItemsWithAuthorsAndUploadsRow
 	for rows.Next() {
-		var i SelectItemsWithAuthorsRow
+		var i SelectItemsWithAuthorsAndUploadsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
 			&i.Description,
+			&i.Year,
 			&i.Authors,
+			&i.Uploads,
 		); err != nil {
 			return nil, err
 		}

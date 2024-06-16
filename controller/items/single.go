@@ -3,7 +3,6 @@ package items
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -55,8 +54,6 @@ func AdminGetSingleItem(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
-	fmt.Println(uploads)
-
 
 	templateData := []models.UploadTemplateData{}
 
@@ -108,6 +105,7 @@ func HTMXAdminItemsOneEdit(c echo.Context) error {
 
 	return controller.Render(c, http.StatusOK, view)
 }
+
 //
 // func HTMXAdminItemsOneCancelEdit(c echo.Context) error {
 // 	var param controller.ParamContainsID

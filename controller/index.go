@@ -31,7 +31,7 @@ func HomeHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	items, err := db.Queries.SelectItemsWithAuthors(ctx)
+	items, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
