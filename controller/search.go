@@ -3,21 +3,65 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/views"
 )
 
+type searchQueryParams struct {
+	Query string `query:"query"`
+	Field string `query:"field"`
+}
+
+type RequestHeaders struct {
+	HXRequest bool `header:"HX-Request"`
+}
+
 func GetSearchView(c echo.Context) error {
+	var queryParams searchQueryParams
+
+	err := c.Bind(&queryParams)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	requestHeaders := new(RequestHeaders)
+	binder := &echo.DefaultBinder{}
+	binder.BindHeaders(c, requestHeaders)
+
+	fmt.Println(requestHeaders.HXRequest)
+
+	sortOptions := []components.SelectOption{
+		components.SelectOption{
+			Name: "Date ascending",
+			ID:   "date-asc",
+		},
+		components.SelectOption{
+			Name: "Date descending",
+			ID:   "date-desc",
+		},
+	}
+
+	fieldOptions := []components.SelectOption{
+		components.SelectOption{
+			Name: "Title",
+			ID:   "title",
+		},
+		components.SelectOption{
+			Name: "Author",
+			ID:   "author",
+		},
+	}
 
 	ctx := context.Background()
-
-	itemsDBData, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx)
+	itemsDBData, err := db.Queries.SearchItems(ctx, "%"+queryParams.Query+"%")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
@@ -32,9 +76,6 @@ func GetSearchView(c echo.Context) error {
 		Filename string `json:"filename"`
 		Sum      string `json:"sum"`
 	}
-
-	uploads := []upload{}
-	json.Unmarshal([]byte(itemsDBData[0].Uploads), &uploads)
 
 	itemsTempl := []models.TemplItemResultCard{}
 	for _, v := range itemsDBData {
@@ -81,7 +122,10 @@ func GetSearchView(c echo.Context) error {
 		})
 	}
 
-	view := views.Search(itemsTempl)
+	if requestHeaders.HXRequest {
+		return Render(c, http.StatusOK, views.SearchResults(itemsTempl))
+	}
 
+	view := views.Search(itemsTempl, sortOptions, fieldOptions)
 	return Render(c, http.StatusOK, views.AdminLayout("Home", view))
 }

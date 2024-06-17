@@ -88,6 +88,65 @@ func (q *Queries) DeleteItem(ctx context.Context, id int64) error {
 	return err
 }
 
+const searchItems = `-- name: SearchItems :many
+SELECT items.id, items.name, items.description, items.year,
+CAST(
+  CASE
+    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
+    THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
+  END
+AS jsonb) as authors,
+CAST(
+  CASE
+    WHEN (array_length(array_remove(array_agg(uploads.id), null), 1) > 0)
+    THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
+  END
+AS jsonb) as uploads
+FROM items
+left join item_has_author on items.id = item_has_author.item_id
+left join authors on item_has_author.author_id = authors.id
+left join item_has_upload on items.id = item_has_upload.item_id
+left join uploads on item_has_upload.upload_id = uploads.id
+where lower(unaccent(items.name)) like $1
+group by items.id
+`
+
+type SearchItemsRow struct {
+	ID          int64
+	Name        string
+	Description *string
+	Year        int16
+	Authors     []byte
+	Uploads     []byte
+}
+
+func (q *Queries) SearchItems(ctx context.Context, name string) ([]SearchItemsRow, error) {
+	rows, err := q.db.Query(ctx, searchItems, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchItemsRow
+	for rows.Next() {
+		var i SearchItemsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.Year,
+			&i.Authors,
+			&i.Uploads,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectItem = `-- name: SelectItem :one
 SELECT id, name, description, year FROM items
 WHERE id = $1

@@ -1,25 +1,23 @@
 package components
 
-import (
-	"strconv"
-)
-
 type SelectOption struct {
 	Name string
-	ID   int64
+	ID   string
 }
 
-templ Select(name string, displayName string, options []SelectOption) {
+templ Select(name string, label string, options []SelectOption, isDisabled bool) {
 	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
-		<label class="bg-neutral-900 px-4 py-2" for="author">{ displayName }</label>
+		<label class="bg-neutral-900 px-4 py-2" for="author">{ label }</label>
 		<select
 			class="bg-transparent px-4 focus:bg-neutral-700 hover:bg-neutral-700 transition rounded-r-lg"
 			name={ name }
 			id={ "select-" + name }
 		>
-			<option disabled selected value>Select one</option>
+			if isDisabled {
+				<option disabled selected value>Select one</option>
+			}
 			for _, option := range options {
-				<option value={ strconv.Itoa(int(option.ID)) }>{ option.Name }</option>
+				<option value={ option.ID }>{ option.Name }</option>
 			}
 		</select>
 	</div>

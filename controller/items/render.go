@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
-	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/views"
 	"github.com/sotirismorf/go-htmx/views/admin/items"
@@ -61,7 +62,7 @@ func CreateItemController(c echo.Context) error {
 	authorOptions := []components.SelectOption{}
 
 	for _, v := range authorData {
-		authorOptions = append(authorOptions, components.SelectOption{ID: v.ID, Name: v.Name})
+		authorOptions = append(authorOptions, components.SelectOption{ID: strconv.FormatInt(v.ID, 10), Name: v.Name})
 	}
 
 	uploadData, err := db.Queries.SelectUploads(ctx)
@@ -72,7 +73,7 @@ func CreateItemController(c echo.Context) error {
 	uploadOptions := []components.SelectOption{}
 
 	for _, v := range uploadData {
-		uploadOptions = append(uploadOptions, components.SelectOption{ID: v.ID, Name: v.Name})
+		uploadOptions = append(uploadOptions, components.SelectOption{ID: strconv.FormatInt(v.ID, 10), Name: v.Name})
 	}
 
 	view := components.FormCreateItem(authorOptions, uploadOptions)

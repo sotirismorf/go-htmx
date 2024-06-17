@@ -5,8 +5,8 @@ templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
 		@InputText("name", "Name")
 		@InputText("description", "Description")
 		@InputNumber("year", "Year published")
-		@Select("author", "Author", authors)
-		@Select("upload", "Upload", uploads)
+		@Select("author", "Author", authors, true)
+		@Select("upload", "Upload", uploads, true)
 		<div>
 			@ButtonSubmit("Submit")
 		</div>

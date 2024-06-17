@@ -2,11 +2,43 @@ package views
 
 import (
 	"github.com/sotirismorf/go-htmx/models"
+	"github.com/sotirismorf/go-htmx/components"
 )
 
-templ Search(items []models.TemplItemResultCard) {
+templ Search(items []models.TemplItemResultCard, sortOptions []components.SelectOption, fieldOptions []components.SelectOption) {
 	<h1>Home</h1>
-	<div class="bg-neutral-800 rounded-md p-3">
+	<form
+		class="bg-neutral-800 inline-flex rounded-md mb-10 w-full"
+		hx-get="/search"
+		hx-include="#search-form-sort"
+		hx-push-url="true"
+		hx-swap="outerHTML"
+		hx-target="#search-results"
+		id="search-form-main"
+	>
+		<input type="text" name="query" value=""/>
+		<button>search</button>
+		@components.Select("field", "Search for", fieldOptions, false)
+	</form>
+	<form
+		hx-get="/search"
+		hx-include="#search-form-main"
+		hx-push-url="true"
+		hx-swap="outerHTML"
+		hx-target="#search-results"
+		hx-trigger="change"
+		id="search-form-sort"
+	>
+		@components.Select("sort", "Sort", sortOptions, false)
+	</form>
+	@SearchResults(items)
+}
+
+templ SearchResults(items []models.TemplItemResultCard) {
+	<div
+		id="search-results"
+		class="bg-neutral-800 rounded-md p-3"
+	>
 		for _, v := range items {
 			<div class="my-10 flex">
 				<div>
@@ -17,12 +49,21 @@ templ Search(items []models.TemplItemResultCard) {
 						<a href={ "/item/1" }>{ v.Name }</a>
 					</p>
 					<p class="">Published: { v.Year }</p>
-					for _, k := range v.Authors {
-						<span>
-							<a href={ templ.SafeURL(k.AuthorLink) }>
-								{ k.Name }
-							</a>
-						</span>
+					if len(v.Authors) != 0 {
+						<div>
+							<span>Writer:</span>
+							for i, k := range v.Authors {
+								<div class="inline-block">
+									<a
+										class="hover:underline"
+										href={ templ.SafeURL(k.AuthorLink) }
+									>{ k.Name }</a>
+								</div>
+								if i < len(v.Authors) - 1 {
+									<span>, </span>
+								}
+							}
+						</div>
 					}
 				</div>
 			</div>
