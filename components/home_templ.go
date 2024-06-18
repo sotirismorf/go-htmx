@@ -25,7 +25,7 @@ func NavigationBar() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-neutral-800 h-12 text-2xl flex items-center justify-center mb-12\"><a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/\">Home</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/search\">Αναζήτηση</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/photos\">Εικόνες</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/about\">Σχετικά</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/admin\">Admin</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-dark-2 h-12 text-2xl flex items-center justify-center mb-12\"><a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/\">Home</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/search\">Αναζήτηση</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/photos\">Εικόνες</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/about\">Σχετικά</a> <a class=\"px-2 mx-4 hover:text-fuchsia-400\" href=\"/admin\">Admin</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,7 +49,7 @@ func AdminSidebar() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"min-w-60 text-nowrap bg-neutral-800 rounded-md p-3\"><h2 class=\"text-xl font-bold mb-1\">Material</h2><ul class=\"text-lg\"><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/uploads\">Uploads</a></li><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/items\">Items</a></li><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/authors\">Authors</a></li><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/items\">Groups</a></li></ul></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"min-w-60 text-nowrap bg-dark-2 rounded-md p-3\"><h2 class=\"text-xl font-bold mb-1\">Material</h2><ul class=\"text-lg\"><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/uploads\">Uploads</a></li><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/items\">Items</a></li><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/authors\">Authors</a></li><li class=\"py-0.5\"><a class=\"hover:underline \" href=\"/admin/items\">Groups</a></li></ul></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -73,7 +73,7 @@ func Table() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-4 bg-neutral-800 mt-9 rounded-md\"><table class=\"table-auto w-full\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-4 bg-dark-2 mt-9 rounded-md\"><table class=\"table-auto w-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -311,7 +311,7 @@ func Breadcrumb(collectionType string, displayName string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"float-right py-1 px-2 hover:bg-neutral-700 text-center border-white border-solid border rounded-full\">Create new</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"float-right py-1 px-2 hover:bg-dark-1 text-center border-white border-solid border rounded-full\">Create new</a></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

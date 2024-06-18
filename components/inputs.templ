@@ -7,9 +7,9 @@ type SelectOption struct {
 
 templ Select(name string, label string, options []SelectOption, isDisabled bool) {
 	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
-		<label class="bg-neutral-900 px-4 py-2" for="author">{ label }</label>
+		<label class="bg-dark-3 px-4 py-2" for="author">{ label }</label>
 		<select
-			class="bg-transparent px-4 focus:bg-neutral-700 hover:bg-neutral-700 transition rounded-r-lg"
+			class="bg-transparent px-4 focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
 			name={ name }
 			id={ "select-" + name }
 		>
@@ -25,9 +25,9 @@ templ Select(name string, label string, options []SelectOption, isDisabled bool)
 
 templ InputText(name string, displayName string) {
 	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
-		<label class="bg-neutral-900 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
+		<label class="bg-dark-3 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
 		<input
-			class="bg-transparent px-4 focus:outline-none focus:bg-neutral-700 hover:bg-neutral-700 transition rounded-r-lg"
+			class="bg-transparent px-4 focus:outline-none focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
 			id={ "input-text-" + name }
 			name={ name }
 			autocomplete="off"
@@ -38,9 +38,9 @@ templ InputText(name string, displayName string) {
 
 templ InputNumber(name string, displayName string) {
 	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
-		<label class="bg-neutral-900 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
+		<label class="bg-dark-3 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
 		<input
-			class="bg-transparent px-4 focus:outline-none focus:bg-neutral-700 hover:bg-neutral-700 transition rounded-r-lg"
+			class="bg-transparent px-4 focus:outline-none focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
 			id={ "input-text-" + name }
 			name={ name }
 			autocomplete="off"

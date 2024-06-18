@@ -7,27 +7,28 @@ import (
 
 templ Search(items []models.TemplItemResultCard, sortOptions []components.SelectOption, fieldOptions []components.SelectOption) {
 	<h1>Home</h1>
+	<div class="bg-dark-2 rounded-3xl mb-10 w-full">
+		<form
+			class="htmx-search"
+			hx-get="/search"
+			hx-include=".htmx-search"
+			hx-push-url="true"
+			hx-swap="outerHTML"
+			hx-target="#search-results"
+		>
+			<input type="text" name="query" value=""/>
+			<button>search</button>
+			@components.Select("field", "Search for", fieldOptions, false)
+		</form>
+	</div>
 	<form
-		class="bg-neutral-800 inline-flex rounded-md mb-10 w-full"
+		class="htmx-search"
 		hx-get="/search"
-		hx-include="#search-form-sort"
-		hx-push-url="true"
-		hx-swap="outerHTML"
-		hx-target="#search-results"
-		id="search-form-main"
-	>
-		<input type="text" name="query" value=""/>
-		<button>search</button>
-		@components.Select("field", "Search for", fieldOptions, false)
-	</form>
-	<form
-		hx-get="/search"
-		hx-include="#search-form-main"
+		hx-include=".htmx-search"
 		hx-push-url="true"
 		hx-swap="outerHTML"
 		hx-target="#search-results"
 		hx-trigger="change"
-		id="search-form-sort"
 	>
 		@components.Select("sort", "Sort", sortOptions, false)
 	</form>
@@ -37,7 +38,7 @@ templ Search(items []models.TemplItemResultCard, sortOptions []components.Select
 templ SearchResults(items []models.TemplItemResultCard) {
 	<div
 		id="search-results"
-		class="bg-neutral-800 rounded-md p-3"
+		class="bg-dark-2 rounded-3xl p-3"
 	>
 		for _, v := range items {
 			<div class="my-10 flex">

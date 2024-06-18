@@ -1,3 +1,5 @@
 tmp
-uploads/*
+/uploads
+/node_modules
+/assets
 *.db

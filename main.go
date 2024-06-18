@@ -25,6 +25,7 @@ func main() {
 
 	app.GET("/downloads/:id", uploads.GetUpload)
 	app.Static("/static/thumbnails", "uploads/thumbnails")
+	app.Static("/assets", "assets")
 
 	app.GET("/admin", controller.AdminHandler)
 	app.GET("/admin/items", items.AdminItemsHandler)
