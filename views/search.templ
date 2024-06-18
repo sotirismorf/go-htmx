@@ -6,49 +6,57 @@ import (
 )
 
 templ Search(items []models.TemplItemResultCard, sortOptions []components.SelectOption, fieldOptions []components.SelectOption) {
-	<h1>Home</h1>
-	<div class="bg-dark-2 rounded-3xl mb-10 w-full">
+	<div class="bg-dark-2 rounded-3xl mb-10 w-full py-2 shadow-inner shadow-neutral-900 inline-flex items-center justify-between">
 		<form
-			class="htmx-search"
+			class="htmx-search inline-flex items-center mx-2 gap-x-4"
 			hx-get="/search"
 			hx-include=".htmx-search"
 			hx-push-url="true"
 			hx-swap="outerHTML"
 			hx-target="#search-results"
 		>
-			<input type="text" name="query" value=""/>
-			<button>search</button>
-			@components.Select("field", "Search for", fieldOptions, false)
+			<input
+				class="bg-transparent outline-none px-4 rounded-full text-xl font-bold"
+				type="text"
+				name="query"
+				value=""
+				autocomplete="off"
+				placeholder="Search the catalogue..."
+			/>
+			<button class="rounded-full bg-fuchsia-500 hover:bg-fuchsia-400 px-3 py-1 text-neutral-800 text-lg shadow-inner hover:shadow-md transition font-bold">Search</button>
+		</form>
+		<form
+			class="htmx-search inline-flex gap-x-4 mx-2"
+			hx-get="/search"
+			hx-include=".htmx-search"
+			hx-push-url="true"
+			hx-swap="outerHTML"
+			hx-target="#search-results"
+			hx-trigger="change"
+		>
+			@components.SelectRounded("field", "Search for", fieldOptions, false)
+			@components.SelectRounded("sort", "Sort", sortOptions, false)
 		</form>
 	</div>
-	<form
-		class="htmx-search"
-		hx-get="/search"
-		hx-include=".htmx-search"
-		hx-push-url="true"
-		hx-swap="outerHTML"
-		hx-target="#search-results"
-		hx-trigger="change"
-	>
-		@components.Select("sort", "Sort", sortOptions, false)
-	</form>
 	@SearchResults(items)
 }
 
 templ SearchResults(items []models.TemplItemResultCard) {
 	<div
 		id="search-results"
-		class="bg-dark-2 rounded-3xl p-3"
+		class="bg-dark-2 shadow-inner shadow-neutral-900 rounded-3xl px-3 py-8"
 	>
 		for _, v := range items {
-			<div class="my-10 flex">
-				<div>
-					<img class="object-contain size-40" src={ v.ThumbnailLink } alt=""/>
+			<div class="mb-10 flex">
+				<div class="mr-4">
+					<a href={ "/item/1" }>
+						<img class="object-contain size-40 select-none" src={ v.ThumbnailLink } alt=""/>
+					</a>
 				</div>
 				<div>
-					<p class="font-bold text-xl">
-						<a href={ "/item/1" }>{ v.Name }</a>
-					</p>
+					<div class="mb-2">
+						<a class="hover:underline font-bold text-2xl" href={ "/item/1" }>{ v.Name }</a>
+					</div>
 					<p class="">Published: { v.Year }</p>
 					if len(v.Authors) != 0 {
 						<div>

@@ -5,8 +5,26 @@ type SelectOption struct {
 	ID   string
 }
 
+templ SelectRounded(name string, label string, options []SelectOption, isDisabled bool) {
+	<div class="border-2 border-solid border-fuchsia-500 rounded-full flex items-stretch w-max">
+		<label class="pl-4 pr-2 py-1" for="author">{ label }</label>
+		<select
+			class="bg-transparent font-bold pl-2 pr-2 hover:text-fuchsia-500 transition duration-75 ease-out rounded-r-full"
+			name={ name }
+			id={ "select-" + name }
+		>
+			if isDisabled {
+				<option disabled selected value>Select one</option>
+			}
+			for _, option := range options {
+				<option value={ option.ID }>{ option.Name }</option>
+			}
+		</select>
+	</div>
+}
+
 templ Select(name string, label string, options []SelectOption, isDisabled bool) {
-	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
+	<div class="border-2 border-solid border-neutral-900 rounded-lg flex items-stretch w-max">
 		<label class="bg-dark-3 px-4 py-2" for="author">{ label }</label>
 		<select
 			class="bg-transparent px-4 focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
@@ -24,7 +42,7 @@ templ Select(name string, label string, options []SelectOption, isDisabled bool)
 }
 
 templ InputText(name string, displayName string) {
-	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
+	<div class="border-2 border-solid border-neutral-900 rounded-lg flex items-stretch w-max">
 		<label class="bg-dark-3 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
 		<input
 			class="bg-transparent px-4 focus:outline-none focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
@@ -37,7 +55,7 @@ templ InputText(name string, displayName string) {
 }
 
 templ InputNumber(name string, displayName string) {
-	<div class="border-2 border-solid border-neutral-900 mb-2 rounded-lg flex items-stretch w-max">
+	<div class="border-2 border-solid border-neutral-900 rounded-lg flex items-stretch w-max">
 		<label class="bg-dark-3 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
 		<input
 			class="bg-transparent px-4 focus:outline-none focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
