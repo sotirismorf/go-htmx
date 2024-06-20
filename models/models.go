@@ -25,6 +25,13 @@ type UploadTemplateData struct {
 	Type string
 }
 
+type TemplPagination struct {
+	CurrentPage  int64
+	ItemsPerPage int32
+	TotalItems   int64
+	TotalPages   int64
+}
+
 type TemplItemResultCard struct {
 	Name          string
 	Year          string
@@ -39,7 +46,7 @@ type TemplItemResultCardAuthors struct {
 }
 
 type TemplItemResultCardUploads struct {
-	Type       string
+	Type string
 }
 
 func PrettyByteSize(bytes int32) string {

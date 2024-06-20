@@ -1,0 +1,32 @@
+package components
+
+import (
+	"strconv"
+	"github.com/sotirismorf/go-htmx/models"
+)
+
+templ Pagination(p models.TemplPagination, neighbours int64) {
+	<div class="inline-flex">
+		if p.TotalPages > 4 {
+			@PaginationLink(1)
+			if p.CurrentPage > 2 + neighbours {
+				<div class="px-1">...</div>
+			}
+			for i := max(2, p.CurrentPage - neighbours); i <= min(p.CurrentPage + neighbours, p.TotalPages - 1) ; i++ {
+				@PaginationLink(i)
+			}
+			if p.CurrentPage < p.TotalPages - neighbours - 1 {
+				<div class="px-1">...</div>
+			}
+			@PaginationLink(p.TotalPages)
+		}
+	</div>
+}
+
+templ PaginationLink(page int64) {
+	<a href={ templ.SafeURL("?page=" + strconv.FormatInt(page, 10)) }>
+		<div class="px-2">
+			{ strconv.FormatInt(page, 10) }
+		</div>
+	</a>
+}

@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 	"encoding/json"
-
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -28,7 +28,7 @@ type RequestHeaders struct {
 
 func GetSearchView(c echo.Context) error {
 	queryParams := searchQueryParams{
-		Items: 10,
+		Items: 5,
 		Page:  1,
 	}
 
@@ -64,8 +64,8 @@ func GetSearchView(c echo.Context) error {
 	}
 
 	dbParams := schema.SearchItemsParams{
-		Name: "%"+queryParams.Query+"%",
-		Limit: queryParams.Items,
+		Name:   "%" + queryParams.Query + "%",
+		Limit:  queryParams.Items,
 		Offset: (queryParams.Page - 1) * queryParams.Items,
 	}
 
@@ -131,10 +131,28 @@ func GetSearchView(c echo.Context) error {
 		})
 	}
 
-	if requestHeaders.HXRequest {
-		return Render(c, http.StatusOK, views.SearchResults(itemsTempl))
+	pagination := models.TemplPagination{
+		CurrentPage:  int64(queryParams.Page),
+		ItemsPerPage: queryParams.Items,
 	}
 
-	view := views.Search(itemsTempl, sortOptions, fieldOptions)
+	// Pagination
+	if len(itemsDBData) != 0 {
+		pagination.TotalItems = itemsDBData[0].Count
+	} else {
+		pagination.TotalItems = 0
+	}
+
+  pagination.TotalPages = pagination.TotalItems / int64(queryParams.Items)
+  if pagination.TotalItems % int64(queryParams.Items) != 0 {
+    pagination.TotalPages += 1
+  }
+  fmt.Println(pagination)
+
+	if requestHeaders.HXRequest {
+		return Render(c, http.StatusOK, views.SearchResults(pagination, itemsTempl))
+	}
+
+	view := views.Search(itemsTempl, pagination, sortOptions, fieldOptions)
 	return Render(c, http.StatusOK, views.AdminLayout("Home", view))
 }

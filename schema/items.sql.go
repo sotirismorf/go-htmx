@@ -101,7 +101,8 @@ CAST(
     WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
-AS jsonb) as uploads
+AS jsonb) as uploads,
+COUNT(*) OVER()
 FROM items
 left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id
@@ -125,6 +126,7 @@ type SearchItemsRow struct {
 	Year        int16
 	Authors     []byte
 	Uploads     []byte
+	Count       int64
 }
 
 func (q *Queries) SearchItems(ctx context.Context, arg SearchItemsParams) ([]SearchItemsRow, error) {
@@ -143,6 +145,7 @@ func (q *Queries) SearchItems(ctx context.Context, arg SearchItemsParams) ([]Sea
 			&i.Year,
 			&i.Authors,
 			&i.Uploads,
+			&i.Count,
 		); err != nil {
 			return nil, err
 		}
@@ -215,7 +218,8 @@ CAST(
     WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
-AS jsonb) as uploads
+AS jsonb) as uploads,
+COUNT(*) OVER()
 FROM items
 left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id
@@ -237,6 +241,7 @@ type SelectItemsWithAuthorsAndUploadsRow struct {
 	Year        int16
 	Authors     []byte
 	Uploads     []byte
+	Count       int64
 }
 
 // https://github.com/sqlc-dev/sqlc/issues/3238
@@ -256,6 +261,7 @@ func (q *Queries) SelectItemsWithAuthorsAndUploads(ctx context.Context, arg Sele
 			&i.Year,
 			&i.Authors,
 			&i.Uploads,
+			&i.Count,
 		); err != nil {
 			return nil, err
 		}

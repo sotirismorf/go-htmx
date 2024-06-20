@@ -49,7 +49,8 @@ CAST(
     WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
-AS jsonb) as uploads
+AS jsonb) as uploads,
+COUNT(*) OVER()
 FROM items
 left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id
@@ -71,7 +72,8 @@ CAST(
     WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
-AS jsonb) as uploads
+AS jsonb) as uploads,
+COUNT(*) OVER()
 FROM items
 left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id

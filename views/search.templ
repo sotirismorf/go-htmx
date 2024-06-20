@@ -5,7 +5,12 @@ import (
 	"github.com/sotirismorf/go-htmx/components"
 )
 
-templ Search(items []models.TemplItemResultCard, sortOptions []components.SelectOption, fieldOptions []components.SelectOption) {
+templ Search(
+	items []models.TemplItemResultCard,
+	pagination models.TemplPagination,
+	sortOptions []components.SelectOption,
+	fieldOptions []components.SelectOption,
+) {
 	<div class="bg-dark-2 rounded-3xl mb-10 w-full py-2 shadow-inner shadow-neutral-900 inline-flex items-center justify-between">
 		<form
 			class="htmx-search inline-flex items-center mx-2 gap-x-4"
@@ -38,44 +43,44 @@ templ Search(items []models.TemplItemResultCard, sortOptions []components.Select
 			@components.SelectRounded("sort", "Sort", sortOptions, false)
 		</form>
 	</div>
-	@SearchResults(items)
+	@SearchResults(pagination, items)
 }
 
-templ SearchResults(items []models.TemplItemResultCard) {
-	<div
-		id="search-results"
-		class="bg-dark-2 shadow-inner shadow-neutral-900 rounded-3xl px-3 py-8"
-	>
-		for _, v := range items {
-			<div class="mb-10 flex">
-				<div class="mr-4">
-					<a href={ "/item/1" }>
-						<img class="object-contain size-40 select-none" src={ v.ThumbnailLink } alt=""/>
-					</a>
-				</div>
-				<div>
-					<div class="mb-2">
-						<a class="hover:underline font-bold text-2xl" href={ "/item/1" }>{ v.Name }</a>
+templ SearchResults(pagination models.TemplPagination, items []models.TemplItemResultCard) {
+	<div id="search-results">
+			@components.Pagination(pagination, 3)
+		<div class="bg-dark-2 shadow-inner shadow-neutral-900 rounded-3xl px-3 py-8">
+			for _, v := range items {
+				<div class="mb-10 flex">
+					<div class="mr-4">
+						<a href={ "/item/1" }>
+							<img class="object-contain size-40 select-none" src={ v.ThumbnailLink } alt=""/>
+						</a>
 					</div>
-					<p class="">Published: { v.Year }</p>
-					if len(v.Authors) != 0 {
-						<div>
-							<span>Writer:</span>
-							for i, k := range v.Authors {
-								<div class="inline-block">
-									<a
-										class="hover:underline"
-										href={ templ.SafeURL(k.AuthorLink) }
-									>{ k.Name }</a>
-								</div>
-								if i < len(v.Authors) - 1 {
-									<span>, </span>
-								}
-							}
+					<div>
+						<div class="mb-2">
+							<a class="hover:underline font-bold text-2xl" href={ "/item/1" }>{ v.Name }</a>
 						</div>
-					}
+						<p class="">Published: { v.Year }</p>
+						if len(v.Authors) != 0 {
+							<div>
+								<span>Writer:</span>
+								for i, k := range v.Authors {
+									<div class="inline-block">
+										<a
+											class="hover:underline"
+											href={ templ.SafeURL(k.AuthorLink) }
+										>{ k.Name }</a>
+									</div>
+									if i < len(v.Authors) - 1 {
+										<span>, </span>
+									}
+								}
+							</div>
+						}
+					</div>
 				</div>
-			</div>
-		}
+			}
+		</div>
 	</div>
 }
