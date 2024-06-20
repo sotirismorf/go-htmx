@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/a-h/templ"
@@ -31,18 +30,10 @@ func HomeHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	items, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
 	type author struct {
 		Id   int    `json:"f1"`
 		Name string `json:"f2"`
 	}
-
-	authors := []author{}
-	json.Unmarshal([]byte(items[0].Authors), &authors)
 
 	view := views.Index(data)
 

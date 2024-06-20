@@ -3,6 +3,7 @@ package items
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -11,14 +12,35 @@ import (
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
+	"github.com/sotirismorf/go-htmx/schema"
 	"github.com/sotirismorf/go-htmx/views"
 	"github.com/sotirismorf/go-htmx/views/admin/items"
 )
 
+type searchParams struct {
+	Limit  int32 `query:"limit"`
+	Offset int32 `query:"offset"`
+}
+
 func AdminItemsHandler(c echo.Context) error {
+	params := searchParams{
+		Limit:  10,
+		Offset: 0,
+	}
+
+	err := c.Bind(&params)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	fmt.Println(params)
+
 	ctx := context.Background()
 
-	itemData, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx)
+	itemData, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx, schema.SelectItemsWithAuthorsAndUploadsParams{
+		Limit:  params.Limit,
+		Offset: params.Offset,
+	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}

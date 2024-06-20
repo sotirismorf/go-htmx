@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"net/http"
 	"strconv"
@@ -12,12 +11,15 @@ import (
 	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
+	"github.com/sotirismorf/go-htmx/schema"
 	"github.com/sotirismorf/go-htmx/views"
 )
 
 type searchQueryParams struct {
 	Query string `query:"query"`
 	Field string `query:"field"`
+	Items int32  `query:"items"`
+	Page  int32  `query:"page"`
 }
 
 type RequestHeaders struct {
@@ -25,7 +27,10 @@ type RequestHeaders struct {
 }
 
 func GetSearchView(c echo.Context) error {
-	var queryParams searchQueryParams
+	queryParams := searchQueryParams{
+		Items: 10,
+		Page:  1,
+	}
 
 	err := c.Bind(&queryParams)
 	if err != nil {
@@ -35,8 +40,6 @@ func GetSearchView(c echo.Context) error {
 	requestHeaders := new(RequestHeaders)
 	binder := &echo.DefaultBinder{}
 	binder.BindHeaders(c, requestHeaders)
-
-	fmt.Println(requestHeaders.HXRequest)
 
 	sortOptions := []components.SelectOption{
 		components.SelectOption{
@@ -60,8 +63,14 @@ func GetSearchView(c echo.Context) error {
 		},
 	}
 
+	dbParams := schema.SearchItemsParams{
+		Name: "%"+queryParams.Query+"%",
+		Limit: queryParams.Items,
+		Offset: (queryParams.Page - 1) * queryParams.Items,
+	}
+
 	ctx := context.Background()
-	itemsDBData, err := db.Queries.SearchItems(ctx, "%"+queryParams.Query+"%")
+	itemsDBData, err := db.Queries.SearchItems(ctx, dbParams)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}

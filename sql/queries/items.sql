@@ -40,13 +40,13 @@ RETURNING *;
 SELECT items.id, items.name, items.description, items.year,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
+    WHEN COUNT(authors.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
   END
 AS jsonb) as authors,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(uploads.id), null), 1) > 0)
+    WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
 AS jsonb) as uploads
@@ -55,19 +55,20 @@ left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id
 left join item_has_upload on items.id = item_has_upload.item_id
 left join uploads on item_has_upload.upload_id = uploads.id
-group by items.id;
+GROUP BY items.id
+LIMIT $1 OFFSET $2;
 
 -- name: SearchItems :many
 SELECT items.id, items.name, items.description, items.year,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
+    WHEN COUNT(authors.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
   END
 AS jsonb) as authors,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(uploads.id), null), 1) > 0)
+    WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
 AS jsonb) as uploads
@@ -77,7 +78,8 @@ left join authors on item_has_author.author_id = authors.id
 left join item_has_upload on items.id = item_has_upload.item_id
 left join uploads on item_has_upload.upload_id = uploads.id
 where lower(unaccent(items.name)) like $1
-group by items.id;
+group by items.id
+LIMIT $2 OFFSET $3;
 
 -- name: SelectSingleItemWithAuthors :one
 SELECT items.id, items.name, items.description,

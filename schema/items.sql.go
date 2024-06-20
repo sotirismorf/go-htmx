@@ -92,13 +92,13 @@ const searchItems = `-- name: SearchItems :many
 SELECT items.id, items.name, items.description, items.year,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
+    WHEN COUNT(authors.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
   END
 AS jsonb) as authors,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(uploads.id), null), 1) > 0)
+    WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
 AS jsonb) as uploads
@@ -109,7 +109,14 @@ left join item_has_upload on items.id = item_has_upload.item_id
 left join uploads on item_has_upload.upload_id = uploads.id
 where lower(unaccent(items.name)) like $1
 group by items.id
+LIMIT $2 OFFSET $3
 `
+
+type SearchItemsParams struct {
+	Name   string
+	Limit  int32
+	Offset int32
+}
 
 type SearchItemsRow struct {
 	ID          int64
@@ -120,8 +127,8 @@ type SearchItemsRow struct {
 	Uploads     []byte
 }
 
-func (q *Queries) SearchItems(ctx context.Context, name string) ([]SearchItemsRow, error) {
-	rows, err := q.db.Query(ctx, searchItems, name)
+func (q *Queries) SearchItems(ctx context.Context, arg SearchItemsParams) ([]SearchItemsRow, error) {
+	rows, err := q.db.Query(ctx, searchItems, arg.Name, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -199,13 +206,13 @@ const selectItemsWithAuthorsAndUploads = `-- name: SelectItemsWithAuthorsAndUplo
 SELECT items.id, items.name, items.description, items.year,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
+    WHEN COUNT(authors.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
   END
 AS jsonb) as authors,
 CAST(
   CASE
-    WHEN (array_length(array_remove(array_agg(uploads.id), null), 1) > 0)
+    WHEN COUNT(uploads.id) > 0
     THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
   END
 AS jsonb) as uploads
@@ -214,8 +221,14 @@ left join item_has_author on items.id = item_has_author.item_id
 left join authors on item_has_author.author_id = authors.id
 left join item_has_upload on items.id = item_has_upload.item_id
 left join uploads on item_has_upload.upload_id = uploads.id
-group by items.id
+GROUP BY items.id
+LIMIT $1 OFFSET $2
 `
+
+type SelectItemsWithAuthorsAndUploadsParams struct {
+	Limit  int32
+	Offset int32
+}
 
 type SelectItemsWithAuthorsAndUploadsRow struct {
 	ID          int64
@@ -227,8 +240,8 @@ type SelectItemsWithAuthorsAndUploadsRow struct {
 }
 
 // https://github.com/sqlc-dev/sqlc/issues/3238
-func (q *Queries) SelectItemsWithAuthorsAndUploads(ctx context.Context) ([]SelectItemsWithAuthorsAndUploadsRow, error) {
-	rows, err := q.db.Query(ctx, selectItemsWithAuthorsAndUploads)
+func (q *Queries) SelectItemsWithAuthorsAndUploads(ctx context.Context, arg SelectItemsWithAuthorsAndUploadsParams) ([]SelectItemsWithAuthorsAndUploadsRow, error) {
+	rows, err := q.db.Query(ctx, selectItemsWithAuthorsAndUploads, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
