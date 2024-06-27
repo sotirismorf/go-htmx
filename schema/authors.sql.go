@@ -40,6 +40,32 @@ func (q *Queries) DeleteAuthor(ctx context.Context, id int64) error {
 	return err
 }
 
+const searchAuthors = `-- name: SearchAuthors :many
+SELECT id, name, bio FROM authors
+WHERE name like $1
+ORDER BY name
+`
+
+func (q *Queries) SearchAuthors(ctx context.Context, name string) ([]Author, error) {
+	rows, err := q.db.Query(ctx, searchAuthors, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Author
+	for rows.Next() {
+		var i Author
+		if err := rows.Scan(&i.ID, &i.Name, &i.Bio); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectAuthor = `-- name: SelectAuthor :one
 SELECT id, name, bio FROM authors
 WHERE id = $1 LIMIT 1

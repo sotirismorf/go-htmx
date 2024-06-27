@@ -48,5 +48,7 @@ func main() {
 
 	app.GET("/admin/login", controller.LoginHandler)
 
+	app.POST("/htmx/multi-select-dropdown", items.HTMXMultiSelectDropdown)
+
 	app.Logger.Fatal(app.Start(":8080"))
 }

@@ -10,11 +10,11 @@ import (
 )
 
 type formData struct {
-	Name        string `form:"name"`
-	Description string `form:"description"`
-	Year        int16  `form:"year"`
-	AuthorID    int64  `form:"author"`
-	UploadID    int64  `form:"upload"`
+	Name        string  `form:"name"`
+	Description string  `form:"description"`
+	Year        int16   `form:"year"`
+	AuthorID    []int64 `form:"author"`
+	UploadID    int64   `form:"upload"`
 }
 
 func AdminCreateItemHandler(c echo.Context) error {
@@ -24,13 +24,13 @@ func AdminCreateItemHandler(c echo.Context) error {
 
 	err := c.Bind(&formData)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "bad request")
+		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
 	itemParams := schema.CreateItemParams{
-    Name: formData.Name,
-    Year: formData.Year,
-  }
+		Name: formData.Name,
+		Year: formData.Year,
+	}
 
 	if formData.Description != "" {
 		itemParams.Description = &formData.Description
@@ -41,17 +41,17 @@ func AdminCreateItemHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	if formData.AuthorID != 0 {
+  for _, v := range formData.AuthorID {
 		itemHasAuthorParams := schema.CreateItemHasAuthorRelationshipParams{
 			ItemID:   createdItem.ID,
-			AuthorID: int64(formData.AuthorID),
+			AuthorID: int64(v),
 		}
 
 		_, err = db.Queries.CreateItemHasAuthorRelationship(ctx, itemHasAuthorParams)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, err)
 		}
-	}
+  }
 
 	if formData.UploadID != 0 {
 		itemHasUploadParams := schema.CreateItemHasUploadRelationshipParams{

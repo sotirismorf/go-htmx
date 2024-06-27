@@ -6,6 +6,11 @@ WHERE id = $1 LIMIT 1;
 SELECT * FROM authors
 ORDER BY name;
 
+-- name: SearchAuthors :many
+SELECT * FROM authors
+WHERE name like $1
+ORDER BY name;
+
 -- name: CreateAuthor :one
 INSERT INTO authors (
   name, bio

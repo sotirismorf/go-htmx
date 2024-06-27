@@ -23,23 +23,42 @@ func FormCreateItem(authors []SelectOption, uploads []SelectOption) templ.Compon
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"bg-dark-2 rounded-md p-4\" action=\"/admin/items/create\" method=\"post\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"bg-dark-2 flex flex-col gap-3 rounded-md p-4 focus:bg-red-400\" action=\"/admin/items/create\" method=\"post\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = InputText("name", "Name").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = DahliaInput(TemplInput{
+			Name:     "name",
+			Label:    "Name",
+			Type:     "text",
+			Required: true,
+		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = InputText("description", "Description").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = DahliaInput(TemplInput{
+			Name:  "description",
+			Label: "Description",
+			Type:  "text",
+		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = InputNumber("year", "Year published").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = DahliaInput(TemplInput{
+			Name:     "year",
+			Label:    "Year Published",
+			Type:     "number",
+			Required: true,
+		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Select("author", "Author", authors, true).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = MultiSelectDropdown(
+			TemplMultiSelectDropdown{
+				Name:     "author",
+				Label:    "Author",
+				Selected: []TemplMultiSelectDropdownItem{},
+			}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -79,15 +98,24 @@ func FormCreateAuthor() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"bg-dark-2 rounded-md p-4\" action=\"/admin/authors/create\" method=\"post\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"bg-dark-2 flex flex-col gap-3 rounded-md p-4\" action=\"/admin/authors/create\" method=\"post\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = InputText("name", "Name").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = DahliaInput(TemplInput{
+			Name:     "name",
+			Label:    "Name",
+			Type:     "text",
+			Required: true,
+		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = InputText("bio", "Bio").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = DahliaInput(TemplInput{
+			Name:  "bio",
+			Label: "Biography",
+			Type:  "text",
+		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

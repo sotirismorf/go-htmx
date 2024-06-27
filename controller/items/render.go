@@ -3,9 +3,9 @@ package items
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/components"
@@ -32,8 +32,6 @@ func AdminItemsHandler(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
-
-	fmt.Println(params)
 
 	ctx := context.Background()
 
@@ -101,4 +99,71 @@ func CreateItemController(c echo.Context) error {
 	view := components.FormCreateItem(authorOptions, uploadOptions)
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
+}
+
+type multiSelectDropdownSearchParams struct {
+	Search       string   `form:"search"`
+	NewSelection string   `form:"newSelection"`
+	Selected     []string `form:"selected"`
+}
+
+func HTMXMultiSelectDropdown(c echo.Context) error {
+	params := multiSelectDropdownSearchParams{}
+	err := c.Bind(&params)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	if params.NewSelection != "" {
+		newSelection := strings.Split(params.NewSelection, ":")
+		if len(newSelection) < 2 {
+			return echo.NewHTTPError(http.StatusNotFound, "something went wrong")
+		}
+
+		var selected []components.TemplMultiSelectDropdownItem
+
+		for _, v := range params.Selected {
+			selectedItem := strings.Split(v, ":")
+			if len(selectedItem) < 2 {
+				return echo.NewHTTPError(http.StatusNotFound, "something went wrong")
+			}
+
+			selected = append(selected, components.TemplMultiSelectDropdownItem{
+				ID:   selectedItem[0],
+				Name: selectedItem[1],
+			})
+		}
+
+		selected = append(selected, components.TemplMultiSelectDropdownItem{
+			ID:   newSelection[0],
+			Name: newSelection[1],
+		})
+
+		return controller.Render(c, http.StatusOK, components.MultiSelectDropdown(
+			components.TemplMultiSelectDropdown{
+				Name:     "author",
+				Label:    "Author",
+				Selected: selected,
+			}))
+	}
+
+	var results []components.TemplMultiSelectDropdownItem
+
+	if params.Search == "" {
+		return controller.Render(c, http.StatusOK, components.MultiSelectDropdownResults("author", results))
+	}
+
+	dbData, err := db.Queries.SearchAuthors(context.Background(), "%"+params.Search+"%")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	for _, v := range dbData {
+		results = append(results, components.TemplMultiSelectDropdownItem{
+			ID:   strconv.FormatInt(v.ID, 10),
+			Name: v.Name,
+		})
+	}
+
+	return controller.Render(c, http.StatusOK, components.MultiSelectDropdownResults("author", results))
 }

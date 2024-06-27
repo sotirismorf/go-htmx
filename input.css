@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-label-for-input {
+  @apply font-bold mb-1
+}
+
+
+.dahlia-input {
+  @apply py-2 px-3 rounded-sm ring-neutral-600 ring-1 focus:ring-2 focus:ring-fuchsia-300
+}

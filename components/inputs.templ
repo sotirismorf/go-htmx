@@ -1,5 +1,113 @@
 package components
 
+type TemplInput struct {
+	Name     string
+	Label    string
+	Type     string
+	Required bool
+}
+
+templ DahliaInput(props TemplInput) {
+	<div>
+		<div class="custom-label-for-input">
+			<label for={ "input-text-" + props.Name }>{ props.Label }</label>
+			if props.Required {
+        <span class="text-red-400">*</span>
+			}
+		</div>
+		<input
+			class="bg-transparent dahlia-input outline-none"
+			id={ "input-text-" + props.Name }
+			name={ props.Name }
+			autocomplete="off"
+			type="text"
+			if props.Type == "number" {
+				inputmode="numeric"
+				pattern="\d*"
+			}
+			if props.Required {
+        required
+			}
+		/>
+	</div>
+}
+
+type TemplMultiSelectDropdown struct {
+	Name     string
+	Label    string
+	Selected []TemplMultiSelectDropdownItem
+}
+
+templ MultiSelectDropdown(props TemplMultiSelectDropdown) {
+	<div id={ "multi-select-dropdown-" + props.Name }>
+		<div class="custom-label-for-input">
+			<label
+				for={ "multi-select-dropdown-input-" + props.Name }
+			>{ props.Label }</label>
+		</div>
+		<div>
+			<input
+				id={ "multi-select-dropdown-input-" + props.Name }
+				class="bg-transparent outline-none dahlia-input mb-2"
+				type="search"
+				name="search"
+				placeholder={ "Search " + props.Name + "..." }
+				autocomplete="off"
+				hx-post="/htmx/multi-select-dropdown"
+				hx-trigger="input changed delay:200ms, search"
+				hx-target="#multi-select-dropdown-results"
+				hx-swap="outerHTML"
+				hx-params="search"
+			/>
+			@MultiSelectDropdownResults(props.Name, []TemplMultiSelectDropdownItem{})
+		</div>
+		<div class="flex flex-wrap gap-2">
+			for _, i := range props.Selected {
+				<div
+					id={ "multi-select-dropdown-selected-" + props.Name + i.ID }
+					class="inline-flex gap-1 px-2 py-1 border border-solid border-neutral-700 rounded-sm"
+				>
+					<span>{ i.Name }</span>
+					<button _={ "on click remove #multi-select-dropdown-selected-" + props.Name + i.ID }>
+						@IconXMark("size-4")
+					</button>
+					<input type="hidden" name="selected" value={ i.ID + ":" + i.Name }/>
+					<input type="hidden" name={ props.Name } value={ i.ID }/>
+				</div>
+			}
+		</div>
+	</div>
+}
+
+type TemplMultiSelectDropdownItem struct {
+	Name string
+	ID   string
+}
+
+templ MultiSelectDropdownResults(name string, data []TemplMultiSelectDropdownItem) {
+	<div
+		id="multi-select-dropdown-results"
+		class="bg-neutral-800 border border-solid border-neutral-700 rounded-sm absolute min-w-max"
+	>
+		for _, i := range data {
+			<div>
+				<button
+					class="hover:bg-neutral-700 px-3 py-1 w-full text-left"
+					type="submit"
+					name="newSelection"
+					value={ i.ID + ":" + i.Name }
+					hx-post="/htmx/multi-select-dropdown"
+					hx-target={ "#multi-select-dropdown-" + name }
+					hx-swap="outerHTML"
+					hx-params="newSelection,selected"
+				>
+					{ i.Name }
+				</button>
+			</div>
+		}
+	</div>
+}
+
 type SelectOption struct {
 	Name string
 	ID   string
@@ -25,7 +133,7 @@ templ SelectRounded(name string, label string, options []SelectOption, isDisable
 
 templ Select(name string, label string, options []SelectOption, isDisabled bool) {
 	<div class="border-2 border-solid border-neutral-900 rounded-lg flex items-stretch w-max">
-		<label class="bg-dark-3 px-4 py-2" for="author">{ label }</label>
+		<label class="bg-dark-3 px-4 py-2" for={ "select-" + name }>{ label }</label>
 		<select
 			class="bg-transparent px-4 focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
 			name={ name }
@@ -50,19 +158,6 @@ templ InputText(name string, displayName string) {
 			name={ name }
 			autocomplete="off"
 			type="text"
-		/>
-	</div>
-}
-
-templ InputNumber(name string, displayName string) {
-	<div class="border-2 border-solid border-neutral-900 rounded-lg flex items-stretch w-max">
-		<label class="bg-dark-3 px-4 py-2" for={ "input-text-" + name }>{ displayName }</label>
-		<input
-			class="bg-transparent px-4 focus:outline-none focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
-			id={ "input-text-" + name }
-			name={ name }
-			autocomplete="off"
-			type="number"
 		/>
 	</div>
 }
