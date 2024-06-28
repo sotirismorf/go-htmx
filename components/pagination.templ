@@ -2,31 +2,82 @@ package components
 
 import (
 	"strconv"
-	"github.com/sotirismorf/go-htmx/models"
 )
 
-templ Pagination(p models.TemplPagination, neighbours int64) {
-	<div class="inline-flex">
-		if p.TotalPages > 4 {
-			@PaginationLink(1)
+type TemplPagination struct {
+	CurrentPage  int64
+	ItemsPerPage int32
+	TotalItems   int64
+	TotalPages   int64
+}
+
+templ Pagination(p TemplPagination, neighbours int64) {
+	<div class="bg-black w-max rounded-md flex items-stretch divide-x divide-white border border-white overflow-hidden sm:text-lg">
+		if p.CurrentPage > 1 {
+			@PaginationLink(p.CurrentPage - 1) {
+				<div class="p-1 flex items-center">
+					@IconChevronLeft("size-6")
+				</div>
+			}
+		} else {
+			<div class="p-1 flex items-center">
+				@IconChevronLeft("size-6 stroke-neutral-500")
+			</div>
+		}
+		if p.TotalPages == 1 {
+			<div class="px-3 py-1 bg-fuchsia-400 text-black">{ strconv.FormatInt(p.CurrentPage, 10) }</div>
+		} else if p.TotalPages > 1 {
+			@PaginationLinkNumber(1, p.CurrentPage)
 			if p.CurrentPage > 2 + neighbours {
-				<div class="px-1">...</div>
+				@PaginationEllipsis()
 			}
 			for i := max(2, p.CurrentPage - neighbours); i <= min(p.CurrentPage + neighbours, p.TotalPages - 1) ; i++ {
-				@PaginationLink(i)
+				@PaginationLinkNumber(i, p.CurrentPage)
 			}
 			if p.CurrentPage < p.TotalPages - neighbours - 1 {
-				<div class="px-1">...</div>
+				@PaginationEllipsis()
 			}
-			@PaginationLink(p.TotalPages)
+			@PaginationLinkNumber(p.TotalPages, p.CurrentPage)
+		}
+		if p.CurrentPage < p.TotalPages {
+			@PaginationLink(p.CurrentPage + 1) {
+				<div class="p-1 flex items-center">
+					@IconChevronRight("size-6")
+				</div>
+			}
+		} else {
+			<div class="p-1 flex items-center">
+				@IconChevronRight("size-6 stroke-neutral-500")
+			</div>
 		}
 	</div>
 }
 
 templ PaginationLink(page int64) {
-	<a href={ templ.SafeURL("?page=" + strconv.FormatInt(page, 10)) }>
-		<div class="px-2">
-			{ strconv.FormatInt(page, 10) }
-		</div>
-	</a>
+	<button
+		name="page"
+		value={ strconv.FormatInt(page, 10) }
+		hx-get="/search"
+		hx-target="#search-results"
+		hx-push-url="true"
+		hx-include=".htmx-search"
+	>
+		{ children... }
+	</button>
+}
+
+templ PaginationEllipsis() {
+	<div class="px-2 flex"><div class="m-auto">...</div></div>
+}
+
+templ PaginationLinkNumber(page int64, currentPage int64) {
+	@PaginationLink(page) {
+		<div
+			if page == currentPage {
+				class="px-3 py-1 bg-fuchsia-400 text-black"
+			} else {
+				class="px-3 py-1 hover:text-fuchsia-400"
+			}
+		>{ strconv.FormatInt(page, 10) }</div>
+	}
 }

@@ -10,6 +10,11 @@ RETURNING *;
 SELECT * FROM uploads
 ORDER BY id;
 
+-- name: SearchUploads :many
+SELECT * FROM uploads
+WHERE name like $1
+ORDER BY name;
+
 -- name: SelectSingleUpload :many
 SELECT * FROM uploads
 WHERE id = $1;

@@ -6,8 +6,8 @@ import (
 )
 
 type Author struct {
-	Id   int64  `json:"f1"`
-	Name string `json:"f2"`
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
 }
 
 type ItemData struct {
@@ -23,13 +23,6 @@ type UploadTemplateData struct {
 	Size string
 	Sum  string
 	Type string
-}
-
-type TemplPagination struct {
-	CurrentPage  int64
-	ItemsPerPage int32
-	TotalItems   int64
-	TotalPages   int64
 }
 
 type TemplItemResultCard struct {

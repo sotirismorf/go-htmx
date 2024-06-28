@@ -1,5 +1,7 @@
 package components
 
+import "fmt"
+
 type TemplInput struct {
 	Name     string
 	Label    string
@@ -12,7 +14,7 @@ templ DahliaInput(props TemplInput) {
 		<div class="custom-label-for-input">
 			<label for={ "input-text-" + props.Name }>{ props.Label }</label>
 			if props.Required {
-        <span class="text-red-400">*</span>
+				<span class="text-red-400">*</span>
 			}
 		</div>
 		<input
@@ -26,7 +28,7 @@ templ DahliaInput(props TemplInput) {
 				pattern="\d*"
 			}
 			if props.Required {
-        required
+				required
 			}
 		/>
 	</div>
@@ -50,14 +52,14 @@ templ MultiSelectDropdown(props TemplMultiSelectDropdown) {
 				id={ "multi-select-dropdown-input-" + props.Name }
 				class="bg-transparent outline-none dahlia-input mb-2"
 				type="search"
-				name="search"
+				name={ "search_" + props.Name }
 				placeholder={ "Search " + props.Name + "..." }
 				autocomplete="off"
 				hx-post="/htmx/multi-select-dropdown"
 				hx-trigger="input changed delay:200ms, search"
-				hx-target="#multi-select-dropdown-results"
+				hx-target={ "#multi-select-dropdown-results-" + props.Name }
 				hx-swap="outerHTML"
-				hx-params="search"
+				hx-params={ "search_" + props.Name }
 			/>
 			@MultiSelectDropdownResults(props.Name, []TemplMultiSelectDropdownItem{})
 		</div>
@@ -71,7 +73,7 @@ templ MultiSelectDropdown(props TemplMultiSelectDropdown) {
 					<button _={ "on click remove #multi-select-dropdown-selected-" + props.Name + i.ID }>
 						@IconXMark("size-4")
 					</button>
-					<input type="hidden" name="selected" value={ i.ID + ":" + i.Name }/>
+					<input type="hidden" name={ "selected_" + props.Name } value={ fmt.Sprintf("%s:%s", i.ID, i.Name) }/>
 					<input type="hidden" name={ props.Name } value={ i.ID }/>
 				</div>
 			}
@@ -86,7 +88,7 @@ type TemplMultiSelectDropdownItem struct {
 
 templ MultiSelectDropdownResults(name string, data []TemplMultiSelectDropdownItem) {
 	<div
-		id="multi-select-dropdown-results"
+		id={ "multi-select-dropdown-results-" + name }
 		class="bg-neutral-800 border border-solid border-neutral-700 rounded-sm absolute min-w-max"
 	>
 		for _, i := range data {
@@ -94,12 +96,12 @@ templ MultiSelectDropdownResults(name string, data []TemplMultiSelectDropdownIte
 				<button
 					class="hover:bg-neutral-700 px-3 py-1 w-full text-left"
 					type="submit"
-					name="newSelection"
+					name={ "new_selected_" + name }
 					value={ i.ID + ":" + i.Name }
 					hx-post="/htmx/multi-select-dropdown"
 					hx-target={ "#multi-select-dropdown-" + name }
 					hx-swap="outerHTML"
-					hx-params="newSelection,selected"
+					hx-params={ fmt.Sprintf("new_selected_%s,selected_%s", name, name) }
 				>
 					{ i.Name }
 				</button>
@@ -113,8 +115,8 @@ type SelectOption struct {
 	ID   string
 }
 
-templ SelectRounded(name string, label string, options []SelectOption, isDisabled bool) {
-	<div class="border-2 border-solid border-fuchsia-500 rounded-full flex items-stretch w-max">
+templ DahliaSelectPill(name string, label string, options []SelectOption, isDisabled bool) {
+	<div class="bg-black border border-solid border-white rounded-full flex items-stretch w-max">
 		<label class="pl-4 pr-2 py-1" for="author">{ label }</label>
 		<select
 			class="bg-transparent font-bold pl-2 pr-2 hover:text-fuchsia-500 transition duration-75 ease-out rounded-r-full"

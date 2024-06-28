@@ -3,67 +3,80 @@ package views
 import (
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/components"
+	"strconv"
 )
 
 templ Search(
 	items []models.TemplItemResultCard,
-	pagination models.TemplPagination,
+	pagination components.TemplPagination,
 	sortOptions []components.SelectOption,
 	fieldOptions []components.SelectOption,
 ) {
-	<div class="bg-dark-2 rounded-3xl mb-10 w-full py-2 shadow-inner shadow-neutral-900 inline-flex items-center justify-between">
-		<form
-			class="htmx-search inline-flex items-center mx-2 gap-x-4"
-			hx-get="/search"
-			hx-include=".htmx-search"
-			hx-push-url="true"
-			hx-swap="outerHTML"
-			hx-target="#search-results"
-		>
+	<form
+		class="htmx-search inline-flex items-center gap-x-4 w-full"
+		hx-get="/search"
+		hx-include=".htmx-search"
+		hx-push-url="true"
+		hx-swap="outerHTML"
+		hx-target="#search-results"
+	>
+		<div class="bg-black ring-1 ring-white has-[:focus]:ring-2 has-[:focus]:ring-fuchsia-400 py-2 px-3 mx-4 sm:mx-0 my-4 rounded-md flex items-center w-full">
+			@components.IconMagnifyingGlass()
 			<input
-				class="bg-transparent outline-none px-4 rounded-full text-xl font-bold"
+				class="bg-transparent outline-none px-3 text-xl font-bold"
 				type="text"
 				name="query"
 				value=""
 				autocomplete="off"
 				placeholder="Search the catalogue..."
 			/>
-			<button class="rounded-full bg-fuchsia-500 hover:bg-fuchsia-400 px-3 py-1 text-neutral-800 text-lg shadow-inner hover:shadow-md transition font-bold">Search</button>
-		</form>
-		<form
-			class="htmx-search inline-flex gap-x-4 mx-2"
-			hx-get="/search"
-			hx-include=".htmx-search"
-			hx-push-url="true"
-			hx-swap="outerHTML"
-			hx-target="#search-results"
-			hx-trigger="change"
-		>
-			@components.SelectRounded("field", "Search for", fieldOptions, false)
-			@components.SelectRounded("sort", "Sort", sortOptions, false)
-		</form>
-	</div>
+		</div>
+	</form>
+	<form
+		class="htmx-search flex flex-wrap justify-end gap-x-2 gap-y-2 mx-4 sm:mx-0 text-sm"
+		hx-get="/search"
+		hx-include=".htmx-search"
+		hx-push-url="true"
+		hx-swap="outerHTML"
+		hx-target="#search-results"
+		hx-trigger="change"
+	>
+		@components.DahliaSelectPill("field", "Search", fieldOptions, false)
+		@components.DahliaSelectPill("And", "This", fieldOptions, false)
+		@components.DahliaSelectPill("Another", "That", fieldOptions, false)
+		@components.DahliaSelectPill("sort", "Sort", sortOptions, false)
+	</form>
 	@SearchResults(pagination, items)
 }
 
-templ SearchResults(pagination models.TemplPagination, items []models.TemplItemResultCard) {
-	<div id="search-results">
-			@components.Pagination(pagination, 3)
-		<div class="bg-dark-2 shadow-inner shadow-neutral-900 rounded-3xl px-3 py-8">
+templ SearchResults(pagination components.TemplPagination, items []models.TemplItemResultCard) {
+	<div class="mt-4" id="search-results">
+		<div class="flex items-center justify-between flex-col gap-y-2 sm:flex-row m-4 sm:mx-0">
+			<p>{ strconv.FormatInt(pagination.TotalItems, 10) } αποτελέσματα</p>
+			if pagination.TotalPages > 0 {
+				@components.Pagination(pagination, 1)
+			}
+		</div>
+		<div class="bg-black border-y border-y-white sm:border sm:border-white divide-y divide-white sm:rounded-md">
+			if pagination.TotalItems == 0 {
+				<div>
+					oops....
+				</div>
+			}
 			for _, v := range items {
-				<div class="mb-10 flex">
+				<div class="py-5 px-1 sm:px-3 flex">
 					<div class="mr-4">
 						<a href={ "/item/1" }>
-							<img class="object-contain size-40 select-none" src={ v.ThumbnailLink } alt=""/>
+							<img class="object-contain size-24 sm:size-40 select-none" src={ v.ThumbnailLink } alt=""/>
 						</a>
 					</div>
 					<div>
 						<div class="mb-2">
-							<a class="hover:underline font-bold text-2xl" href={ "/item/1" }>{ v.Name }</a>
+							<a class="hover:underline font-bold text-xl sm:text-2xl" href={ "/item/1" }>{ v.Name }</a>
 						</div>
-						<p class="">Published: { v.Year }</p>
+						<p class="text-sm sm:text-base">Published: { v.Year }</p>
 						if len(v.Authors) != 0 {
-							<div>
+							<div class="text-sm sm:text-base">
 								<span>Writer:</span>
 								for i, k := range v.Authors {
 									<div class="inline-block">
@@ -75,6 +88,16 @@ templ SearchResults(pagination models.TemplPagination, items []models.TemplItemR
 									if i < len(v.Authors) - 1 {
 										<span>, </span>
 									}
+								}
+							</div>
+						}
+						if len(v.Uploads) != 0 {
+							<div class="text-sm sm:text-base">
+								<span>{ strconv.FormatInt(int64(len(v.Uploads)), 10) }</span>
+								if len(v.Uploads) == 1 {
+									<span>file</span>
+								} else {
+									<span>files</span>
 								}
 							</div>
 						}

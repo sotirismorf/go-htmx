@@ -11,12 +11,12 @@ templ Base(title string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<script src="https://unpkg.com/htmx.org@2.0.0/dist/htmx.js" crossorigin="anonymous"></script>
-      <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+			<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 			<link href="/assets/styles.css" rel="stylesheet"/>
 			<title>{ title } - Demo</title>
 		</head>
 		<body>
-			<main class="bg-neutral-600 text-neutral-200 min-h-screen">
+			<main class="bg-neutral-700 text-neutral-200 min-h-screen">
 				{ children... }
 			</main>
 		</body>
@@ -26,16 +26,34 @@ templ Base(title string) {
 templ AdminLayout(title string, cmp templ.Component) {
 	@Base(title) {
 		@components.NavigationBar()
-		<div class="flex">
-			<div class="w-1/4">
-				<div class="float-right mr-12">
-					@components.AdminSidebar()
-				</div>
+		<div class="mx-auto max-w-7xl border-white flex">
+			<div class="bg-black w-1/5 border border-white divide-y divide-white">
+				<h2 class="text-xl p-2 font-bold">Material</h2>
+				<ul class="text-lg pt-1">
+					<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/uploads">Uploads</a></li>
+					<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/items">Items</a></li>
+					<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/authors">Authors</a></li>
+					<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/items">Groups</a></li>
+				</ul>
 			</div>
-			<div class="w-1/2">
+			<div class="flex-grow">
 				@cmp
 			</div>
-			<div class="w-1/4"></div>
 		</div>
+		@Footer()
 	}
+}
+
+templ LayoutNormal(title string, cmp templ.Component) {
+	@Base(title) {
+		@components.NavigationBar()
+		<div class="mx-auto max-w-3xl">
+			@cmp
+		</div>
+		@Footer()
+	}
+}
+
+templ Footer() {
+	<p class="py-6 text-center">2024</p>
 }

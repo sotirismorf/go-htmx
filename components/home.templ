@@ -3,29 +3,17 @@ package components
 import "strconv"
 
 templ NavigationBar() {
-	<div class="bg-dark-2 h-12 text-2xl flex items-center justify-center mb-12">
-		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/">Home</a>
-		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/search">Αναζήτηση</a>
-		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/photos">Εικόνες</a>
-		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/about">Σχετικά</a>
-		<a class="px-2 mx-4 hover:text-fuchsia-400" href="/admin">Admin</a>
-	</div>
-}
-
-templ AdminSidebar() {
-	<div class="min-w-60 text-nowrap bg-dark-2 rounded-md p-3">
-		<h2 class="text-xl font-bold mb-1">Material</h2>
-		<ul class="text-lg">
-			<li class="py-0.5"><a class="hover:underline " href="/admin/uploads">Uploads</a></li>
-			<li class="py-0.5"><a class="hover:underline " href="/admin/items">Items</a></li>
-			<li class="py-0.5"><a class="hover:underline " href="/admin/authors">Authors</a></li>
-			<li class="py-0.5"><a class="hover:underline " href="/admin/items">Groups</a></li>
-		</ul>
+	<div class="bg-black border-b border-b-white h-12 text-sm sm:text-2xl flex items-center justify-center mb-12">
+		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/">Home</a>
+		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/search">Αναζήτηση</a>
+		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/photos">Εικόνες</a>
+		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/about">Σχετικά</a>
+		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/admin">Admin</a>
 	</div>
 }
 
 templ Table() {
-	<div class="p-4 bg-dark-2 mt-9 rounded-md">
+	<div class="bg-black border-y border-white sm:border-r">
 		<table class="table-auto w-full">
 			{ children... }
 		</table>
@@ -68,7 +56,7 @@ templ TableDataWithChildren() {
 }
 
 templ Breadcrumb(collectionType string, displayName string) {
-	<div class="flex-row items-stretch">
+	<div class="ml-4 mb-4 flex-row items-stretch">
 		<h1 class="text-4xl font-bold inline-block">{ displayName }</h1>
 		<a
 			href={ templ.SafeURL("/admin/" + collectionType + "/create") }

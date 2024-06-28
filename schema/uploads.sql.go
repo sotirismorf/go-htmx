@@ -53,6 +53,38 @@ func (q *Queries) DeleteSingleUpload(ctx context.Context, id int64) error {
 	return err
 }
 
+const searchUploads = `-- name: SearchUploads :many
+SELECT id, sum, name, size, type FROM uploads
+WHERE name like $1
+ORDER BY name
+`
+
+func (q *Queries) SearchUploads(ctx context.Context, name string) ([]Upload, error) {
+	rows, err := q.db.Query(ctx, searchUploads, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Upload
+	for rows.Next() {
+		var i Upload
+		if err := rows.Scan(
+			&i.ID,
+			&i.Sum,
+			&i.Name,
+			&i.Size,
+			&i.Type,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectSingleUpload = `-- name: SelectSingleUpload :many
 SELECT id, sum, name, size, type FROM uploads
 WHERE id = $1

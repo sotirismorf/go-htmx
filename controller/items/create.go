@@ -14,7 +14,7 @@ type formData struct {
 	Description string  `form:"description"`
 	Year        int16   `form:"year"`
 	AuthorID    []int64 `form:"author"`
-	UploadID    int64   `form:"upload"`
+	UploadID    []int64 `form:"upload"`
 }
 
 func AdminCreateItemHandler(c echo.Context) error {
@@ -41,7 +41,7 @@ func AdminCreateItemHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-  for _, v := range formData.AuthorID {
+	for _, v := range formData.AuthorID {
 		itemHasAuthorParams := schema.CreateItemHasAuthorRelationshipParams{
 			ItemID:   createdItem.ID,
 			AuthorID: int64(v),
@@ -51,12 +51,12 @@ func AdminCreateItemHandler(c echo.Context) error {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusNotFound, err)
 		}
-  }
+	}
 
-	if formData.UploadID != 0 {
+	for _, v := range formData.UploadID {
 		itemHasUploadParams := schema.CreateItemHasUploadRelationshipParams{
 			ItemID:   createdItem.ID,
-			UploadID: int64(formData.UploadID),
+			UploadID: int64(v),
 		}
 
 		_, err = db.Queries.CreateItemHasUploadRelationship(ctx, itemHasUploadParams)

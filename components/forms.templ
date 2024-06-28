@@ -29,7 +29,12 @@ templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
 				Label:    "Author",
 				Selected: []TemplMultiSelectDropdownItem{},
 			})
-		@Select("upload", "Upload", uploads, true)
+		@MultiSelectDropdown(
+			TemplMultiSelectDropdown{
+				Name:     "upload",
+				Label:    "Upload",
+				Selected: []TemplMultiSelectDropdownItem{},
+			})
 		<div>
 			@ButtonSubmit("Submit")
 		</div>

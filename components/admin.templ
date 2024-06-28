@@ -1,0 +1,73 @@
+package components
+
+import (
+	"fmt"
+)
+
+type TemplAdminPage struct {
+	Title       string
+	CTName      string
+	CanDelete   bool
+	CanDownload bool
+	Columns     []string
+	Rows        []TemplAdminTableRow
+}
+
+type TemplAdminTableRow struct {
+	ID    string
+	Cells [][]TemplAdminTableCell
+}
+
+type TemplAdminTableCell struct {
+	Text       string
+	IsRelation bool
+	CTName     string
+	ID         string
+}
+
+templ AdminPage(props TemplAdminPage) {
+	@Breadcrumb(props.CTName, props.Title)
+	@Table() {
+		<thead class="text-left">
+			<tr>
+				for _, row := range props.Columns {
+					@TableHeader(row)
+				}
+				@TableHeader("Actions")
+			</tr>
+		</thead>
+		<tbody>
+			for _, row := range props.Rows {
+				@TableRow() {
+					for _, cell := range row.Cells {
+						<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
+							for i, cellItem := range cell {
+								<a
+									class="hover:underline"
+									if cellItem.IsRelation {
+										href={ templ.SafeURL(fmt.Sprintf("/admin/%s/%s", cellItem.CTName, cellItem.ID)) }
+									} else {
+										href={ templ.SafeURL(fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID)) }
+									}
+								>
+									{ cellItem.Text }
+								</a>
+								if len(cell) > 1 && i < len(cell) - 1 {
+									,&nbsp
+								}
+							}
+						</td>
+					}
+					<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
+						<button
+							hx-delete={ fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID) }
+							hx-target="closest tr"
+						>
+							@IconDelete()
+						</button>
+					</td>
+				}
+			}
+		</tbody>
+	}
+}

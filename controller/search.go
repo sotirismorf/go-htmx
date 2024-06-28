@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -131,7 +130,7 @@ func GetSearchView(c echo.Context) error {
 		})
 	}
 
-	pagination := models.TemplPagination{
+	pagination := components.TemplPagination{
 		CurrentPage:  int64(queryParams.Page),
 		ItemsPerPage: queryParams.Items,
 	}
@@ -147,12 +146,11 @@ func GetSearchView(c echo.Context) error {
   if pagination.TotalItems % int64(queryParams.Items) != 0 {
     pagination.TotalPages += 1
   }
-  fmt.Println(pagination)
 
 	if requestHeaders.HXRequest {
 		return Render(c, http.StatusOK, views.SearchResults(pagination, itemsTempl))
 	}
 
 	view := views.Search(itemsTempl, pagination, sortOptions, fieldOptions)
-	return Render(c, http.StatusOK, views.AdminLayout("Home", view))
+	return Render(c, http.StatusOK, views.LayoutNormal("Home", view))
 }

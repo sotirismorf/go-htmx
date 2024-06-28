@@ -62,7 +62,12 @@ func FormCreateItem(authors []SelectOption, uploads []SelectOption) templ.Compon
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Select("upload", "Upload", uploads, true).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = MultiSelectDropdown(
+			TemplMultiSelectDropdown{
+				Name:     "upload",
+				Label:    "Upload",
+				Selected: []TemplMultiSelectDropdownItem{},
+			}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
