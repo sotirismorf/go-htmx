@@ -1,0 +1,46 @@
+package views
+
+type ItemPage struct {
+	Name          string
+	Description   string
+	ThumbnailLink string
+	Uploads       []Upload
+}
+
+type Upload struct {
+	ID       string
+	Name     string
+	Size     string
+	Filetype string
+}
+
+type Author struct {
+	ID   string
+	Name string
+}
+
+templ Item(props ItemPage) {
+	<div class="bg-black border-y sm:border border-white sm:rounded-md p-4">
+		<div class="flex gap-4">
+			<img class="object-contain select-none size-48 w-max sm:size-64 sm:w-max" src={ props.ThumbnailLink } alt=""/>
+			<div>
+				<h1 class="text-lg sm:text-2xl font-bold">{ props.Name }</h1>
+			</div>
+		</div>
+		if props.Description != "" {
+			<p class="font-bold mt-6">Περιγραφή:</p>
+			<p class="text-justify my-2">{ props.Description }</p>
+		}
+		<p class="font-bold py-1 mt-6">Αρχεία:</p>
+		<div class="overflow-x-scroll my-2 flex flex-wrap items-start gap-2">
+			for _, v := range props.Uploads {
+				<a
+					class="rounded-full border border-neutral-700 hover:bg-neutral-900 py-1 px-3 text-nowrap"
+					href={ templ.SafeURL("/downloads/" + v.ID) }
+				>
+					{ v.Name }
+				</a>
+			}
+		</div>
+	</div>
+}

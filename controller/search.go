@@ -123,6 +123,7 @@ func GetSearchView(c echo.Context) error {
 
 		itemsTempl = append(itemsTempl, models.TemplItemResultCard{
 			Name:          v.Name,
+			ID:            strconv.FormatInt(v.ID, 10),
 			Year:          strconv.Itoa(int(v.Year)),
 			ThumbnailLink: thumbnailLink,
 			Authors:       authorsTempl,
@@ -142,10 +143,10 @@ func GetSearchView(c echo.Context) error {
 		pagination.TotalItems = 0
 	}
 
-  pagination.TotalPages = pagination.TotalItems / int64(queryParams.Items)
-  if pagination.TotalItems % int64(queryParams.Items) != 0 {
-    pagination.TotalPages += 1
-  }
+	pagination.TotalPages = pagination.TotalItems / int64(queryParams.Items)
+	if pagination.TotalItems%int64(queryParams.Items) != 0 {
+		pagination.TotalPages += 1
+	}
 
 	if requestHeaders.HXRequest {
 		return Render(c, http.StatusOK, views.SearchResults(pagination, itemsTempl))

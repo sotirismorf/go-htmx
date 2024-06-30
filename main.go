@@ -22,6 +22,7 @@ func main() {
 
 	app.GET("/", controller.HomeHandler)
 	app.GET("/search", controller.GetSearchView)
+  app.GET("/item/:id", controller.Item)
 
 	app.GET("/downloads/:id", uploads.GetUpload)
 	app.Static("/static/thumbnails", "uploads/thumbnails")

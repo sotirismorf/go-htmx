@@ -72,7 +72,7 @@ templ SearchResults(pagination components.TemplPagination, items []models.TemplI
 					</div>
 					<div>
 						<div class="mb-2">
-							<a class="hover:underline font-bold text-xl sm:text-2xl" href={ "/item/1" }>{ v.Name }</a>
+							<a class="hover:underline font-bold text-xl sm:text-2xl" href={ templ.SafeURL( "/item/" + v.ID )}>{ v.Name }</a>
 						</div>
 						<p class="text-sm sm:text-base">Published: { v.Year }</p>
 						if len(v.Authors) != 0 {

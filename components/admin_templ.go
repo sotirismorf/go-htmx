@@ -205,3 +205,27 @@ func AdminPage(props TemplAdminPage) templ.Component {
 		return templ_7745c5c3_Err
 	})
 }
+
+func AdminSideNav() templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var8 == nil {
+			templ_7745c5c3_Var8 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"divide-y divide-white\"><h2 class=\"text-xl p-2 font-bold\">Material</h2><ul class=\"text-lg pt-1\"><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/uploads\">Uploads</a></li><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/items\">Items</a></li><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/authors\">Authors</a></li><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/items\">Groups</a></li></ul></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}

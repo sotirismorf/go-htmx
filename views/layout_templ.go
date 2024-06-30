@@ -82,7 +82,23 @@ func AdminLayout(title string, cmp templ.Component) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"mx-auto max-w-7xl border-white flex\"><div class=\"bg-black w-1/5 border border-white divide-y divide-white\"><h2 class=\"text-xl p-2 font-bold\">Material</h2><ul class=\"text-lg pt-1\"><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/uploads\">Uploads</a></li><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/items\">Items</a></li><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/authors\">Authors</a></li><li class=\"py-0.5 px-2 hover:bg-neutral-900\"><a class=\"hover:underline \" href=\"/admin/items\">Groups</a></li></ul></div><div class=\"flex-grow\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"mx-auto max-w-7xl \"><div class=\"md:grid md:grid-cols-4 md:gap-x-2\"><div _=\"on click elsewhere hide me\" class=\"bg-black border-white border-r fixed transition top-0 left-0 h-full rounded-r-md\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.AdminSideNav().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"hidden md:block bg-black border-white border rounded-md\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.AdminSideNav().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"md:col-span-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -90,7 +106,7 @@ func AdminLayout(title string, cmp templ.Component) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

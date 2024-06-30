@@ -27,6 +27,7 @@ type UploadTemplateData struct {
 
 type TemplItemResultCard struct {
 	Name          string
+	ID            string
 	Year          string
 	ThumbnailLink string
 	Authors       []TemplItemResultCardAuthors
