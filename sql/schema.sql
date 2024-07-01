@@ -48,6 +48,8 @@ CREATE TABLE item_has_upload(
     UNIQUE (item_id, upload_id)
 );
 
+CREATE EXTENSION unaccent;
+
 INSERT INTO authors (name, bio)
 VALUES
 ('William Shakespeare', 'William Shakespeare was an English playwright, poet and actor. He is widely regarded as the greatest writer in the English language and the world''s pre-eminent dramatist. He is often called England''s national poet and the "Bard of Avon".' ),
