@@ -1,10 +1,15 @@
 package views
 
+import (
+	"github.com/invopop/ctxi18n/i18n"
+)
+
 type ItemPage struct {
 	Name          string
 	Description   string
 	ThumbnailLink string
 	Uploads       []Upload
+	Authors       []Author
 }
 
 type Upload struct {
@@ -20,11 +25,17 @@ type Author struct {
 }
 
 templ Item(props ItemPage) {
+  <div>
+    { i18n.T(ctx, "test") }
+  </div>
 	<div class="bg-black border-y sm:border border-white sm:rounded-md p-4">
 		<div class="flex gap-4">
 			<img class="object-contain select-none size-48 w-max sm:size-64 sm:w-max" src={ props.ThumbnailLink } alt=""/>
 			<div>
 				<h1 class="text-lg sm:text-2xl font-bold">{ props.Name }</h1>
+				for _, v := range props.Authors {
+					<p>{ v.Name }</p>
+				}
 			</div>
 		</div>
 		if props.Description != "" {

@@ -1,0 +1,8 @@
+el:
+  search:
+    placeholder: "Αναζήτηση..."
+    results:
+      count:
+        zero: "Κανένα αποτέλεσμα"
+        one: "%{count} αποτέλεσμα"
+        other: "%{count} αποτελέσματα"

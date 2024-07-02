@@ -174,6 +174,50 @@ func (q *Queries) SelectItem(ctx context.Context, id int64) (Item, error) {
 	return i, err
 }
 
+const selectItemPopulated = `-- name: SelectItemPopulated :one
+SELECT items.id, items.name, items.description,
+CAST(
+  CASE
+    WHEN COUNT(authors.id) > 0
+    THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
+  END
+AS jsonb) as authors,
+CAST(
+  CASE
+    WHEN COUNT(uploads.id) > 0
+    THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum, 'type', uploads.type))::jsonb
+  END
+AS jsonb) as uploads
+FROM items
+left join item_has_author on items.id = item_has_author.item_id
+left join authors on item_has_author.author_id = authors.id
+left join item_has_upload on items.id = item_has_upload.item_id
+left join uploads on item_has_upload.upload_id = uploads.id
+where items.id = $1
+group by items.id
+`
+
+type SelectItemPopulatedRow struct {
+	ID          int64
+	Name        string
+	Description *string
+	Authors     []byte
+	Uploads     []byte
+}
+
+func (q *Queries) SelectItemPopulated(ctx context.Context, id int64) (SelectItemPopulatedRow, error) {
+	row := q.db.QueryRow(ctx, selectItemPopulated, id)
+	var i SelectItemPopulatedRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Authors,
+		&i.Uploads,
+	)
+	return i, err
+}
+
 const selectItems = `-- name: SelectItems :many
 SELECT id, name, description, year FROM items
 ORDER BY name

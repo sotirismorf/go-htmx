@@ -1,9 +1,11 @@
 package views
 
 import (
+	"strconv"
+
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/components"
-	"strconv"
+	"github.com/invopop/ctxi18n/i18n"
 )
 
 templ Search(
@@ -28,7 +30,7 @@ templ Search(
 				name="query"
 				value=""
 				autocomplete="off"
-				placeholder="Search the catalogue..."
+				placeholder={ i18n.T(ctx, "search.placeholder") }
 			/>
 		</div>
 	</form>
@@ -52,7 +54,7 @@ templ Search(
 templ SearchResults(pagination components.TemplPagination, items []models.TemplItemResultCard) {
 	<div class="mt-4" id="search-results">
 		<div class="flex items-center justify-between flex-col gap-y-2 sm:flex-row m-4 sm:mx-0">
-			<p>{ strconv.FormatInt(pagination.TotalItems, 10) } αποτελέσματα</p>
+			<p>{ i18n.N(ctx, "search.results.count", int(pagination.TotalItems), i18n.M{"count": int(pagination.TotalItems) }) }</p>
 			if pagination.TotalPages > 0 {
 				@components.Pagination(pagination, 1)
 			}
@@ -72,7 +74,7 @@ templ SearchResults(pagination components.TemplPagination, items []models.TemplI
 					</div>
 					<div>
 						<div class="mb-2">
-							<a class="hover:underline font-bold text-xl sm:text-2xl" href={ templ.SafeURL( "/item/" + v.ID )}>{ v.Name }</a>
+							<a class="hover:underline font-bold text-xl sm:text-2xl" href={ templ.SafeURL("/item/" + v.ID) }>{ v.Name }</a>
 						</div>
 						<p class="text-sm sm:text-base">Published: { v.Year }</p>
 						if len(v.Authors) != 0 {

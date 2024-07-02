@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -21,40 +22,47 @@ func Item(c echo.Context) error {
 
 	ctx := context.Background()
 
-	dbItem, err := db.Queries.SelectItem(ctx, param.ID)
+	dbItem, err := db.Queries.SelectItemPopulated(ctx, param.ID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-	dbUploads, err := db.Queries.SelectUploadsOfItemByItemID(
-		context.WithValue(c.Request().Context(), 1, c),
-		dbItem.ID)
-
 	props := views.ItemPage{
 		Name:    dbItem.Name,
+		Authors: []views.Author{},
 		Uploads: []views.Upload{},
 	}
 
-	templUploads := []views.Upload{}
-	for _, v := range dbUploads {
-		templUploads = append(templUploads, views.Upload{
-			ID:       strconv.FormatInt(v.ID, 10),
-			Name:     v.Name,
-			Size:     models.PrettyByteSize(v.Size),
-			Filetype: string(v.Type),
-		})
+	// Authors
+	if dbItem.Authors != nil {
+		authors := []models.Author{}
+		json.Unmarshal([]byte(dbItem.Authors), &authors)
+
+		for _, v := range authors {
+			props.Authors = append(props.Authors, views.Author{
+				ID:   strconv.FormatInt(v.ID, 10),
+				Name: v.Name,
+			})
+		}
 	}
 
-	if len(dbUploads) > 0 {
-		props.Uploads = templUploads
-		props.ThumbnailLink = fmt.Sprintf("/static/thumbnails/%s.jpg", dbUploads[0].Sum)
+	// Uploads
+	if dbItem.Uploads != nil {
+		uploads := []models.Upload{}
+		json.Unmarshal([]byte(dbItem.Uploads), &uploads)
+
+		for _, v := range uploads {
+			props.Uploads = append(props.Uploads, views.Upload{
+				ID:   strconv.FormatInt(v.ID, 10),
+				Name: v.Filename,
+			})
+		}
+    props.ThumbnailLink = fmt.Sprintf("/static/thumbnails/%s.jpg", uploads[0].Sum)
 	}
 
 	if dbItem.Description != nil {
 		props.Description = *dbItem.Description
 	}
 
-	view := views.Item(props)
-
-	return Render(c, http.StatusOK, views.LayoutNormal("Home", view))
+	return Render(c, http.StatusOK, views.LayoutNormal("Home", views.Item(props)))
 }

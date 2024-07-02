@@ -6,8 +6,14 @@ import (
 )
 
 type Author struct {
-	Id   int64  `json:"id"`
+	ID   int64  `json:"id"`
 	Name string `json:"name"`
+}
+
+type Upload struct {
+	ID       int64  `json:"id"`
+	Filename string `json:"filename"`
+	Sum      string `json:"sum"`
 }
 
 type ItemData struct {

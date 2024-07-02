@@ -1,0 +1,8 @@
+el:
+  search:
+    placeholder: "Search the catalogue..."
+    results:
+      count:
+        zero: "No results"
+        one: "%{count} result"
+        other: "%{count} results"

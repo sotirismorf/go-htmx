@@ -56,7 +56,7 @@ func AdminItemsHandler(c echo.Context) error {
 					Text:       v.Name,
 					IsRelation: true,
 					CTName:     "authors",
-					ID:         strconv.FormatInt(v.Id, 10),
+					ID:         strconv.FormatInt(v.ID, 10),
 				})
 			}
 		}
