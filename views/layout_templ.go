@@ -93,7 +93,7 @@ func AdminLayout(title string, cmp templ.Component) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"mx-auto max-w-7xl \"><div class=\"md:grid md:grid-cols-4 md:gap-x-2\"><div _=\"on click elsewhere hide me\" class=\"bg-black border-white border-r fixed transition top-0 left-0 h-full rounded-r-md\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div id=\"admin-navigation-sidebar\" class=\"bg-black border-white border-r fixed transition top-0 left-0 h-full rounded-r-md overflow-hidden\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -101,7 +101,7 @@ func AdminLayout(title string, cmp templ.Component) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"hidden md:block bg-black border-white border rounded-md\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"mx-auto max-w-7xl \"><div class=\"md:grid md:grid-cols-4 md:gap-x-2\"><div class=\"hidden md:block bg-black border-white border rounded-md\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

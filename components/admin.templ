@@ -1,8 +1,6 @@
 package components
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type TemplAdminPage struct {
 	Title       string
@@ -74,12 +72,20 @@ templ AdminPage(props TemplAdminPage) {
 
 templ AdminSideNav() {
 	<div class="divide-y divide-white">
-		<h2 class="text-xl p-2 font-bold">Material</h2>
+		<h2 class="text-xl font-bold flex gap-2 items-center">
+			<span class="px-2 mr-4">Material </span>
+			<button
+				class="border-l border-white p-2 hover:bg-neutral-900"
+				_="on click hide #admin-navigation-sidebar"
+			>
+				@IconXMark("size-6")
+			</button>
+		</h2>
 		<ul class="text-lg pt-1">
 			<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/uploads">Uploads</a></li>
 			<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/items">Items</a></li>
 			<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/authors">Authors</a></li>
-			<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/items">Groups</a></li>
+			<li class="py-0.5 px-2 hover:bg-neutral-900"><a class="hover:underline " href="/admin/groups">Groups</a></li>
 		</ul>
 	</div>
 }

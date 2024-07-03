@@ -26,14 +26,14 @@ templ Base(title string) {
 templ AdminLayout(title string, cmp templ.Component) {
 	@Base(title) {
 		@components.NavigationBar()
+		<div
+      id="admin-navigation-sidebar"
+			class="bg-black border-white border-r fixed transition top-0 left-0 h-full rounded-r-md overflow-hidden"
+		>
+			@components.AdminSideNav()
+		</div>
 		<div class="mx-auto max-w-7xl ">
 			<div class="md:grid md:grid-cols-4 md:gap-x-2">
-				<div
-					_="on click elsewhere hide me"
-					class="bg-black border-white border-r fixed transition top-0 left-0 h-full rounded-r-md"
-				>
-					@components.AdminSideNav()
-				</div>
 				<div class="hidden md:block bg-black border-white border rounded-md">
 					@components.AdminSideNav()
 				</div>

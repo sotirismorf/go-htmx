@@ -6,3 +6,23 @@ el:
         zero: "Κανένα αποτέλεσμα"
         one: "%{count} αποτέλεσμα"
         other: "%{count} αποτελέσματα"
+  admin:
+    collections:
+      create: Δημιουργία
+      items:
+        title: Καταχωρήσεις
+        fields:
+          name: Όνομα
+          authors: Συγγραφείς
+      authors:
+        title: Συγγραφείς
+        fields:
+          name: Όνομα
+          bio: Βιογραφία
+      uploads:
+        title: Αρχεία
+        fields:
+          name: Όνομα
+          size: Μέγεθος
+          type: Τύπος
+      groups: Ομάδες

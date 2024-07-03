@@ -1,4 +1,4 @@
-package controller
+package ui
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/components"
+	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/schema"
@@ -25,7 +26,7 @@ type RequestHeaders struct {
 	HXRequest bool `header:"HX-Request"`
 }
 
-func GetSearchView(c echo.Context) error {
+func Search(c echo.Context) error {
 	queryParams := searchQueryParams{
 		Items: 5,
 		Page:  1,
@@ -41,25 +42,13 @@ func GetSearchView(c echo.Context) error {
 	binder.BindHeaders(c, requestHeaders)
 
 	sortOptions := []components.SelectOption{
-		components.SelectOption{
-			Name: "Date ascending",
-			ID:   "date-asc",
-		},
-		components.SelectOption{
-			Name: "Date descending",
-			ID:   "date-desc",
-		},
+		{Name: "Date ascending", ID: "date-asc"},
+		{Name: "Date descending", ID: "date-desc"},
 	}
 
 	fieldOptions := []components.SelectOption{
-		components.SelectOption{
-			Name: "Title",
-			ID:   "title",
-		},
-		components.SelectOption{
-			Name: "Author",
-			ID:   "author",
-		},
+		{Name: "Title", ID: "title"},
+		{Name: "Author", ID: "author"},
 	}
 
 	dbParams := schema.SearchItemsParams{
@@ -149,9 +138,9 @@ func GetSearchView(c echo.Context) error {
 	}
 
 	if requestHeaders.HXRequest {
-		return Render(c, http.StatusOK, views.SearchResults(pagination, itemsTempl))
+		return controller.Render(c, http.StatusOK, views.SearchResults(pagination, itemsTempl))
 	}
 
 	view := views.Search(itemsTempl, pagination, sortOptions, fieldOptions)
-	return Render(c, http.StatusOK, views.LayoutNormal("Home", view))
+	return controller.Render(c, http.StatusOK, views.LayoutNormal("Home", view))
 }

@@ -1,5 +1,7 @@
 package components
 
+import "fmt"
+
 templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
 	<form
 		class="bg-dark-2 flex flex-col gap-3 rounded-md p-4 focus:bg-red-400"
@@ -18,9 +20,9 @@ templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
 			Type:  "text",
 		})
 		@DahliaInput(TemplInput{
-			Name:  "year",
-			Label: "Year Published",
-			Type:  "number",
+			Name:     "year",
+			Label:    "Year Published",
+			Type:     "number",
 			Required: true,
 		})
 		@MultiSelectDropdown(
@@ -41,25 +43,6 @@ templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
 	</form>
 }
 
-templ FormCreateAuthor() {
-	<form class="bg-dark-2 flex flex-col gap-3 rounded-md p-4" action="/admin/authors/create" method="post">
-		@DahliaInput(TemplInput{
-			Name:  "name",
-			Label: "Name",
-			Type:  "text",
-			Required: true,
-		})
-		@DahliaInput(TemplInput{
-			Name:  "bio",
-			Label: "Biography",
-			Type:  "text",
-		})
-		<div>
-			@ButtonSubmit("Submit")
-		</div>
-	</form>
-}
-
 templ FormCreateUpload() {
 	<form
 		action="/admin/uploads/create"
@@ -69,6 +52,28 @@ templ FormCreateUpload() {
 		<input type="file" id="input-file" name="file"/>
 		<div>
 			<button type="submit">Submit</button>
+		</div>
+	</form>
+}
+
+type CreateForm struct {
+	Inputs []templ.Component
+	CTName string
+}
+
+templ AdminCreateForm(props CreateForm) {
+	<form
+		class="bg-black flex flex-col gap-3 rounded-md p-4"
+		action={ templ.SafeURL(fmt.Sprintf("/admin/%s/create", props.CTName)) }
+		method="post"
+	>
+		for _, input := range props.Inputs {
+			<div>
+				@input
+			</div>
+		}
+		<div>
+			@ButtonSubmit("Submit")
 		</div>
 	</form>
 }

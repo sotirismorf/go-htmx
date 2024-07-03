@@ -59,8 +59,9 @@ type Author struct {
 }
 
 type Group struct {
-	ID   int64
-	Name string
+	ID       int32
+	Name     string
+	Location int16
 }
 
 type Item struct {
@@ -80,8 +81,13 @@ type ItemHasUpload struct {
 	UploadID int64
 }
 
+type Place struct {
+	ID   int16
+	Name string
+}
+
 type Publisher struct {
-	ID          int64
+	ID          int32
 	Name        string
 	Description *string
 }

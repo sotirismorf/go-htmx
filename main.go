@@ -11,6 +11,7 @@ import (
 	"github.com/sotirismorf/go-htmx/controller/authors"
 	"github.com/sotirismorf/go-htmx/controller/items"
 	"github.com/sotirismorf/go-htmx/controller/uploads"
+	"github.com/sotirismorf/go-htmx/controller/ui"
 	"github.com/sotirismorf/go-htmx/db"
 )
 
@@ -49,7 +50,7 @@ func main() {
 	e.Use(i18nMiddleware)
 
 	e.GET("/", controller.HomeHandler)
-	e.GET("/search", controller.GetSearchView)
+	e.GET("/search", ui.Search)
 	e.GET("/item/:id", controller.Item)
 
 	e.GET("/downloads/:id", uploads.GetUpload)
@@ -57,21 +58,23 @@ func main() {
 	e.Static("/assets", "assets")
 
 	e.GET("/admin", controller.AdminHandler)
-	e.GET("/admin/items", items.AdminItemsHandler)
+	e.GET("/admin/items", ui.AdminItems)
 	e.POST("/admin/items/create", items.AdminCreateItemHandler)
-	e.GET("/admin/items/create", items.CreateItemController)
+	e.GET("/admin/items/create", ui.AdminCreateItemForm)
 	e.GET("/admin/items/:id", items.AdminGetSingleItem)
 	e.DELETE("/admin/items/:id", items.AdminDeleteSingleItem)
 	e.GET("/htmx/admin/items/:id/edit", items.HTMXAdminItemsOneEdit)
 	// e.GET("/htmx/admin/items/:id/cancel", items.HTMXAdminItemsOneCancelEdit)
 
-	e.GET("/admin/authors", authors.AdminAuthorsHandler)
+	e.GET("/admin/groups/create", ui.AdminCreateGroupForm)
+
+	e.GET("/admin/authors", ui.AdminAuthors)
 	e.DELETE("/admin/authors/:id", authors.AdminSingleAuthorDelete)
-	e.GET("/admin/authors/create", authors.CreateAuthorForm)
+	e.GET("/admin/authors/create", ui.AdminCreateAuthorForm)
 	e.POST("/admin/authors/create", authors.Create)
 
-	e.GET("/admin/uploads", uploads.AdminGetUploads)
-	e.GET("/admin/uploads/create", uploads.AdminGetUploadForm)
+	e.GET("/admin/uploads", ui.AdminUploads)
+	e.GET("/admin/uploads/create", ui.AdminCreateUploadForm)
 	e.POST("/admin/uploads/create", uploads.AdminCreateUpload)
 	e.DELETE("/admin/uploads/:id", uploads.DeleteUpload)
 

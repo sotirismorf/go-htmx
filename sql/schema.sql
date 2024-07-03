@@ -1,12 +1,18 @@
 CREATE TABLE authors (
   id   BIGSERIAL PRIMARY KEY,
-  name text    NOT NULL,
+  name text    NOT NULL CHECK ( name != '' ),
   bio  text
 );
 
+CREATE TABLE places (
+  id          SMALLSERIAL PRIMARY KEY,
+  name        TEXT      NOT NULL CHECK ( name != '' )
+);
+
 CREATE TABLE groups (
-  id          BIGSERIAL PRIMARY KEY,
-  name        text    NOT NULL CHECK ( name != '' )
+  id          SERIAL      PRIMARY KEY,
+  name        TEXT        NOT NULL CHECK ( name != '' ),
+  location    SMALLSERIAL NOT NULL REFERENCES uploads(id)
 );
 
 CREATE TABLE items (
@@ -17,7 +23,7 @@ CREATE TABLE items (
 );
 
 CREATE TABLE publishers (
-  id          BIGSERIAL PRIMARY KEY,
+  id          SERIAL  PRIMARY KEY,
   name        text    NOT NULL,
   description text
 );

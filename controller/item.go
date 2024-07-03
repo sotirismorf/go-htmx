@@ -57,7 +57,7 @@ func Item(c echo.Context) error {
 				Name: v.Filename,
 			})
 		}
-    props.ThumbnailLink = fmt.Sprintf("/static/thumbnails/%s.jpg", uploads[0].Sum)
+		props.ThumbnailLink = fmt.Sprintf("/static/thumbnails/%s.jpg", uploads[0].Sum)
 	}
 
 	if dbItem.Description != nil {

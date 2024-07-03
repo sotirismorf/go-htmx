@@ -133,22 +133,31 @@ templ DahliaSelectPill(name string, label string, options []SelectOption, isDisa
 	</div>
 }
 
-templ Select(name string, label string, options []SelectOption, isDisabled bool) {
-	<div class="border-2 border-solid border-neutral-900 rounded-lg flex items-stretch w-max">
-		<label class="bg-dark-3 px-4 py-2" for={ "select-" + name }>{ label }</label>
-		<select
-			class="bg-transparent px-4 focus:bg-dark-1 hover:bg-dark-1 transition rounded-r-lg"
-			name={ name }
-			id={ "select-" + name }
-		>
-			if isDisabled {
-				<option disabled selected value>Select one</option>
-			}
-			for _, option := range options {
-				<option value={ option.ID }>{ option.Name }</option>
-			}
-		</select>
+type TemplSelect struct {
+	Name       string
+	Label      string
+	Options    []SelectOption
+	IsDisabled bool
+}
+
+templ Select(props TemplSelect) {
+	<div class="custom-label-for-input">
+		<label
+			for={ "multi-select-dropdown-input-" + props.Name }
+		>{ props.Label }</label>
 	</div>
+	<select
+		class="dahlia-input bg-transparent px-4 py-1 transition rounded-r-lg"
+		name={ props.Name }
+		id={ "select-" + props.Name }
+	>
+		if props.IsDisabled {
+			<option disabled selected value>Select one</option>
+		}
+		for _, option := range props.Options {
+			<option value={ option.ID }>{ option.Name }</option>
+		}
+	</select>
 }
 
 templ InputText(name string, displayName string) {
