@@ -1,4 +1,4 @@
-package items
+package ui
 
 import (
 	"context"
@@ -37,7 +37,7 @@ func SingleItemPopulated(id int64) (models.ItemData, error) {
 	return i, nil
 }
 
-func AdminGetSingleItem(c echo.Context) error {
+func AdminSingleItem(c echo.Context) error {
 	var param controller.ParamContainsID
 
 	err := c.Bind(&param)
@@ -70,22 +70,6 @@ func AdminGetSingleItem(c echo.Context) error {
 	view := items.AdminSingleItem(i, templateData)
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout(i.Name, view))
-}
-
-func AdminDeleteSingleItem(c echo.Context) error {
-	var param controller.ParamContainsID
-
-	err := c.Bind(&param)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
-	}
-
-	err = db.Queries.DeleteItem(context.Background(), param.ID)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	return c.NoContent(http.StatusOK)
 }
 
 func HTMXAdminItemsOneEdit(c echo.Context) error {

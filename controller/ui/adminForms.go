@@ -38,15 +38,46 @@ func AdminCreateItemForm(c echo.Context) error {
 		uploadOptions = append(uploadOptions, components.SelectOption{ID: strconv.FormatInt(v.ID, 10), Name: v.Name})
 	}
 
-	view := components.FormCreateItem(authorOptions, uploadOptions)
+	// view := components.FormCreateItem(authorOptions, uploadOptions)
+	view := components.AdminCreateForm(components.CreateForm{
+		CTName: "items",
+		Inputs: []templ.Component{
+			components.DahliaInput(components.TemplInput{
+				Name:     "name",
+				Label:    "Name",
+				Type:     "text",
+				Required: true,
+			}),
+			components.DahliaInput(components.TemplInput{
+				Name:  "description",
+				Label: "Description",
+				Type:  "text",
+			}),
+			components.DahliaInput(components.TemplInput{
+				Name:     "year",
+				Label:    "Year Published",
+				Type:     "number",
+				Required: true,
+			}),
+			components.MultiSelectDropdown(components.TemplMultiSelectDropdown{
+				Name:     "author",
+				Label:    "Author",
+				Selected: []components.TemplMultiSelectDropdownItem{},
+			}),
+			components.MultiSelectDropdown(components.TemplMultiSelectDropdown{
+				Name:     "upload",
+				Label:    "Upload",
+				Selected: []components.TemplMultiSelectDropdownItem{},
+			}),
+		},
+	})
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }
 
-
 func AdminCreateAuthorForm(c echo.Context) error {
 	view := components.AdminCreateForm(components.CreateForm{
-    CTName: "authors",
+		CTName: "authors",
 		Inputs: []templ.Component{
 			components.DahliaInput(components.TemplInput{
 				Name:     "name",
@@ -72,13 +103,13 @@ func AdminCreateGroupForm(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
-  templPlaces := []components.SelectOption{}
-  for _, v := range dbCities {
-    templPlaces = append(templPlaces, components.SelectOption{
-      Name: v.Name,
-      ID: strconv.FormatInt(int64(v.ID), 10) ,
-    })
-  }
+	templPlaces := []components.SelectOption{}
+	for _, v := range dbCities {
+		templPlaces = append(templPlaces, components.SelectOption{
+			Name: v.Name,
+			ID:   strconv.FormatInt(int64(v.ID), 10),
+		})
+	}
 
 	view := components.AdminCreateForm(components.CreateForm{
 		CTName: "groups",
@@ -88,10 +119,10 @@ func AdminCreateGroupForm(c echo.Context) error {
 				Name:  "name",
 			}),
 			components.Select(components.TemplSelect{
-				Name:       "place",
+				Name:       "location",
 				Label:      "City",
 				IsDisabled: false,
-				Options: templPlaces,
+				Options:    templPlaces,
 			}),
 		},
 	})

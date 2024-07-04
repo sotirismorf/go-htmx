@@ -22,3 +22,36 @@ func (q *Queries) CreateGroup(ctx context.Context, arg CreateGroupParams) error 
 	_, err := q.db.Exec(ctx, createGroup, arg.Name, arg.Location)
 	return err
 }
+
+const selectGroups = `-- name: SelectGroups :many
+select groups.id, groups.name, places.name as city
+from groups
+left join places on places.id = groups.location
+order by groups.name
+`
+
+type SelectGroupsRow struct {
+	ID   int32
+	Name string
+	City *string
+}
+
+func (q *Queries) SelectGroups(ctx context.Context) ([]SelectGroupsRow, error) {
+	rows, err := q.db.Query(ctx, selectGroups)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectGroupsRow
+	for rows.Next() {
+		var i SelectGroupsRow
+		if err := rows.Scan(&i.ID, &i.Name, &i.City); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

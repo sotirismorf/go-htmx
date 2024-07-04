@@ -1,20 +1,19 @@
 package components
 
-import (
-	"strconv"
-)
+import "strconv"
 
 type TemplPagination struct {
 	CurrentPage  int64
 	ItemsPerPage int32
 	TotalItems   int64
 	TotalPages   int64
+	Endpoint     string
 }
 
 templ Pagination(p TemplPagination, neighbours int64) {
 	<div class="bg-black w-max rounded-md flex items-stretch divide-x divide-white border border-white overflow-hidden sm:text-lg">
 		if p.CurrentPage > 1 {
-			@PaginationLink(p.CurrentPage - 1) {
+			@paginationLink(p.CurrentPage - 1, p.Endpoint) {
 				<div class="p-1 flex items-center">
 					@IconChevronLeft("size-6")
 				</div>
@@ -27,20 +26,20 @@ templ Pagination(p TemplPagination, neighbours int64) {
 		if p.TotalPages == 1 {
 			<div class="px-3 py-1 bg-fuchsia-400 text-black">{ strconv.FormatInt(p.CurrentPage, 10) }</div>
 		} else if p.TotalPages > 1 {
-			@PaginationLinkNumber(1, p.CurrentPage)
+			@paginationLinkNumber(1, p.CurrentPage, p.Endpoint)
 			if p.CurrentPage > 2 + neighbours {
-				@PaginationEllipsis()
+				@paginationEllipsis()
 			}
 			for i := max(2, p.CurrentPage - neighbours); i <= min(p.CurrentPage + neighbours, p.TotalPages - 1) ; i++ {
-				@PaginationLinkNumber(i, p.CurrentPage)
+				@paginationLinkNumber(i, p.CurrentPage, p.Endpoint)
 			}
 			if p.CurrentPage < p.TotalPages - neighbours - 1 {
-				@PaginationEllipsis()
+				@paginationEllipsis()
 			}
-			@PaginationLinkNumber(p.TotalPages, p.CurrentPage)
+			@paginationLinkNumber(p.TotalPages, p.CurrentPage, p.Endpoint)
 		}
 		if p.CurrentPage < p.TotalPages {
-			@PaginationLink(p.CurrentPage + 1) {
+			@paginationLink(p.CurrentPage + 1, p.Endpoint) {
 				<div class="p-1 flex items-center">
 					@IconChevronRight("size-6")
 				</div>
@@ -53,11 +52,11 @@ templ Pagination(p TemplPagination, neighbours int64) {
 	</div>
 }
 
-templ PaginationLink(page int64) {
+templ paginationLink(page int64, endpoint string) {
 	<button
 		name="page"
 		value={ strconv.FormatInt(page, 10) }
-		hx-get="/search"
+		hx-get={ endpoint }
 		hx-target="#search-results"
 		hx-push-url="true"
 		hx-include=".htmx-search"
@@ -66,12 +65,12 @@ templ PaginationLink(page int64) {
 	</button>
 }
 
-templ PaginationEllipsis() {
+templ paginationEllipsis() {
 	<div class="px-2 flex"><div class="m-auto">...</div></div>
 }
 
-templ PaginationLinkNumber(page int64, currentPage int64) {
-	@PaginationLink(page) {
+templ paginationLinkNumber(page int64, currentPage int64, endpoint string) {
+	@paginationLink(page, endpoint) {
 		<div
 			if page == currentPage {
 				class="px-3 py-1 bg-fuchsia-400 text-black"

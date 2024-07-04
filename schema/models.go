@@ -68,6 +68,7 @@ type Item struct {
 	ID          int64
 	Name        string
 	Description *string
+	GroupID     *int32
 	Year        int16
 }
 

@@ -16,18 +16,13 @@ import (
 	"github.com/sotirismorf/go-htmx/views/admin/uploads"
 )
 
-type searchParams struct {
-	Limit  int32 `query:"limit"`
-	Offset int32 `query:"offset"`
-}
-
 func AdminItems(c echo.Context) error {
-	params := searchParams{
-		Limit:  10,
-		Offset: 0,
+	queryParams := searchQueryParams{
+		ItemsPerPage: 20,
+		PageIndex:    1,
 	}
 
-	err := c.Bind(&params)
+	err := c.Bind(&queryParams)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
@@ -35,8 +30,8 @@ func AdminItems(c echo.Context) error {
 	ctx := context.Background()
 
 	dbAuthorRows, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx, schema.SelectItemsWithAuthorsAndUploadsParams{
-		Limit:  params.Limit,
-		Offset: params.Offset,
+		Limit:  queryParams.ItemsPerPage,
+		Offset: (queryParams.PageIndex - 1) * queryParams.ItemsPerPage,
 	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
@@ -64,11 +59,17 @@ func AdminItems(c echo.Context) error {
 		rows = append(rows, components.TemplAdminTableRow{
 			ID: strconv.FormatInt(i.ID, 10),
 			Cells: [][]components.TemplAdminTableCell{
-				{{Text: strconv.FormatInt(i.ID, 10)}},
 				{{Text: i.Name}},
+				{{Text: "To be added"}},
 				templAuthors,
 			},
 		})
+	}
+
+	pagination := components.TemplPagination{
+		CurrentPage: int64(queryParams.PageIndex),
+		TotalPages:  calcPageCount(100, int64(queryParams.ItemsPerPage)),
+		Endpoint:    "/admin/items",
 	}
 
 	view := components.AdminPage(components.TemplAdminPage{
@@ -76,9 +77,17 @@ func AdminItems(c echo.Context) error {
 		CTName:      "items",
 		CanDelete:   true,
 		CanDownload: false,
-		Columns:     []string{"ID", "Name", "Authors"},
+		Columns:     []string{"Name", "Group", "Authors"},
 		Rows:        rows,
+		Pagination:  pagination,
 	})
+
+	requestHeaders := new(RequestHeaders)
+	binder := &echo.DefaultBinder{}
+	binder.BindHeaders(c, requestHeaders)
+	if requestHeaders.HXRequest {
+		return controller.Render(c, http.StatusOK, view)
+	}
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout("Admin Panel - Items", view))
 }
@@ -98,7 +107,6 @@ func AdminAuthors(c echo.Context) error {
 			Cells: [][]components.TemplAdminTableCell{
 				{{Text: strconv.FormatInt(i.ID, 10)}},
 				{{Text: i.Name}},
-				{{Text: "example bio"}},
 				{{Text: func() string {
 					if i.Bio != nil {
 						return *i.Bio
@@ -143,4 +151,35 @@ func AdminUploads(c echo.Context) error {
 	view := uploads.AdminUploads(templateData)
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout("Uploads", view))
+}
+
+func AdminGroups(c echo.Context) error {
+	ctx := context.Background()
+
+	dbData, err := db.Queries.SelectGroups(ctx)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err)
+	}
+
+	rows := []components.TemplAdminTableRow{}
+	for _, i := range dbData {
+		rows = append(rows, components.TemplAdminTableRow{
+			ID: strconv.FormatInt(int64(i.ID), 10),
+			Cells: [][]components.TemplAdminTableCell{
+				{{Text: strconv.FormatInt(int64(i.ID), 10)}},
+				{{Text: i.Name}},
+				{{Text: *i.City}},
+			}})
+	}
+
+	view := components.AdminPage(components.TemplAdminPage{
+		Title:       "Groups",
+		CTName:      "groups",
+		CanDelete:   true,
+		CanDownload: false,
+		Columns:     []string{"ID", "Name", "City"},
+		Rows:        rows,
+	})
+
+	return controller.Render(c, http.StatusOK, views.AdminLayout("Groups", view))
 }

@@ -2,47 +2,6 @@ package components
 
 import "fmt"
 
-templ FormCreateItem(authors []SelectOption, uploads []SelectOption) {
-	<form
-		class="bg-dark-2 flex flex-col gap-3 rounded-md p-4 focus:bg-red-400"
-		action="/admin/items/create"
-		method="post"
-	>
-		@DahliaInput(TemplInput{
-			Name:     "name",
-			Label:    "Name",
-			Type:     "text",
-			Required: true,
-		})
-		@DahliaInput(TemplInput{
-			Name:  "description",
-			Label: "Description",
-			Type:  "text",
-		})
-		@DahliaInput(TemplInput{
-			Name:     "year",
-			Label:    "Year Published",
-			Type:     "number",
-			Required: true,
-		})
-		@MultiSelectDropdown(
-			TemplMultiSelectDropdown{
-				Name:     "author",
-				Label:    "Author",
-				Selected: []TemplMultiSelectDropdownItem{},
-			})
-		@MultiSelectDropdown(
-			TemplMultiSelectDropdown{
-				Name:     "upload",
-				Label:    "Upload",
-				Selected: []TemplMultiSelectDropdownItem{},
-			})
-		<div>
-			@ButtonSubmit("Submit")
-		</div>
-	</form>
-}
-
 templ FormCreateUpload() {
 	<form
 		action="/admin/uploads/create"

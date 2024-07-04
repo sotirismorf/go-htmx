@@ -1,4 +1,4 @@
-package uploads
+package crud
 
 import (
 	"context"
@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/schema"
 )
@@ -22,7 +21,7 @@ type formData struct {
 	Bio  string `form:"bio"`
 }
 
-func AdminCreateUpload(c echo.Context) error {
+func CreateUpload(c echo.Context) error {
 	file, err := c.FormFile("file")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
@@ -111,35 +110,4 @@ func AdminCreateUpload(c echo.Context) error {
 	}
 
 	return c.Redirect(http.StatusFound, "/admin/uploads")
-}
-
-func DeleteUpload(c echo.Context) error {
-	var param controller.ParamContainsID
-
-	err := c.Bind(&param)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
-	}
-
-	data, err := db.Queries.SelectSingleUpload(context.Background(), param.ID)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	err = db.Queries.DeleteSingleUpload(context.Background(), param.ID)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	err = os.Remove("uploads/" + data[0].Sum)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	err = os.Remove("uploads/thumbnails/" + data[0].Sum + ".jpg")
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
-
-	return c.NoContent(http.StatusOK)
 }

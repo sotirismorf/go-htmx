@@ -15,7 +15,7 @@ INSERT INTO items (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING id, name, description, year
+RETURNING id, name, description, group_id, year
 `
 
 type CreateItemParams struct {
@@ -31,6 +31,7 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 		&i.ID,
 		&i.Name,
 		&i.Description,
+		&i.GroupID,
 		&i.Year,
 	)
 	return i, err
@@ -158,7 +159,7 @@ func (q *Queries) SearchItems(ctx context.Context, arg SearchItemsParams) ([]Sea
 }
 
 const selectItem = `-- name: SelectItem :one
-SELECT id, name, description, year FROM items
+SELECT id, name, description, group_id, year FROM items
 WHERE id = $1
 `
 
@@ -169,6 +170,7 @@ func (q *Queries) SelectItem(ctx context.Context, id int64) (Item, error) {
 		&i.ID,
 		&i.Name,
 		&i.Description,
+		&i.GroupID,
 		&i.Year,
 	)
 	return i, err
@@ -219,7 +221,7 @@ func (q *Queries) SelectItemPopulated(ctx context.Context, id int64) (SelectItem
 }
 
 const selectItems = `-- name: SelectItems :many
-SELECT id, name, description, year FROM items
+SELECT id, name, description, group_id, year FROM items
 ORDER BY name
 `
 
@@ -236,6 +238,7 @@ func (q *Queries) SelectItems(ctx context.Context) ([]Item, error) {
 			&i.ID,
 			&i.Name,
 			&i.Description,
+			&i.GroupID,
 			&i.Year,
 		); err != nil {
 			return nil, err

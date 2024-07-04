@@ -16,10 +16,10 @@ import (
 )
 
 type searchQueryParams struct {
-	Query string `query:"query"`
-	Field string `query:"field"`
-	Items int32  `query:"items"`
-	Page  int32  `query:"page"`
+	Query        string `query:"query"`
+	Field        string `query:"field"`
+	ItemsPerPage int32  `query:"items"`
+	PageIndex    int32  `query:"page"`
 }
 
 type RequestHeaders struct {
@@ -28,8 +28,8 @@ type RequestHeaders struct {
 
 func Search(c echo.Context) error {
 	queryParams := searchQueryParams{
-		Items: 5,
-		Page:  1,
+		ItemsPerPage: 5,
+		PageIndex:         1,
 	}
 
 	err := c.Bind(&queryParams)
@@ -53,8 +53,8 @@ func Search(c echo.Context) error {
 
 	dbParams := schema.SearchItemsParams{
 		Name:   "%" + queryParams.Query + "%",
-		Limit:  queryParams.Items,
-		Offset: (queryParams.Page - 1) * queryParams.Items,
+		Limit:  queryParams.ItemsPerPage,
+		Offset: (queryParams.PageIndex - 1) * queryParams.ItemsPerPage,
 	}
 
 	ctx := context.Background()
@@ -121,8 +121,9 @@ func Search(c echo.Context) error {
 	}
 
 	pagination := components.TemplPagination{
-		CurrentPage:  int64(queryParams.Page),
-		ItemsPerPage: queryParams.Items,
+		CurrentPage:  int64(queryParams.PageIndex),
+		ItemsPerPage: queryParams.ItemsPerPage,
+    Endpoint: "/search",
 	}
 
 	// Pagination
@@ -132,10 +133,7 @@ func Search(c echo.Context) error {
 		pagination.TotalItems = 0
 	}
 
-	pagination.TotalPages = pagination.TotalItems / int64(queryParams.Items)
-	if pagination.TotalItems%int64(queryParams.Items) != 0 {
-		pagination.TotalPages += 1
-	}
+	pagination.TotalPages = calcPageCount(pagination.TotalItems, int64(queryParams.ItemsPerPage))
 
 	if requestHeaders.HXRequest {
 		return controller.Render(c, http.StatusOK, views.SearchResults(pagination, itemsTempl))
@@ -143,4 +141,13 @@ func Search(c echo.Context) error {
 
 	view := views.Search(itemsTempl, pagination, sortOptions, fieldOptions)
 	return controller.Render(c, http.StatusOK, views.LayoutNormal("Home", view))
+}
+
+func calcPageCount(totalItems int64, pageItems int64) int64 {
+	pageCount := totalItems / int64(pageItems)
+	if totalItems%int64(pageItems) != 0 {
+		pageCount += 1
+	}
+
+	return pageCount
 }

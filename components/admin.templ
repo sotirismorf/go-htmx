@@ -7,6 +7,7 @@ type TemplAdminPage struct {
 	CTName      string
 	CanDelete   bool
 	CanDownload bool
+	Pagination  TemplPagination
 	Columns     []string
 	Rows        []TemplAdminTableRow
 }
@@ -24,50 +25,69 @@ type TemplAdminTableCell struct {
 }
 
 templ AdminPage(props TemplAdminPage) {
-	@Breadcrumb(props.CTName, props.Title)
-	@Table() {
-		<thead class="text-left">
-			<tr>
-				for _, row := range props.Columns {
-					@TableHeader(row)
-				}
-				@TableHeader("Actions")
-			</tr>
-		</thead>
-		<tbody>
-			for _, row := range props.Rows {
-				@TableRow() {
-					for _, cell := range row.Cells {
-						<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
-							for i, cellItem := range cell {
-								<a
-									class="hover:underline"
-									if cellItem.IsRelation {
-										href={ templ.SafeURL(fmt.Sprintf("/admin/%s/%s", cellItem.CTName, cellItem.ID)) }
-									} else {
-										href={ templ.SafeURL(fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID)) }
+	<div id="search-results">
+		@Breadcrumb(props.CTName, props.Title)
+		@Pagination(props.Pagination, 1)
+		<div class="bg-black sm:rounded-md border-y sm:border border-white sm:border-r overflow-x-scroll">
+			<table class="table-fixed w-full border-spacing-4">
+				<thead class="text-left border-b">
+					<tr>
+						for _, row := range props.Columns {
+							@TableHeader(row)
+						}
+						@TableHeader("")
+					</tr>
+				</thead>
+				<tbody>
+					for _, row := range props.Rows {
+						@TableRow() {
+							for _, cell := range row.Cells {
+								<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-4 py-2 max-w-56">
+									for i, cellItem := range cell {
+										<a
+											class="hover:underline"
+											if cellItem.IsRelation {
+												href={ templ.SafeURL(fmt.Sprintf("/admin/%s/%s", cellItem.CTName, cellItem.ID)) }
+											} else {
+												href={ templ.SafeURL(fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID)) }
+											}
+										>
+											{ cellItem.Text }
+										</a>
+										if len(cell) > 1 && i < len(cell) - 1 {
+											,&nbsp
+										}
 									}
-								>
-									{ cellItem.Text }
-								</a>
-								if len(cell) > 1 && i < len(cell) - 1 {
-									,&nbsp
-								}
+								</td>
 							}
-						</td>
+							<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
+								<div class="flex items-center justify-end gap-2">
+									<button
+										hx-delete={ fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID) }
+										hx-target="closest tr"
+									>
+										@IconDelete()
+									</button>
+									<button
+										hx-delete={ fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID) }
+										hx-target="closest tr"
+									>
+										@IconEdit("size-6")
+									</button>
+									<button
+										hx-delete={ fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID) }
+										hx-target="closest tr"
+									>
+										@IconDelete()
+									</button>
+								</div>
+							</td>
+						}
 					}
-					<td class="whitespace-nowrap overflow-hidden overflow-ellipsis px-2 py-1 max-w-56">
-						<button
-							hx-delete={ fmt.Sprintf("/admin/%s/%s", props.CTName, row.ID) }
-							hx-target="closest tr"
-						>
-							@IconDelete()
-						</button>
-					</td>
-				}
-			}
-		</tbody>
-	}
+				</tbody>
+			</table>
+		</div>
+	</div>
 }
 
 templ AdminSideNav() {

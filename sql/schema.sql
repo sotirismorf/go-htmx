@@ -1,25 +1,26 @@
 CREATE TABLE authors (
   id   BIGSERIAL PRIMARY KEY,
-  name text    NOT NULL CHECK ( name != '' ),
+  name text      NOT NULL CHECK ( name != '' ),
   bio  text
 );
 
 CREATE TABLE places (
   id          SMALLSERIAL PRIMARY KEY,
-  name        TEXT      NOT NULL CHECK ( name != '' )
+  name        TEXT        NOT NULL CHECK ( name != '' )
 );
 
 CREATE TABLE groups (
   id          SERIAL      PRIMARY KEY,
   name        TEXT        NOT NULL CHECK ( name != '' ),
-  location    SMALLSERIAL NOT NULL REFERENCES uploads(id)
+  location    SMALLSERIAL NOT NULL REFERENCES places(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE items (
   id          BIGSERIAL PRIMARY KEY,
-  name        text    NOT NULL CHECK ( name != '' ),
-  description text CHECK ( description != '' ),
-  year        SMALLINT NOT NULL
+  name        text      NOT NULL CHECK ( name != '' ),
+  description text      CHECK ( description != '' ),
+  group_id    INTEGER   REFERENCES places(id) ON DELETE RESTRICT,
+  year        SMALLINT  NOT NULL
 );
 
 CREATE TABLE publishers (
@@ -31,26 +32,26 @@ CREATE TABLE publishers (
 CREATE TYPE filetype AS ENUM ('application/pdf', 'image/jpeg', 'image/png');
 
 CREATE TABLE uploads (
-  id          BIGSERIAL PRIMARY KEY,
-  sum         char(32)  NOT NULL UNIQUE,
-  name        text      NOT NULL,
-  size        INTEGER   NOT NULL,
-  type        filetype  NOT NULL
+    id          BIGSERIAL PRIMARY KEY,
+    sum         char(32)  NOT NULL UNIQUE,
+    name        text      NOT NULL,
+    size        INTEGER   NOT NULL,
+    type        filetype  NOT NULL
 );
 
 CREATE TABLE item_has_author(
-    item_id BIGSERIAL NOT NULL,
+    item_id BIGSERIAL   NOT NULL,
     author_id BIGSERIAL NOT NULL,
-    FOREIGN KEY (item_id) REFERENCES items(id) on delete cascade,
-    FOREIGN KEY (author_id) REFERENCES authors(id) on delete cascade,
+    FOREIGN KEY (item_id)   REFERENCES items(id)   ON DELETE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE RESTRICT,
     UNIQUE (item_id, author_id)
 );
 
 CREATE TABLE item_has_upload(
-    item_id BIGSERIAL NOT NULL,
+    item_id BIGSERIAL   NOT NULL,
     upload_id BIGSERIAL NOT NULL,
-    FOREIGN KEY (item_id) REFERENCES items(id) on delete cascade,
-    FOREIGN KEY (upload_id) REFERENCES uploads(id) on delete cascade,
+    FOREIGN KEY (item_id)   REFERENCES items(id)   ON DELETE CASCADE,
+    FOREIGN KEY (upload_id) REFERENCES uploads(id) ON DELETE RESTRICT,
     UNIQUE (item_id, upload_id)
 );
 
@@ -65,34 +66,66 @@ VALUES
 ('Leo Tolstoy', 'Count Lev Nikolayevich Tolstoy, usually referred to in English as Leo Tolstoy, was a Russian writer. He is regarded as one of the greatest and most influential authors of all time.' ),
 ('Author with no bio', null );
 
-INSERT INTO items (name, year, description)
+INSERT INTO places (name)
 VALUES
-('Hamlet', 1623, 'The Tragedy of Hamlet, Prince of Denmark, often shortened to Hamlet, is a tragedy written by William Shakespeare sometime between 1599 and 1601. It is Shakespeare''s longest play, with 29,551 words.' ),
-('Othello', 1622, 'Othello is a tragedy written by William Shakespeare, around 1603. The story revolves around two characters, Othello and Iago. Othello is a Moorish military commander who was serving as a general of the Venetian army in defence of Cyprus against invasion by Ottoman Turks.' ),
-('Romeo and Juliet', 1597, 'Romeo and Juliet is a tragedy written by William Shakespeare early in his career about the romance between two Italian youths from feuding families. It was among Shakespeare''s most popular plays during his lifetime and, along with Hamlet, is one of his most frequently performed.' ),
-('Item without description', 2024, null ),
-('Item without author', 2023, null ),
-('Test item no1',  2000, 'Description of test item no1' ),
-('Test item no2',  2000, 'Description of test item no2' ),
-('Test item no3',  2000, 'Description of test item no3' ),
-('Test item no4',  2000, 'Description of test item no4' ),
-('Test item no5',  2000, 'Description of test item no5' ),
-('Test item no6',  2000, 'Description of test item no6' ),
-('Test item no7',  2000, 'Description of test item no7' ),
-('Test item no8',  2000, 'Description of test item no8' ),
-('Test item no9',  2000, 'Description of test item no9' ),
-('Test item no10', 2000, 'Description of test item no10' ),
-('Test item no11', 2000, 'Description of test item no11' ),
-('Test item no12', 2000, 'Description of test item no12' ),
-('Test item no13', 2000, 'Description of test item no13' ),
-('Test item no14', 2000, 'Description of test item no14' ),
-('Test item no15', 2000, 'Description of test item no15' ),
-('Test item no16', 2000, 'Description of test item no16' ),
-('Test item no17', 2000, 'Description of test item no17' ),
-('Test item no18', 2000, 'Description of test item no18' ),
-('Test item no19', 2000, 'Description of test item no19' ),
-('Test item no20', 2000, 'Description of test item no20' ),
-('Book with multiple authors', 2015, null );
+('Thessaloniki'),
+('Athens'),
+('Trikala'),
+('Kozanh'),
+('Hrakleio'),
+('Xania');
+
+INSERT INTO groups (name, location)
+VALUES
+('Team1',  1),
+('Team2',  1),
+('Team3',  1),
+('Team4',  1),
+('Team5',  1),
+('Team6',  1),
+('Team7',  2),
+('Team8',  2),
+('Team9',  2),
+('Team10', 2),
+('Team11', 2),
+('Team12', 2),
+('Team13', 2),
+('Team14', 5),
+('Team15', 5),
+('Team16', 1),
+('Team17', 1),
+('Team18', 3),
+('Team19', 1),
+('Team20', 1);
+
+INSERT INTO items (name, year, group_id, description)
+VALUES
+('Hamlet',                     1623, 1,    'The Tragedy of Hamlet, Prince of Denmark, often shortened to Hamlet, is a tragedy written by William Shakespeare sometime between 1599 and 1601. It is Shakespeare''s longest play, with 29,551 words.' ),
+('Othello',                    1622, null, 'Othello is a tragedy written by William Shakespeare, around 1603. The story revolves around two characters, Othello and Iago. Othello is a Moorish military commander who was serving as a general of the Venetian army in defence of Cyprus against invasion by Ottoman Turks.' ),
+('Romeo and Juliet',           1597, 1,    'Romeo and Juliet is a tragedy written by William Shakespeare early in his career about the romance between two Italian youths from feuding families. It was among Shakespeare''s most popular plays during his lifetime and, along with Hamlet, is one of his most frequently performed.' ),
+('Item without description',   2024, 1,    null ),
+('Item without author',        2023, 1,    null ),
+('Test item no1',              2000, 1,    'Description of test item no1' ),
+('Test item no2',              2000, null, 'Description of test item no2' ),
+('Test item no3',              2000, 1,    'Description of test item no3' ),
+('Test item no4',              2000, 1,    'Description of test item no4' ),
+('Test item no5',              2000, 1,    'Description of test item no5' ),
+('Test item no6',              2000, 1,    'Description of test item no6' ),
+('Test item no7',              2000, null, 'Description of test item no7' ),
+('Test item no8',              2000, null, 'Description of test item no8' ),
+('Test item no9',              2000, null, 'Description of test item no9' ),
+('Test item no10',             2000, null, 'Description of test item no10' ),
+('Test item no11',             2000, null, 'Description of test item no11' ),
+('Test item no12',             2000, null, 'Description of test item no12' ),
+('Test item no13',             2000, null, 'Description of test item no13' ),
+('Test item no14',             2000, null, 'Description of test item no14' ),
+('Test item no15',             2000, null, 'Description of test item no15' ),
+('Test item no16',             2000, null, 'Description of test item no16' ),
+('Test item no17',             2000, null, 'Description of test item no17' ),
+('Test item no18',             2000, 1,    'Description of test item no18' ),
+('Test item no19',             2000, 1,    'Description of test item no19' ),
+('Test item no20',             2000, 1,    'Description of test item no20' ),
+('Book with multiple authors', 2015, 1,    null );
 
 INSERT INTO uploads (sum, name, size, type)
 VALUES
