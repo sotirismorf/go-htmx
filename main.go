@@ -8,10 +8,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sotirismorf/go-htmx/controller"
+	"github.com/sotirismorf/go-htmx/controller/crud"
 	"github.com/sotirismorf/go-htmx/controller/items"
 	"github.com/sotirismorf/go-htmx/controller/ui"
-	"github.com/sotirismorf/go-htmx/controller/crud"
 	"github.com/sotirismorf/go-htmx/db"
+	"github.com/sotirismorf/go-htmx/newdb"
 )
 
 func i18nMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
@@ -20,7 +21,7 @@ func i18nMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		// You can configure the i18n options as needed
 		i18nCtx, err := ctxi18n.WithLocale(c.Request().Context(), "el")
 		if err != nil {
-      log.Println("hey")
+			log.Println("hey")
 		}
 
 		// Attach the i18n context to the echo context
@@ -39,6 +40,11 @@ func main() {
 	}
 
 	db.ConnectDB()
+
+  err := newdb.GetDB("postgresql://username:password@127.0.0.1:5432/postgres")
+  if err != nil {
+    log.Fatal(err)
+  }
 
 	e := echo.New()
 

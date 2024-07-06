@@ -6,6 +6,7 @@ require (
 	github.com/a-h/templ v0.2.731
 	github.com/invopop/ctxi18n v0.8.1
 	github.com/jackc/pgx/v5 v5.6.0
+	github.com/jmoiron/sqlx v1.4.0
 	github.com/labstack/echo/v4 v4.12.0
 )
 

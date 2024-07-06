@@ -18,8 +18,8 @@ import (
 type searchQueryParams struct {
 	Query        string `query:"query"`
 	Field        string `query:"field"`
-	ItemsPerPage int32  `query:"items"`
-	PageIndex    int32  `query:"page"`
+	ItemsPerPage int  `query:"items"`
+	PageIndex    int  `query:"page"`
 }
 
 type RequestHeaders struct {
@@ -53,8 +53,8 @@ func Search(c echo.Context) error {
 
 	dbParams := schema.SearchItemsParams{
 		Name:   "%" + queryParams.Query + "%",
-		Limit:  queryParams.ItemsPerPage,
-		Offset: (queryParams.PageIndex - 1) * queryParams.ItemsPerPage,
+		Limit:  int32(queryParams.ItemsPerPage),
+		Offset: int32((queryParams.PageIndex - 1) * queryParams.ItemsPerPage),
 	}
 
 	ctx := context.Background()
@@ -122,7 +122,7 @@ func Search(c echo.Context) error {
 
 	pagination := components.TemplPagination{
 		CurrentPage:  int64(queryParams.PageIndex),
-		ItemsPerPage: queryParams.ItemsPerPage,
+		ItemsPerPage: int32(queryParams.ItemsPerPage),
     Endpoint: "/search",
 	}
 

@@ -29,7 +29,7 @@ templ AdminPage(props TemplAdminPage) {
 		@Breadcrumb(props.CTName, props.Title)
 		@Pagination(props.Pagination, 1)
 		<div class="bg-black sm:rounded-md border-y sm:border border-white sm:border-r overflow-x-scroll">
-			<table class="table-fixed w-full border-spacing-4">
+			<table class="table-auto w-full border-spacing-4">
 				<thead class="text-left border-b">
 					<tr>
 						for _, row := range props.Columns {

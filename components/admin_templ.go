@@ -62,7 +62,7 @@ func AdminPage(props TemplAdminPage) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-black sm:rounded-md border-y sm:border border-white sm:border-r overflow-x-scroll\"><table class=\"table-fixed w-full border-spacing-4\"><thead class=\"text-left border-b\"><tr>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-black sm:rounded-md border-y sm:border border-white sm:border-r overflow-x-scroll\"><table class=\"table-auto w-full border-spacing-4\"><thead class=\"text-left border-b\"><tr>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

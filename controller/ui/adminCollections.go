@@ -2,7 +2,6 @@ package ui
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -11,7 +10,7 @@ import (
 	"github.com/sotirismorf/go-htmx/controller"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
-	"github.com/sotirismorf/go-htmx/schema"
+	"github.com/sotirismorf/go-htmx/newdb"
 	"github.com/sotirismorf/go-htmx/views"
 	"github.com/sotirismorf/go-htmx/views/admin/uploads"
 )
@@ -27,40 +26,31 @@ func AdminItems(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	ctx := context.Background()
-
-	dbAuthorRows, err := db.Queries.SelectItemsWithAuthorsAndUploads(ctx, schema.SelectItemsWithAuthorsAndUploadsParams{
-		Limit:  queryParams.ItemsPerPage,
-		Offset: (queryParams.PageIndex - 1) * queryParams.ItemsPerPage,
-	})
+	data, err := newdb.SelectItemsPopulated(queryParams.PageIndex, queryParams.ItemsPerPage)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
 	rows := []components.TemplAdminTableRow{}
 
-	for _, i := range dbAuthorRows {
+	for _, i := range data.Results {
 
 		// authors
-		templAuthors := []components.TemplAdminTableCell{}
-		if i.Authors != nil {
-			authors := []models.Author{}
-			json.Unmarshal([]byte(i.Authors), &authors)
-			for _, v := range authors {
-				templAuthors = append(templAuthors, components.TemplAdminTableCell{
-					Text:       v.Name,
-					IsRelation: true,
-					CTName:     "authors",
-					ID:         strconv.FormatInt(v.ID, 10),
-				})
-			}
+		var templAuthors []components.TemplAdminTableCell
+		for _, v := range i.Authors {
+			templAuthors = append(templAuthors, components.TemplAdminTableCell{
+				Text:       v.Name,
+				IsRelation: true,
+				CTName:     "authors",
+				ID:         strconv.FormatInt(v.ID, 10),
+			})
 		}
 
 		rows = append(rows, components.TemplAdminTableRow{
 			ID: strconv.FormatInt(i.ID, 10),
 			Cells: [][]components.TemplAdminTableCell{
 				{{Text: i.Name}},
-				{{Text: "To be added"}},
+				{{Text: i.Group.Name, IsRelation: true, CTName: "groups", ID: strconv.Itoa(int(i.Group.ID))}},
 				templAuthors,
 			},
 		})
@@ -68,7 +58,7 @@ func AdminItems(c echo.Context) error {
 
 	pagination := components.TemplPagination{
 		CurrentPage: int64(queryParams.PageIndex),
-		TotalPages:  calcPageCount(100, int64(queryParams.ItemsPerPage)),
+		TotalPages:  int64(data.Metadata.TotalPages),
 		Endpoint:    "/admin/items",
 	}
 
