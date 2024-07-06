@@ -90,6 +90,7 @@ func (q *Queries) DeleteItem(ctx context.Context, id int64) error {
 }
 
 const searchItems = `-- name: SearchItems :many
+
 SELECT items.id, items.name, items.description, items.year,
 CAST(
   CASE
@@ -130,6 +131,7 @@ type SearchItemsRow struct {
 	Count       int64
 }
 
+// https://github.com/sqlc-dev/sqlc/issues/3238
 func (q *Queries) SearchItems(ctx context.Context, arg SearchItemsParams) ([]SearchItemsRow, error) {
 	rows, err := q.db.Query(ctx, searchItems, arg.Name, arg.Limit, arg.Offset)
 	if err != nil {
@@ -240,75 +242,6 @@ func (q *Queries) SelectItems(ctx context.Context) ([]Item, error) {
 			&i.Description,
 			&i.GroupID,
 			&i.Year,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const selectItemsWithAuthorsAndUploads = `-- name: SelectItemsWithAuthorsAndUploads :many
-
-SELECT items.id, items.name, items.description, items.year,
-CAST(
-  CASE
-    WHEN COUNT(authors.id) > 0
-    THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
-  END
-AS jsonb) as authors,
-CAST(
-  CASE
-    WHEN COUNT(uploads.id) > 0
-    THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
-  END
-AS jsonb) as uploads,
-COUNT(*) OVER()
-FROM items
-left join item_has_author on items.id = item_has_author.item_id
-left join authors on item_has_author.author_id = authors.id
-left join item_has_upload on items.id = item_has_upload.item_id
-left join uploads on item_has_upload.upload_id = uploads.id
-GROUP BY items.id
-LIMIT $1 OFFSET $2
-`
-
-type SelectItemsWithAuthorsAndUploadsParams struct {
-	Limit  int32
-	Offset int32
-}
-
-type SelectItemsWithAuthorsAndUploadsRow struct {
-	ID          int64
-	Name        string
-	Description *string
-	Year        int16
-	Authors     []byte
-	Uploads     []byte
-	Count       int64
-}
-
-// https://github.com/sqlc-dev/sqlc/issues/3238
-func (q *Queries) SelectItemsWithAuthorsAndUploads(ctx context.Context, arg SelectItemsWithAuthorsAndUploadsParams) ([]SelectItemsWithAuthorsAndUploadsRow, error) {
-	rows, err := q.db.Query(ctx, selectItemsWithAuthorsAndUploads, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []SelectItemsWithAuthorsAndUploadsRow
-	for rows.Next() {
-		var i SelectItemsWithAuthorsAndUploadsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.Year,
-			&i.Authors,
-			&i.Uploads,
-			&i.Count,
 		); err != nil {
 			return nil, err
 		}

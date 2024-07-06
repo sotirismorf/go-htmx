@@ -1,15 +1,31 @@
 package items
 
 import (
-	"strconv"
-
 	"github.com/sotirismorf/go-htmx/models"
+	"strconv"
 )
+
+type Single struct {
+	Fields []templ.Component
+}
+
+templ AdminSingleText(label string, text string) {
+	<div>
+		<div class="font-bold">{ label }</div>
+		<div>{ text }</div>
+	</div>
+}
+
+templ AdminSingle(cmp []templ.Component) {
+	for _, v := range cmp {
+    @v
+  }
+}
 
 templ AdminSingleItem(item models.ItemData, uploads []models.UploadTemplateData) {
 	<h1 class="text-4xl font-bold">
 		<a class="hover:underline decoration-4" href="/admin/items">Items</a>
-    <span>/ { item.Name }</span>
+		<span>/ { item.Name }</span>
 	</h1>
 	@SingleItemAttributes(item, uploads)
 }

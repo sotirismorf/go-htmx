@@ -56,12 +56,6 @@ func AdminItems(c echo.Context) error {
 		})
 	}
 
-	pagination := components.TemplPagination{
-		CurrentPage: int64(queryParams.PageIndex),
-		TotalPages:  int64(data.Metadata.TotalPages),
-		Endpoint:    "/admin/items",
-	}
-
 	view := components.AdminPage(components.TemplAdminPage{
 		Title:       "Items",
 		CTName:      "items",
@@ -69,7 +63,11 @@ func AdminItems(c echo.Context) error {
 		CanDownload: false,
 		Columns:     []string{"Name", "Group", "Authors"},
 		Rows:        rows,
-		Pagination:  pagination,
+		Pagination: components.TemplPagination{
+			CurrentPage: int64(queryParams.PageIndex),
+			TotalPages:  int64(data.Metadata.TotalPages),
+			Endpoint:    "/admin/items",
+		},
 	})
 
 	requestHeaders := new(RequestHeaders)
@@ -83,27 +81,29 @@ func AdminItems(c echo.Context) error {
 }
 
 func AdminAuthors(c echo.Context) error {
-	ctx := context.Background()
+	qp := searchQueryParams{
+		ItemsPerPage: 20,
+		PageIndex:    1,
+	}
 
-	authorData, err := db.Queries.SelectAuthors(ctx)
+	err := c.Bind(&qp)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	data, err := newdb.SelectAuthors(qp.PageIndex, qp.ItemsPerPage)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err)
 	}
 
 	rows := []components.TemplAdminTableRow{}
-	for _, i := range authorData {
+	for _, i := range data.Results {
 		rows = append(rows, components.TemplAdminTableRow{
 			ID: strconv.FormatInt(i.ID, 10),
 			Cells: [][]components.TemplAdminTableCell{
 				{{Text: strconv.FormatInt(i.ID, 10)}},
 				{{Text: i.Name}},
-				{{Text: func() string {
-					if i.Bio != nil {
-						return *i.Bio
-					} else {
-						return ""
-					}
-				}()}},
+				{{Text: strconv.Itoa(i.ItemCount)}},
 			}})
 	}
 
@@ -112,8 +112,13 @@ func AdminAuthors(c echo.Context) error {
 		CTName:      "authors",
 		CanDelete:   true,
 		CanDownload: false,
-		Columns:     []string{"ID", "Name", "Bio"},
+		Columns:     []string{"ID", "Name", "Items"},
 		Rows:        rows,
+		Pagination: components.TemplPagination{
+			CurrentPage: int64(qp.PageIndex),
+			TotalPages:  int64(data.Metadata.TotalPages),
+			Endpoint:    "/admin/items",
+		},
 	})
 
 	return controller.Render(c, http.StatusOK, views.AdminLayout("Authors", view))

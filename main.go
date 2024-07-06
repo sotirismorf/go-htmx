@@ -68,7 +68,7 @@ func main() {
 	e.GET("/admin/items/create", ui.AdminCreateItemForm)
 	e.GET("/admin/items/:id", ui.AdminSingleItem)
 	e.DELETE("/admin/items/:id", crud.DeleteItem)
-	e.GET("/htmx/admin/items/:id/edit", ui.HTMXAdminItemsOneEdit)
+	// e.GET("/htmx/admin/items/:id/edit", ui.HTMXAdminItemsOneEdit)
 	// e.GET("/htmx/admin/items/:id/cancel", items.HTMXAdminItemsOneCancelEdit)
 
 	e.GET("/admin/groups", ui.AdminGroups)
