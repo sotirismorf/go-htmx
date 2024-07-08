@@ -34,46 +34,6 @@ INSERT INTO item_has_upload (
 )
 RETURNING *;
 
--- https://github.com/sqlc-dev/sqlc/issues/3238
-
--- name: SearchItems :many
-SELECT items.id, items.name, items.description, items.year,
-CAST(
-  CASE
-    WHEN COUNT(authors.id) > 0
-    THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
-  END
-AS jsonb) as authors,
-CAST(
-  CASE
-    WHEN COUNT(uploads.id) > 0
-    THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
-  END
-AS jsonb) as uploads,
-COUNT(*) OVER()
-FROM items
-left join item_has_author on items.id = item_has_author.item_id
-left join authors on item_has_author.author_id = authors.id
-left join item_has_upload on items.id = item_has_upload.item_id
-left join uploads on item_has_upload.upload_id = uploads.id
-where lower(unaccent(items.name)) like $1
-group by items.id
-LIMIT $2 OFFSET $3;
-
--- name: SelectSingleItemWithAuthors :one
-SELECT items.id, items.name, items.description,
-CAST(
-  CASE
-    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
-    THEN jsonb_agg((authors.id, authors.name))::jsonb
-  END
-AS jsonb) as authors
-FROM items
-left join item_has_author on items.id = item_has_author.item_id
-left join authors on item_has_author.author_id = authors.id
-where items.id = $1
-group by items.id;
-
 -- name: SelectItemPopulated :one
 SELECT items.id, items.name, items.description,
 CAST(

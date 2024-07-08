@@ -49,7 +49,7 @@ templ AdminLayout(title string, cmp templ.Component) {
 templ LayoutNormal(title string, cmp templ.Component) {
 	@Base(title) {
 		@components.NavigationBar()
-		<div class="mx-auto max-w-3xl">
+		<div class="mx-auto max-w-screen-lg">
 			@cmp
 		</div>
 		@Footer()

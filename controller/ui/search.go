@@ -1,25 +1,22 @@
 package ui
 
 import (
-	"context"
-	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/controller"
-	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
-	"github.com/sotirismorf/go-htmx/schema"
+	"github.com/sotirismorf/go-htmx/newdb"
 	"github.com/sotirismorf/go-htmx/views"
 )
 
 type searchQueryParams struct {
 	Query        string `query:"query"`
 	Field        string `query:"field"`
-	ItemsPerPage int  `query:"items"`
-	PageIndex    int  `query:"page"`
+	ItemsPerPage int    `query:"items"`
+	PageIndex    int    `query:"page"`
 }
 
 type RequestHeaders struct {
@@ -29,7 +26,7 @@ type RequestHeaders struct {
 func Search(c echo.Context) error {
 	queryParams := searchQueryParams{
 		ItemsPerPage: 5,
-		PageIndex:         1,
+		PageIndex:    1,
 	}
 
 	err := c.Bind(&queryParams)
@@ -51,17 +48,7 @@ func Search(c echo.Context) error {
 		{Name: "Author", ID: "author"},
 	}
 
-	dbParams := schema.SearchItemsParams{
-		Name:   "%" + queryParams.Query + "%",
-		Limit:  int32(queryParams.ItemsPerPage),
-		Offset: int32((queryParams.PageIndex - 1) * queryParams.ItemsPerPage),
-	}
-
-	ctx := context.Background()
-	itemsDBData, err := db.Queries.SearchItems(ctx, dbParams)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err)
-	}
+  data, err := newdb.SearchItems(queryParams.PageIndex, queryParams.ItemsPerPage, queryParams.Query)
 
 	type author struct {
 		Id   int64  `json:"id"`
@@ -75,20 +62,17 @@ func Search(c echo.Context) error {
 	}
 
 	itemsTempl := []models.TemplItemResultCard{}
-	for _, v := range itemsDBData {
+	for _, v := range data.Results {
 		// Many-to-many relations
 		var authorsTempl []models.TemplItemResultCardAuthors
 		var uploadsTempl []models.TemplItemResultCardUploads
 
 		// Authors
 		if v.Authors != nil {
-			authorsJson := []author{}
-			json.Unmarshal([]byte(v.Authors), &authorsJson)
-
-			for _, k := range authorsJson {
+			for _, k := range v.Authors {
 				authorsTempl = append(authorsTempl, models.TemplItemResultCardAuthors{
 					Name:       k.Name,
-					AuthorLink: "/authors/" + strconv.FormatInt(k.Id, 10),
+					AuthorLink: "/authors/" + strconv.FormatInt(k.ID, 10),
 				})
 			}
 		}
@@ -97,15 +81,12 @@ func Search(c echo.Context) error {
 		var thumbnailLink string
 
 		// Uploads
-		if v.Uploads != nil {
-			uploadsJson := []upload{}
-			json.Unmarshal([]byte(v.Uploads), &uploadsJson)
+		if len(v.Uploads) != 0 {
+			thumbnailLink = "/static/thumbnails/" + v.Uploads[0].Sum + ".jpg"
 
-			thumbnailLink = "/static/thumbnails/" + uploadsJson[0].Sum + ".jpg"
-
-			for _, k := range uploadsJson {
+			for _, k := range v.Uploads {
 				uploadsTempl = append(uploadsTempl, models.TemplItemResultCardUploads{
-					Type: k.Filename,
+					Type: k.Name,
 				})
 			}
 		}
@@ -123,17 +104,10 @@ func Search(c echo.Context) error {
 	pagination := components.TemplPagination{
 		CurrentPage:  int64(queryParams.PageIndex),
 		ItemsPerPage: int32(queryParams.ItemsPerPage),
-    Endpoint: "/search",
+    TotalItems: int64(data.Metadata.TotalResults),
+    TotalPages: int64(data.Metadata.TotalPages),
+		Endpoint:     "/search",
 	}
-
-	// Pagination
-	if len(itemsDBData) != 0 {
-		pagination.TotalItems = itemsDBData[0].Count
-	} else {
-		pagination.TotalItems = 0
-	}
-
-	pagination.TotalPages = calcPageCount(pagination.TotalItems, int64(queryParams.ItemsPerPage))
 
 	if requestHeaders.HXRequest {
 		return controller.Render(c, http.StatusOK, views.SearchResults(pagination, itemsTempl))

@@ -4,6 +4,7 @@ type Item struct {
 	ID          int64
 	Name        string
 	Description string
+	Year        int32
 	Group       Group
 	Authors     []Author
 	Uploads     []Upload
@@ -49,6 +50,7 @@ type AuthorData struct {
 type schemaItem struct {
 	ID          int64
 	Name        string
+	Year        int32
 	Description *string
 	GroupID     *int32  `db:"group_id"`
 	GroupName   *string `db:"group_name"`

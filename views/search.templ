@@ -1,11 +1,10 @@
 package views
 
 import (
-	"strconv"
-
-	"github.com/sotirismorf/go-htmx/models"
-	"github.com/sotirismorf/go-htmx/components"
 	"github.com/invopop/ctxi18n/i18n"
+	"github.com/sotirismorf/go-htmx/components"
+	"github.com/sotirismorf/go-htmx/models"
+	"strconv"
 )
 
 templ Search(
@@ -25,7 +24,7 @@ templ Search(
 		<div class="bg-black ring-1 ring-white has-[:focus]:ring-2 has-[:focus]:ring-fuchsia-400 py-2 px-3 mx-4 sm:mx-0 my-4 rounded-md flex items-center w-full">
 			@components.IconMagnifyingGlass()
 			<input
-				class="bg-transparent outline-none px-3 text-xl font-bold"
+				class="bg-transparent outline-none px-3 text-xl font-bold w-full"
 				type="text"
 				name="query"
 				value=""
@@ -61,48 +60,54 @@ templ SearchResults(pagination components.TemplPagination, items []models.TemplI
 		</div>
 		<div class="bg-black border-y border-y-white sm:border sm:border-white divide-y divide-white sm:rounded-md">
 			if pagination.TotalItems == 0 {
-				<div>
-					oops....
-				</div>
+				<div>oops....</div>
 			}
 			for _, v := range items {
-				<div class="py-5 px-1 sm:px-3 flex">
-					<div class="mr-4">
-						<a href={ "/item/1" }>
-							<img class="object-contain size-24 sm:size-40 select-none" src={ v.ThumbnailLink } alt=""/>
-						</a>
+				<div class="px-4 pt-3 pb-4 sm:px-6 sm:pt-4 sm:pb-6">
+					<div class="mb-3">
+						<a
+							class="hover:underline font-bold text-xl sm:text-2xl"
+							href={ templ.SafeURL("/item/" + v.ID) }
+						>{ v.Name }</a>
 					</div>
-					<div>
-						<div class="mb-2">
-							<a class="hover:underline font-bold text-xl sm:text-2xl" href={ templ.SafeURL("/item/" + v.ID) }>{ v.Name }</a>
+					<div class="flex">
+						<div class="mr-4">
+							<a href={ "/item/1" }>
+								<img class="object-contain h-24 sm:h-40 select-none" src={ v.ThumbnailLink } alt=""/>
+							</a>
 						</div>
-						<p class="text-sm sm:text-base">Published: { v.Year }</p>
-						if len(v.Authors) != 0 {
-							<div class="text-sm sm:text-base">
-								<span>Writer:</span>
-								for i, k := range v.Authors {
-									<div class="inline-block">
-										<a
-											class="hover:underline"
-											href={ templ.SafeURL(k.AuthorLink) }
-										>{ k.Name }</a>
-									</div>
-									if i < len(v.Authors) - 1 {
-										<span>, </span>
+						<div class="flex-grow flex flex-col justify-between">
+							<div>
+								<div>
+									if len(v.Authors) != 0 {
+										<div class="text-sm sm:text-base">
+											for i, k := range v.Authors {
+												<div class="inline-block">
+													<a
+														class="hover:underline"
+														href={ templ.SafeURL(k.AuthorLink) }
+													>{ k.Name }</a>
+												</div>
+												if i < len(v.Authors) - 1 {
+													<span>, </span>
+												}
+											}
+										</div>
 									}
-								}
+									if len(v.Uploads) != 0 {
+										<div class="text-sm sm:text-base">
+											<span>{ strconv.FormatInt(int64(len(v.Uploads)), 10) }</span>
+											if len(v.Uploads) == 1 {
+												<span>file</span>
+											} else {
+												<span>files</span>
+											}
+										</div>
+									}
+								</div>
 							</div>
-						}
-						if len(v.Uploads) != 0 {
-							<div class="text-sm sm:text-base">
-								<span>{ strconv.FormatInt(int64(len(v.Uploads)), 10) }</span>
-								if len(v.Uploads) == 1 {
-									<span>file</span>
-								} else {
-									<span>files</span>
-								}
-							</div>
-						}
+							<p class="text-sm sm:text-lg text-right">{ v.Year }</p>
+						</div>
 					</div>
 				</div>
 			}

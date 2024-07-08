@@ -89,77 +89,6 @@ func (q *Queries) DeleteItem(ctx context.Context, id int64) error {
 	return err
 }
 
-const searchItems = `-- name: SearchItems :many
-
-SELECT items.id, items.name, items.description, items.year,
-CAST(
-  CASE
-    WHEN COUNT(authors.id) > 0
-    THEN jsonb_agg(distinct jsonb_build_object('id', authors.id, 'name', authors.name))::jsonb
-  END
-AS jsonb) as authors,
-CAST(
-  CASE
-    WHEN COUNT(uploads.id) > 0
-    THEN jsonb_agg(distinct jsonb_build_object('id', uploads.id, 'filename', uploads.name, 'sum', uploads.sum))::jsonb
-  END
-AS jsonb) as uploads,
-COUNT(*) OVER()
-FROM items
-left join item_has_author on items.id = item_has_author.item_id
-left join authors on item_has_author.author_id = authors.id
-left join item_has_upload on items.id = item_has_upload.item_id
-left join uploads on item_has_upload.upload_id = uploads.id
-where lower(unaccent(items.name)) like $1
-group by items.id
-LIMIT $2 OFFSET $3
-`
-
-type SearchItemsParams struct {
-	Name   string
-	Limit  int32
-	Offset int32
-}
-
-type SearchItemsRow struct {
-	ID          int64
-	Name        string
-	Description *string
-	Year        int16
-	Authors     []byte
-	Uploads     []byte
-	Count       int64
-}
-
-// https://github.com/sqlc-dev/sqlc/issues/3238
-func (q *Queries) SearchItems(ctx context.Context, arg SearchItemsParams) ([]SearchItemsRow, error) {
-	rows, err := q.db.Query(ctx, searchItems, arg.Name, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []SearchItemsRow
-	for rows.Next() {
-		var i SearchItemsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.Year,
-			&i.Authors,
-			&i.Uploads,
-			&i.Count,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const selectItem = `-- name: SelectItem :one
 SELECT id, name, description, group_id, year FROM items
 WHERE id = $1
@@ -251,38 +180,4 @@ func (q *Queries) SelectItems(ctx context.Context) ([]Item, error) {
 		return nil, err
 	}
 	return items, nil
-}
-
-const selectSingleItemWithAuthors = `-- name: SelectSingleItemWithAuthors :one
-SELECT items.id, items.name, items.description,
-CAST(
-  CASE
-    WHEN (array_length(array_remove(array_agg(authors.id), null), 1) > 0)
-    THEN jsonb_agg((authors.id, authors.name))::jsonb
-  END
-AS jsonb) as authors
-FROM items
-left join item_has_author on items.id = item_has_author.item_id
-left join authors on item_has_author.author_id = authors.id
-where items.id = $1
-group by items.id
-`
-
-type SelectSingleItemWithAuthorsRow struct {
-	ID          int64
-	Name        string
-	Description *string
-	Authors     []byte
-}
-
-func (q *Queries) SelectSingleItemWithAuthors(ctx context.Context, id int64) (SelectSingleItemWithAuthorsRow, error) {
-	row := q.db.QueryRow(ctx, selectSingleItemWithAuthors, id)
-	var i SelectSingleItemWithAuthorsRow
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Description,
-		&i.Authors,
-	)
-	return i, err
 }
