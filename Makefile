@@ -1,8 +1,8 @@
-dev:
-	@make -j templ tailwind
+css-dev:
+	@npm run dev
 
-templ:
-	@templ generate --watch --proxy="http://localhost:8080" --cmd="go run ."
+css-build:
+	@npm run build
 
-tailwind:
-	@npx tailwindcss -i ./input.css -o ./assets/styles.css --watch
+image:
+	@docker build --tag go-htmx:latest .

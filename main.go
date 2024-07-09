@@ -60,7 +60,7 @@ func main() {
 
 	e.GET("/downloads/:id", crud.GetUpload)
 	e.Static("/static/thumbnails", "uploads/thumbnails")
-	e.Static("/assets", "assets")
+	e.Static("/assets", "static")
 
 	e.GET("/admin", controller.AdminHandler)
 	e.GET("/admin/items", ui.AdminItems)
