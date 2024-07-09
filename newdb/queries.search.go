@@ -24,15 +24,17 @@ LEFT JOIN item_has_author ON items.id = item_has_author.item_id
 LEFT JOIN authors         ON item_has_author.author_id = authors.id
 LEFT JOIN item_has_upload ON items.id = item_has_upload.item_id
 LEFT JOIN uploads         ON item_has_upload.upload_id = uploads.id
-WHERE lower(items.name) LIKE lower($1)
+WHERE unaccent(lower(items.name)) LIKE unaccent(lower($1))
 GROUP BY items.id, groups.name
-ORDER BY items.id
+ORDER BY items.year DESC
 LIMIT $3 OFFSET $2;
 `
 
 func SearchItems(page int, limit int, search string) (ItemData, error) {
 	rows := []schemaItem{}
 	items := []Item{}
+
+  fmt.Println(search)
 
 	err := db.Select(&rows, searchItems, fmt.Sprintf("%%%s%%", search), calcOffset(page, limit), limit)
 	if err != nil {

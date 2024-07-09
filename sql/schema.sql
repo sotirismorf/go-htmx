@@ -16,11 +16,18 @@ CREATE TABLE groups (
 );
 
 CREATE TABLE items (
-  id          BIGSERIAL PRIMARY KEY,
-  name        text      NOT NULL CHECK ( name != '' ),
-  description text      CHECK ( description != '' ),
-  group_id    INTEGER   REFERENCES places(id) ON DELETE RESTRICT,
-  year        SMALLINT  NOT NULL
+  id          BIGSERIAL   PRIMARY KEY,
+  name        text        NOT NULL CHECK ( name != '' ),
+  description text        CHECK ( description != '' ),
+  group_id    INTEGER     REFERENCES places(id) ON DELETE RESTRICT,
+  year        SMALLINT    NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users (
+  id          SERIAL      PRIMARY KEY,
+  name        TEXT        NOT NULL UNIQUE,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE publishers (
