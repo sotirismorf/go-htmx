@@ -6,6 +6,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/views"
 )
@@ -37,5 +38,9 @@ func HomeHandler(c echo.Context) error {
 
 	view := views.Index(data)
 
-	return Render(c, http.StatusOK, views.LayoutNormal("Home", view))
+	return Render(c, http.StatusOK, views.LayoutNormal("Home", view, []components.NavItem{
+		{TranslationID: "nav.home", Active: true, Href: "/"},
+		{TranslationID: "nav.search", Active: false, Href: "/search"},
+		{TranslationID: "nav.about", Active: false, Href: "/about"},
+	}))
 }

@@ -1,16 +1,38 @@
 package components
 
-import "strconv"
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"strconv"
+)
 
-templ NavigationBar() {
-	<div class="bg-black border-b border-b-white h-12 text-sm sm:text-2xl flex items-center justify-center mb-12">
-		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/">Home</a>
-		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/search">Αναζήτηση</a>
-		<a class="px-2 sm:mx-4 hover:text-fuchsia-400" href="/admin">Admin</a>
-		<form action="/logout" method="post">
-			<button type="submit">Log Out</button>
-		</form>
+type NavItem struct {
+	Active        bool
+	Href          string
+	TranslationID string
+}
+
+templ NavigationBar(props []NavItem) {
+	<div class="fixed w-full bg-black border-b border-b-white text-sm sm:text-lg font-semibold mb-12">
+		<div class="max-w-screen-lg mx-auto flex justify-between">
+			<div class="flex items-center ml-3 sm:ml-0">
+				for _, v := range props {
+					<a
+						if v.Active {
+							class="py-2 px-2 sm:px-3 text-fuchsia-400"
+						} else {
+							class="py-2 px-2 sm:px-3 hover:underline"
+						}
+						href={ templ.SafeURL(v.Href) }
+					>{ i18n.T(ctx, v.TranslationID) }</a>
+				}
+			</div>
+			<a class="px-2 py-2 sm:mx-4 hover:text-fuchsia-400 flex items-center" href="/admin">
+				@IconGear("size-6")
+				<span class="ml-1">Admin</span>
+			</a>
+		</div>
 	</div>
+	<div class="h-16"></div>
 }
 
 templ Table() {

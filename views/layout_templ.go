@@ -8,9 +8,7 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"github.com/sotirismorf/go-htmx/components"
-)
+import "github.com/sotirismorf/go-htmx/components"
 
 func Base(title string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -37,7 +35,7 @@ func Base(title string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layout.templ`, Line: 16, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layout.templ`, Line: 14, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -89,7 +87,11 @@ func AdminLayout(title string, cmp templ.Component) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = components.NavigationBar().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.NavigationBar([]components.NavItem{
+				{TranslationID: "nav.home", Active: false, Href: "/"},
+				{TranslationID: "nav.search", Active: false, Href: "/"},
+				{TranslationID: "nav.about", Active: false, Href: "/"},
+			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -135,7 +137,7 @@ func AdminLayout(title string, cmp templ.Component) templ.Component {
 	})
 }
 
-func LayoutNormal(title string, cmp templ.Component) templ.Component {
+func LayoutNormal(title string, cmp templ.Component, nav []components.NavItem) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -165,7 +167,7 @@ func LayoutNormal(title string, cmp templ.Component) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = components.NavigationBar().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.NavigationBar(nav).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

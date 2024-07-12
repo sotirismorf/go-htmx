@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sotirismorf/go-htmx/components"
 	"github.com/sotirismorf/go-htmx/db"
 	"github.com/sotirismorf/go-htmx/models"
 	"github.com/sotirismorf/go-htmx/views"
@@ -64,5 +65,9 @@ func Item(c echo.Context) error {
 		props.Description = *dbItem.Description
 	}
 
-	return Render(c, http.StatusOK, views.LayoutNormal("Home", views.Item(props)))
+	return Render(c, http.StatusOK, views.LayoutNormal("Home", views.Item(props), []components.NavItem{
+		{TranslationID: "nav.home", Active: false, Href: "/"},
+		{TranslationID: "nav.search", Active: false, Href: "/search"},
+		{TranslationID: "nav.about", Active: false, Href: "/about"},
+	}))
 }

@@ -1,4 +1,8 @@
 el:
+  nav:
+    home: ΑΡΧΙΚΗ
+    search: ΑΝΑΖΗΤΗΣΗ
+    about: ΣΧΕΤΙΚΑ
   search:
     placeholder: "Αναζήτηση..."
     results:

@@ -48,7 +48,7 @@ func Search(c echo.Context) error {
 		{Name: "Author", ID: "author"},
 	}
 
-  data, err := newdb.SearchItems(queryParams.PageIndex, queryParams.ItemsPerPage, queryParams.Query)
+	data, err := newdb.SearchItems(queryParams.PageIndex, queryParams.ItemsPerPage, queryParams.Query)
 
 	type author struct {
 		Id   int64  `json:"id"`
@@ -104,8 +104,8 @@ func Search(c echo.Context) error {
 	pagination := components.TemplPagination{
 		CurrentPage:  int64(queryParams.PageIndex),
 		ItemsPerPage: int32(queryParams.ItemsPerPage),
-    TotalItems: int64(data.Metadata.TotalResults),
-    TotalPages: int64(data.Metadata.TotalPages),
+		TotalItems:   int64(data.Metadata.TotalResults),
+		TotalPages:   int64(data.Metadata.TotalPages),
 		Endpoint:     "/search",
 	}
 
@@ -114,7 +114,11 @@ func Search(c echo.Context) error {
 	}
 
 	view := views.Search(itemsTempl, pagination, sortOptions, fieldOptions)
-	return controller.Render(c, http.StatusOK, views.LayoutNormal("Home", view))
+	return controller.Render(c, http.StatusOK, views.LayoutNormal("Home", view, []components.NavItem{
+		{TranslationID: "nav.home", Active: false, Href: "/"},
+		{TranslationID: "nav.search", Active: true, Href: "/search"},
+		{TranslationID: "nav.about", Active: false, Href: "/about"},
+	}))
 }
 
 func calcPageCount(totalItems int64, pageItems int64) int64 {

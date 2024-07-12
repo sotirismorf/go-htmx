@@ -1,8 +1,6 @@
 package views
 
-import (
-	"github.com/sotirismorf/go-htmx/components"
-)
+import "github.com/sotirismorf/go-htmx/components"
 
 templ Base(title string) {
 	<!DOCTYPE html>
@@ -25,9 +23,13 @@ templ Base(title string) {
 
 templ AdminLayout(title string, cmp templ.Component) {
 	@Base(title) {
-		@components.NavigationBar()
+		@components.NavigationBar([]components.NavItem{
+      {TranslationID: "nav.home", Active: false, Href: "/"},
+      {TranslationID: "nav.search", Active: false, Href: "/"},
+      {TranslationID: "nav.about", Active: false, Href: "/"},
+      })
 		<div
-      id="admin-navigation-sidebar"
+			id="admin-navigation-sidebar"
 			class="bg-black border-white border-r fixed transition top-0 left-0 h-full rounded-r-md overflow-hidden"
 		>
 			@components.AdminSideNav()
@@ -46,9 +48,9 @@ templ AdminLayout(title string, cmp templ.Component) {
 	}
 }
 
-templ LayoutNormal(title string, cmp templ.Component) {
+templ LayoutNormal(title string, cmp templ.Component, nav []components.NavItem) {
 	@Base(title) {
-		@components.NavigationBar()
+		@components.NavigationBar(nav)
 		<div class="mx-auto max-w-screen-lg">
 			@cmp
 		</div>
