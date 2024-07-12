@@ -7,6 +7,8 @@ package schema
 import (
 	"database/sql/driver"
 	"fmt"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Filetype string
@@ -70,6 +72,7 @@ type Item struct {
 	Description *string
 	GroupID     *int32
 	Year        int16
+	CreatedAt   pgtype.Timestamptz
 }
 
 type ItemHasAuthor struct {
@@ -99,4 +102,10 @@ type Upload struct {
 	Name string
 	Size int32
 	Type Filetype
+}
+
+type User struct {
+	ID        int32
+	Name      string
+	CreatedAt pgtype.Timestamptz
 }

@@ -1,0 +1,25 @@
+package views
+
+import (
+	"github.com/invopop/ctxi18n/i18n"
+	"github.com/sotirismorf/go-htmx/components"
+)
+
+templ AdminLogin() {
+	<div class="bg-black py-4 px-6">
+		<h1 class="text-2xl mb-3">{ i18n.T(ctx, "login.header") }</h1>
+		<form class="flex flex-col gap-4" submit="/login" method="post">
+			@components.DahliaInput(components.TemplInput{
+				Name:  "username",
+				Label: i18n.T(ctx, "login.username"),
+				Type:  "text",
+			})
+			@components.DahliaInput(components.TemplInput{
+				Name:  "password",
+				Label: i18n.T(ctx, "login.password"),
+				Type:  "text",
+			})
+			<button type="submit">Log in</button>
+		</form>
+	</div>
+}

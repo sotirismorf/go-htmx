@@ -2,9 +2,13 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/gorilla/sessions"
 	"github.com/invopop/ctxi18n"
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/sotirismorf/go-htmx/controller"
@@ -31,6 +35,24 @@ func i18nMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		sess, err := session.Get("session", c)
+		if err != nil {
+			return c.NoContent(http.StatusUnauthorized)
+		}
+
+    fmt.Println(sess.Values)
+
+		auth, ok := sess.Values["authenticated"].(bool)
+		if !auth || !ok {
+	    return c.Redirect(http.StatusFound, "/login")
+		}
+
+		return next(c)
+	}
+}
+
 //go:embed translations
 var locales embed.FS
 
@@ -41,10 +63,10 @@ func main() {
 
 	db.ConnectDB()
 
-  err := newdb.GetDB("postgresql://username:password@127.0.0.1:5432/postgres")
-  if err != nil {
-    log.Fatal(err)
-  }
+	err := newdb.GetDB("postgresql://username:password@127.0.0.1:5432/postgres")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	e := echo.New()
 
@@ -53,41 +75,42 @@ func main() {
 		Format: "${status} ${method} ${uri}\n",
 	}))
 	e.Use(i18nMiddleware)
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 
 	e.GET("/", controller.HomeHandler)
-	e.GET("/search", ui.Search)
-	e.GET("/item/:id", controller.Item)
-
 	e.GET("/downloads/:id", crud.GetUpload)
-	e.Static("/static/thumbnails", "uploads/thumbnails")
+	e.GET("/item/:id", controller.Item)
+	e.GET("/login", controller.LoginHandler)
+	e.GET("/search", ui.Search)
+	e.POST("/htmx/multi-select-dropdown", items.HTMXMultiSelectDropdown)
+	e.POST("/login", controller.CreateSession)
+	e.POST("/logout", controller.Logout)
 	e.Static("/assets", "static")
+	e.Static("/static/thumbnails", "uploads/thumbnails")
 
-	e.GET("/admin", controller.AdminHandler)
-	e.GET("/admin/items", ui.AdminItems)
-	e.POST("/admin/items/create", crud.CreateItem)
-	e.GET("/admin/items/create", ui.AdminCreateItemForm)
-	e.GET("/admin/items/:id", ui.AdminSingleItem)
-	e.DELETE("/admin/items/:id", crud.DeleteItem)
+	// Admin Group
+	g := e.Group("/admin")
+	g.Use(AuthMiddleware)
+
+	g.DELETE("/authors/:id", crud.DeleteAuthor)
+	g.DELETE("/items/:id", crud.DeleteItem)
+	g.DELETE("/uploads/:id", crud.DeleteUpload)
+	g.GET("", controller.AdminHandler)
+	g.GET("/authors", ui.AdminAuthors)
+	g.GET("/authors/create", ui.AdminCreateAuthorForm)
+	g.GET("/groups", ui.AdminGroups)
+	g.GET("/groups/create", ui.AdminCreateGroupForm)
+	g.GET("/items/:id", ui.AdminSingleItem)
+	g.GET("/items/create", ui.AdminCreateItemForm)
+	g.GET("/uploads", ui.AdminUploads)
+	g.GET("/uploads/create", ui.AdminCreateUploadForm)
+	g.GET("/items", ui.AdminItems)
+	g.POST("/authors/create", crud.CreateAuthor)
+	g.POST("/groups/create", crud.CreateGroup)
+	g.POST("/items/create", crud.CreateItem)
+	g.POST("/uploads/create", crud.CreateUpload)
 	// e.GET("/htmx/admin/items/:id/edit", ui.HTMXAdminItemsOneEdit)
 	// e.GET("/htmx/admin/items/:id/cancel", items.HTMXAdminItemsOneCancelEdit)
-
-	e.GET("/admin/groups", ui.AdminGroups)
-	e.POST("/admin/groups/create", crud.CreateGroup)
-	e.GET("/admin/groups/create", ui.AdminCreateGroupForm)
-
-	e.GET("/admin/authors", ui.AdminAuthors)
-	e.DELETE("/admin/authors/:id", crud.DeleteAuthor)
-	e.GET("/admin/authors/create", ui.AdminCreateAuthorForm)
-	e.POST("/admin/authors/create", crud.CreateAuthor)
-
-	e.GET("/admin/uploads", ui.AdminUploads)
-	e.GET("/admin/uploads/create", ui.AdminCreateUploadForm)
-	e.POST("/admin/uploads/create", crud.CreateUpload)
-	e.DELETE("/admin/uploads/:id", crud.DeleteUpload)
-
-	e.GET("/admin/login", controller.LoginHandler)
-
-	e.POST("/htmx/multi-select-dropdown", items.HTMXMultiSelectDropdown)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -28,7 +28,7 @@ func NavigationBar() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-black border-b border-b-white h-12 text-sm sm:text-2xl flex items-center justify-center mb-12\"><a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/\">Home</a> <a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/search\">Αναζήτηση</a> <a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/photos\">Εικόνες</a> <a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/about\">Σχετικά</a> <a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/admin\">Admin</a></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-black border-b border-b-white h-12 text-sm sm:text-2xl flex items-center justify-center mb-12\"><a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/\">Home</a> <a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/search\">Αναζήτηση</a> <a class=\"px-2 sm:mx-4 hover:text-fuchsia-400\" href=\"/admin\">Admin</a><form action=\"/logout\" method=\"post\"><button type=\"submit\">Log Out</button></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -129,7 +129,7 @@ func TableHeader(text string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 31, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 32, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -168,7 +168,7 @@ func TableData(text string) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 37, Col: 8}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 38, Col: 8}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -216,7 +216,7 @@ func TableDataWithLink(text string, collectionType string, id int64) templ.Compo
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 47, Col: 9}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 48, Col: 9}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -289,7 +289,7 @@ func Breadcrumb(collectionType string, displayName string) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(displayName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 60, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/home.templ`, Line: 61, Col: 59}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {

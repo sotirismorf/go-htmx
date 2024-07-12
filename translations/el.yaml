@@ -6,6 +6,10 @@ el:
         zero: "Κανένα αποτέλεσμα"
         one: "%{count} αποτέλεσμα"
         other: "%{count} αποτελέσματα"
+  login:
+    header: Σύνδεση Χρήστη
+    username: Ψευδώνυμο
+    password: Κωδικός
   admin:
     collections:
       create: Δημιουργία
